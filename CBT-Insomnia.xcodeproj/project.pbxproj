@@ -10,9 +10,22 @@
 		17B3BA622DDE1C8200EC39C0 /* CBT-Insomnia.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "CBT-Insomnia.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		17B3BA7E2DDE1FBC00EC39C0 /* Exceptions for "CBT-Insomnia" folder in "CBT-Insomnia" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = 17B3BA612DDE1C8200EC39C0 /* CBT-Insomnia */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		17B3BA642DDE1C8200EC39C0 /* CBT-Insomnia */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				17B3BA7E2DDE1FBC00EC39C0 /* Exceptions for "CBT-Insomnia" folder in "CBT-Insomnia" target */,
+			);
 			path = "CBT-Insomnia";
 			sourceTree = "<group>";
 		};
@@ -249,12 +262,14 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = "CBT-Insomnia/CBT-Insomnia.entitlements";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"CBT-Insomnia/Preview Content\"";
 				DEVELOPMENT_TEAM = XYS8YPRVR5;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "CBT-Insomnia/Info.plist";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -278,12 +293,14 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = "CBT-Insomnia/CBT-Insomnia.entitlements";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"CBT-Insomnia/Preview Content\"";
 				DEVELOPMENT_TEAM = XYS8YPRVR5;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "CBT-Insomnia/Info.plist";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
