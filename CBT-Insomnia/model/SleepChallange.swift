@@ -21,6 +21,7 @@ class SleepChallenge {
     // Relationship: one-to-many
     @Relationship(deleteRule: .nullify, inverse: \SleepSession.challenge)
     var sleepSessions: [SleepSession] = []
+    // to calculate sleep average week efficency
 
     init(
         id: UUID = UUID(),
