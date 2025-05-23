@@ -16,9 +16,10 @@ struct CardView: View {
             .foregroundStyle(.ultraThinMaterial.opacity(0.75))
             .overlay {
                 RoundedRectangle(cornerRadius: 30)
-                    .stroke(LinearGradient(colors: [.white, .black, .black], startPoint: .center, endPoint: .leading))
+                    .stroke(LinearGradient(colors: [.white, .black, .black, .white, .white], startPoint: .bottomTrailing, endPoint: .leading))
             }
             .padding()
+            .shadow(radius: 4, x: 4, y: 4)
     }
 }
 
