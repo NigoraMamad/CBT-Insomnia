@@ -12,37 +12,41 @@ struct MainView: View {
         NavigationStack{
             ZStack{
                 MeshGradientBg().ignoresSafeArea()
-                VStack{
-                    HStack{
-                        Circle()
-                            .fill(Color.white)
-                            .frame(width: 43, height: 43)
+                VStack {
+                    ScrollView(showsIndicators: false) {
+                        VStack{
+                            HStack{
+                                Circle()
+                                    .fill(Color.white)
+                                    .frame(width: 43, height: 43)
+                                    .padding()
+                                Text("Hi,")
+                                Text("Dario") //this name should be taken from the filled form in the onboarding
+                                Spacer()
+                                Button(action: {/*open info*/}) {
+                                    Image(systemName: "info.circle")
+                                        .resizable()
+                                        .frame(width: 30, height: 30)
+                                }
+                                
+                            }
                             .padding()
-                        Text("Hi,")
-                        Text("Dario") //this name should be taken from the filled form in the onboarding
-                        Spacer()
-                        Button(action: {/*open info*/}) {
-                            Image(systemName: "info.circle")
-                                .resizable()
-                                .frame(width: 30, height: 30)
+                            
+                            NavigationLink(destination: BedWindowView()) {
+                                BedTimeComp()
+                            }
+                            
+                            NavigationLink(destination: NightStatsView()) {
+                                LastNightCardView()
+                            }
+                            
+                            
                         }
                         
                     }
-                    .padding()
-                    
-                    NavigationLink(destination: BedWindowView()) {
-                       BedTimeComp()
-                    }
-                    
-                    NavigationLink(destination: NightStatsView()) {
-                        LastNightCardView()
-                    }
-                    
-                    
+                    .foregroundStyle(.white)
                 }
-                
             }
-            .foregroundStyle(.white)
         }
     }
 }
