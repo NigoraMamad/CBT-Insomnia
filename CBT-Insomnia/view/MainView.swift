@@ -9,14 +9,32 @@ import SwiftUI
 
 struct MainView: View {
     var body: some View {
-        VStack {
-            Image(systemName: "globe")
-                .imageScale(.large)
-                .foregroundStyle(.tint)
-            Text("Hello, gianpopanzzz")
-            BedTimeView()
+        ZStack{
+            MeshGradientBg().ignoresSafeArea()
+            VStack{
+                HStack{
+                    Circle()
+                        .fill(Color.white)
+                        .frame(width: 43, height: 43)
+                        .padding()
+                    Text("Hi,")
+                    Text("Dario") //this name should be taken from the filled form in the onboarding
+                    Spacer()
+                    Button(action: {/*open info*/}) {
+                        Image(systemName: "info.circle")
+                            .resizable()
+                            .frame(width: 30, height: 30)
+                    }
+                   
+                        
+                }
+                .padding()
+                LastNightCardView()
+                
+            }
+            
         }
-        .padding()
+        .foregroundStyle(.white)
     }
 }
 
