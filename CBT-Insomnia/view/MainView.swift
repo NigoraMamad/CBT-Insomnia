@@ -9,13 +9,28 @@ import SwiftUI
 
 struct MainView: View {
     var body: some View {
-        VStack {
-            Image(systemName: "globe")
-                .imageScale(.large)
-                .foregroundStyle(.tint)
-            Text("Hello, gianpopanzzz")
+        ZStack{
+            MeshGradientBg().ignoresSafeArea()
+            VStack{
+                HStack{
+                    Circle()
+                        .fill(Color.white)
+                        .frame(width: 43, height: 43)
+                        .padding()
+                    Text("Hi, Dario")
+                    Spacer()
+                    Image(systemName: "info.circle")
+                        .resizable()
+                        .frame(width: 30, height: 30)
+                        
+                }
+                .padding()
+                LastNightCardView()
+                
+            }
+            
         }
-        .padding()
+        .foregroundStyle(.white)
     }
 }
 
