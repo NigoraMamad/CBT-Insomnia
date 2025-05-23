@@ -27,9 +27,13 @@ struct MainView: View {
                                 .frame(width: 30, height: 30)
                         }
                         
-                        
                     }
                     .padding()
+                    
+                    NavigationLink(destination: BedWindowView()) {
+                       BedTimeComp()
+                    }
+                    
                     NavigationLink(destination: NightStatsView()) {
                         LastNightCardView()
                     }

@@ -8,7 +8,7 @@
 import SwiftUI
 
 
-struct BedTimeView: View {
+struct BedTimeComp: View {
     
     var body: some View {
         ZStack {
@@ -74,5 +74,5 @@ struct BedTimeView: View {
 
 
 #Preview {
-    BedTimeView()
+    BedTimeComp()
 }

@@ -21,9 +21,8 @@ struct LastNightCardView: View {
                     
                     Spacer()
                     Image(systemName: "chevron.right")
-                        .resizable()
-                        .frame(width: 20, height: 20)
-                        .bold()
+                        .foregroundColor(.white)
+                        .font(.system(size: 20))
                 }
                 HStack {
                     HStack {
