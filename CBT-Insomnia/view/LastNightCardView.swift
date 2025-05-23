@@ -10,7 +10,6 @@ import SwiftUI
 struct LastNightCardView: View {
     var body: some View {
         ZStack {
-            Color.indigo
             CardView(height: 400)
             VStack {
                 HStack {
@@ -60,4 +59,5 @@ struct LastNightCardView: View {
 
 #Preview {
     LastNightCardView()
+        .background(.indigo)
 }
