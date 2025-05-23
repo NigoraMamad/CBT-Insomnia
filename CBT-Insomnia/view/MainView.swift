@@ -19,9 +19,12 @@ struct MainView: View {
                         .padding()
                     Text("Hi, Dario")
                     Spacer()
-                    Image(systemName: "info.circle")
-                        .resizable()
-                        .frame(width: 30, height: 30)
+                    Button(action: {/*open info*/}) {
+                        Image(systemName: "info.circle")
+                            .resizable()
+                            .frame(width: 30, height: 30)
+                    }
+                   
                         
                 }
                 .padding()
