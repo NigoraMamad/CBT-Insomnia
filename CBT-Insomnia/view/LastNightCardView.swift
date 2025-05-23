@@ -41,11 +41,12 @@ struct LastNightCardView: View {
                         SegmentData(value: 0.16, gap: 0.16),
                         SegmentData(value: 0.16, gap: 0.16)
                     ],
-                    segmentColor: Color(red: 0.4, green: 0.5, blue: 1.0),
-                    backgroundCircleColor: Color(red: 0.2, green: 0.3, blue: 0.7).opacity(0.4),
+                    segmentColor: Color("csOrange"),
+                    backgroundCircleColor: Color("csOrange").opacity(0.4) ,
                     lineWidth: 35,
                     size: CGSize(width: 180, height: 180)
                 )
+                .shadow(radius: 12)
                 HStack {
                     VStack(alignment: .leading) {
                         Text("you slept")
@@ -67,5 +68,5 @@ struct LastNightCardView: View {
 
 #Preview {
     LastNightCardView()
-        .background(.indigo)
+      
 }
