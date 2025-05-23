@@ -10,7 +10,7 @@ import SwiftUI
 struct LastNightCardView: View {
     var body: some View {
         ZStack {
-            VStack(spacing: 25) {
+            VStack(spacing: 18) {
                 HStack(spacing: 20) {
                     Image(systemName: "moon.fill")
                         .resizable()
@@ -84,7 +84,7 @@ struct LastNightCardView: View {
             .padding()
             .shadow(radius: 4, x: 4, y: 4))
         .foregroundStyle(.white)
-        .ignoresSafeArea()
+//        .ignoresSafeArea()
     }
 }
 
