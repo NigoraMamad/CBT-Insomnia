@@ -11,18 +11,21 @@ struct CardView: View {
     var height: CGFloat
     
     var body: some View {
-       
-            
-            RoundedRectangle(cornerRadius: 30)
-                .frame(height: height)
-                .padding()
-                .foregroundStyle(.ultraThinMaterial.opacity(0.75))
-        }
-        
-    
+        RoundedRectangle(cornerRadius: 30)
+            .frame(height: height)
+            .foregroundStyle(.ultraThinMaterial.opacity(0.75))
+            .overlay {
+                RoundedRectangle(cornerRadius: 30)
+                    .stroke(LinearGradient(colors: [.white, .black, .black], startPoint: .center, endPoint: .leading))
+            }
+            .padding()
+    }
 }
 
 #Preview {
-    CardView(height: 400)
-        .ignoresSafeArea()
+    ZStack {
+        MeshGradientBg()
+        CardView(height: 400)
+            .ignoresSafeArea()
+    }
 }
