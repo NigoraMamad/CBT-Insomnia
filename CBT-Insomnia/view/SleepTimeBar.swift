@@ -32,7 +32,8 @@ struct SleepTimeBar: View {
                 
                 // Rettangolo blu di sfondo
                 RoundedRectangle(cornerRadius: 15)
-                    .fill(Color(red: 19/255, green: 24/255, blue: 63/255))
+                    .fill(.ultraThinMaterial)
+                    .shadow(radius: 4)
                     .frame(height: 50)
 
                 // Dati temporanei per test visivo
@@ -45,8 +46,8 @@ struct SleepTimeBar: View {
                     .fill(
                         LinearGradient(
                             gradient: Gradient(stops: [
-                                .init(color: Color(hex: "FF904F"), location: 0),
-                                .init(color: Color(hex: "B24708"), location: 0.44)
+                                .init(color: Color("csOrange"), location: 0),
+                                .init(color: Color("csDarkOrange"), location: 0.44)
                             ]),
                             startPoint: .top,
                             endPoint: .bottom
@@ -81,28 +82,7 @@ extension Color {
     }
 }
 
-
-struct ContentView: View {
-    var body: some View {
-        
-        ZStack {
-            LinearGradient(
-                  gradient: Gradient(colors: [
-                      Color(red: 20/255, green: 26/255, blue: 42/255),
-                      Color(red: 69/255, green: 89/255, blue: 144/255)
-                  ]),
-                  startPoint: .top,
-                  endPoint: .bottom
-              )
-             .ignoresSafeArea()
-            SleepTimeBar()
-        }
-    }
-}
-
-struct ContentView_Previews: PreviewProvider {
-    static var previews: some View {
-        ContentView()
-    }
+#Preview {
+    SleepTimeBar()
 }
 

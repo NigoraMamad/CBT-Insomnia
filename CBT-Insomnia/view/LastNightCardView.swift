@@ -75,7 +75,6 @@ struct LastNightCardView: View {
                 }
             }
             .padding(40)
-
         }
         .background( RoundedRectangle(cornerRadius: 30)
             .foregroundStyle(.ultraThinMaterial.opacity(0.75))
