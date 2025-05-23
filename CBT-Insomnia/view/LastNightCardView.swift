@@ -67,4 +67,5 @@ struct LastNightCardView: View {
 
 #Preview {
     LastNightCardView()
+        .background(.indigo)
 }

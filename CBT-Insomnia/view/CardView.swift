@@ -24,4 +24,5 @@ struct CardView: View {
 
 #Preview {
     CardView(height: 400)
+        .ignoresSafeArea()
 }
