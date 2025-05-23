@@ -9,32 +9,37 @@ import SwiftUI
 
 struct MainView: View {
     var body: some View {
-        ZStack{
-            MeshGradientBg().ignoresSafeArea()
-            VStack{
-                HStack{
-                    Circle()
-                        .fill(Color.white)
-                        .frame(width: 43, height: 43)
-                        .padding()
-                    Text("Hi,")
-                    Text("Dario") //this name should be taken from the filled form in the onboarding
-                    Spacer()
-                    Button(action: {/*open info*/}) {
-                        Image(systemName: "info.circle")
-                            .resizable()
-                            .frame(width: 30, height: 30)
-                    }
-                   
+        NavigationStack{
+            ZStack{
+                MeshGradientBg().ignoresSafeArea()
+                VStack{
+                    HStack{
+                        Circle()
+                            .fill(Color.white)
+                            .frame(width: 43, height: 43)
+                            .padding()
+                        Text("Hi,")
+                        Text("Dario") //this name should be taken from the filled form in the onboarding
+                        Spacer()
+                        Button(action: {/*open info*/}) {
+                            Image(systemName: "info.circle")
+                                .resizable()
+                                .frame(width: 30, height: 30)
+                        }
                         
+                        
+                    }
+                    .padding()
+                    NavigationLink(destination: NightStatsView()) {
+                        LastNightCardView()
+                    }
+                    
+                    
                 }
-                .padding()
-                LastNightCardView()
                 
             }
-            
+            .foregroundStyle(.white)
         }
-        .foregroundStyle(.white)
     }
 }
 
