@@ -10,14 +10,14 @@ struct SegmentData {
 struct SegmentedCircularProgressView: View {
     let segments: [SegmentData]
     let segmentColor: Color
-    let backgroundCircleColor: Color
+    let backgroundCircleColor: Material
     let lineWidth: CGFloat
     let size: CGSize
     
     init(segments: [SegmentData],
          segmentColor: Color = .blue,
-         backgroundCircleColor: Color = Color.blue.opacity(0.3),
-         lineWidth: CGFloat = 40,
+         backgroundCircleColor: Material = .ultraThinMaterial,
+         lineWidth: CGFloat = 90,
          size: CGSize = CGSize(width: 200, height: 200)) {
         self.segments = segments
         self.segmentColor = segmentColor
@@ -37,7 +37,7 @@ struct SegmentedCircularProgressView: View {
             ForEach(Array(segments.enumerated()), id: \.element.id) { index, segment in
                 Circle()
                     .trim(from: trimStart(for: index), to: trimEnd(for: index))
-                    .stroke(segmentColor, style: StrokeStyle(lineWidth: lineWidth, lineCap: .round))
+                    .stroke(segmentColor, style: StrokeStyle(lineWidth: lineWidth/1.3, lineCap: .round))
                     .rotationEffect(.degrees(-90))
                     .frame(width: size.width, height: size.height)
             }
@@ -85,27 +85,4 @@ struct SegmentArc: Shape {
         )
         return path
     }
-}
-
-struct ContentView: View {
-    var body: some View {
-     
-            
-            SegmentedCircularProgressView(
-                segments: [
-                    SegmentData(value: 0.16, gap: 0.16),
-                    SegmentData(value: 0.16, gap: 0.16),
-                    SegmentData(value: 0.16, gap: 0.16)
-                ],
-                segmentColor: Color("csOrange"),
-                backgroundCircleColor: Color("csOrange").opacity(0.4) ,
-                lineWidth: 35,
-                size: CGSize(width: 180, height: 180)
-            )
-    }
-}
-
-
-#Preview {
-    ContentView()
 }

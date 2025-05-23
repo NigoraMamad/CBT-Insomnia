@@ -17,7 +17,8 @@ struct MainView: View {
                         .fill(Color.white)
                         .frame(width: 43, height: 43)
                         .padding()
-                    Text("Hi, Dario")
+                    Text("Hi,")
+                    Text("Dario") //this name should be taken from the filled form in the onboarding
                     Spacer()
                     Button(action: {/*open info*/}) {
                         Image(systemName: "info.circle")

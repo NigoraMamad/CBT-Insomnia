@@ -10,8 +10,16 @@ import SwiftUI
 struct LastNightCardView: View {
     var body: some View {
         ZStack {
-            CardView(height: 400)
             VStack {
+                HStack {
+                    Image(systemName: "moon.fill")
+                        .resizable()
+                        .frame(width: 32, height: 32)
+                    Text("Last night")
+                        .font(.caption)
+                        .fontWeight(.medium)
+                }
+                .padding()
                 HStack {
                     HStack {
                         Text("MON")
@@ -33,7 +41,7 @@ struct LastNightCardView: View {
                         .bold()
                         .font(.largeTitle)
                 }
-                .padding(40)
+            
                 
                 SegmentedCircularProgressView(
                     segments: [
@@ -42,11 +50,12 @@ struct LastNightCardView: View {
                         SegmentData(value: 0.16, gap: 0.16)
                     ],
                     segmentColor: Color("csOrange"),
-                    backgroundCircleColor: Color("csOrange").opacity(0.4) ,
-                    lineWidth: 35,
-                    size: CGSize(width: 180, height: 180)
+                    backgroundCircleColor: .ultraThinMaterial,
+                    lineWidth: 45,
+                    size: CGSize(width: 170, height: 170)
                 )
-                .shadow(radius: 12)
+                .shadow(radius: 6)
+                
                 HStack {
                     VStack(alignment: .leading) {
                         Text("you slept")
@@ -58,9 +67,18 @@ struct LastNightCardView: View {
                     
                     Spacer()
                 }
-                .padding(40)
             }
+            .padding(40)
+
         }
+        .background( RoundedRectangle(cornerRadius: 30)
+            .foregroundStyle(.ultraThinMaterial.opacity(0.75))
+            .overlay {
+                RoundedRectangle(cornerRadius: 30)
+                    .stroke(LinearGradient(colors: [.white, .black, .black, .white, .white], startPoint: .bottomTrailing, endPoint: .leading))
+            }
+            .padding()
+            .shadow(radius: 4, x: 4, y: 4))
         .foregroundStyle(.white)
         .ignoresSafeArea()
     }
