@@ -10,16 +10,21 @@ import SwiftUI
 struct LastNightCardView: View {
     var body: some View {
         ZStack {
-            VStack {
-                HStack {
+            VStack(spacing: 25) {
+                HStack(spacing: 20) {
                     Image(systemName: "moon.fill")
                         .resizable()
-                        .frame(width: 32, height: 32)
+                        .frame(width: 28, height: 28)
                     Text("Last night")
                         .font(.caption)
                         .fontWeight(.medium)
+                    
+                    Spacer()
+                    Image(systemName: "chevron.right")
+                        .resizable()
+                        .frame(width: 20, height: 20)
+                        .bold()
                 }
-                .padding()
                 HStack {
                     HStack {
                         Text("MON")
@@ -39,7 +44,7 @@ struct LastNightCardView: View {
                     
                     Text("70%")
                         .bold()
-                        .font(.largeTitle)
+                        .font(.system(size: 48))
                 }
             
                 
@@ -54,7 +59,8 @@ struct LastNightCardView: View {
                     lineWidth: 45,
                     size: CGSize(width: 170, height: 170)
                 )
-                .shadow(radius: 6)
+                .shadow(radius: 3)
+                .padding()
                 
                 HStack {
                     VStack(alignment: .leading) {
