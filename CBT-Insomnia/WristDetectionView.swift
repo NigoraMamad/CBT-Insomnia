@@ -15,10 +15,20 @@ struct WristDetectionView: View {
                 .font(.title2)
                 .bold()
 
-            if receiver.isTracking {
-                Text("🟢 Tracking started…")
+            if receiver.hasWokenUp {
+                Text("🎉 You woke up!")
+                    .font(.title)
+                    .foregroundColor(.green)
+                    .bold()
+            } else if receiver.isTracking {
+                Text("🟢 Tracking…")
                     .font(.headline)
                     .foregroundColor(.green)
+
+                Text("👣 Steps: \(receiver.stepCount)")
+                    .font(.title2)
+                    .bold()
+                    .foregroundColor(.blue)
 
                 Text(receiver.isWristFlat ? "🛏 Wrist is flat" : "📱 Not flat")
                     .foregroundColor(receiver.isWristFlat ? .blue : .red)
