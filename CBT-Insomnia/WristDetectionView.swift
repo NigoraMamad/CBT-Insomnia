@@ -16,7 +16,7 @@ struct WristDetectionView: View {
                 .bold()
 
             if receiver.isTracking {
-                Text("🟢 Tracking started...")
+                Text("🟢 Tracking started…")
                     .font(.headline)
                     .foregroundColor(.green)
 
