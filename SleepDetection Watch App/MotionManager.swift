@@ -13,10 +13,13 @@ class MotionManager: NSObject, ObservableObject {
     private let motionManager = CMMotionManager()
     private let session = WCSession.default
 
+    @Published var isTracking = false
+
     func startMonitoring() {
         guard motionManager.isDeviceMotionAvailable else { return }
 
         motionManager.deviceMotionUpdateInterval = 0.5
+        isTracking = true
 
         motionManager.startDeviceMotionUpdates(to: .main) { motion, error in
             guard let motion = motion else { return }
@@ -28,11 +31,11 @@ class MotionManager: NSObject, ObservableObject {
 
             let isFlat = abs(gravity.z) > 0.9
 
-            // Send message to iPhone
             if self.session.isReachable {
                 self.session.sendMessage([
                     "isStill": still,
-                    "isFlat": isFlat
+                    "isFlat": isFlat,
+                    "isTracking": true
                 ], replyHandler: nil, errorHandler: nil)
             }
         }
@@ -40,5 +43,10 @@ class MotionManager: NSObject, ObservableObject {
 
     func stopMonitoring() {
         motionManager.stopDeviceMotionUpdates()
+        isTracking = false
+
+        if session.isReachable {
+            session.sendMessage(["isTracking": false], replyHandler: nil, errorHandler: nil)
+        }
     }
 }

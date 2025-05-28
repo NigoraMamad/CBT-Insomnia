@@ -8,18 +8,27 @@
 import SwiftUI
 
 struct ContentView: View {
-    @StateObject var motion = MotionManager()
+    @StateObject private var motion = MotionManager()
 
     var body: some View {
-        VStack {
-            Button("Start Tracking") {
-                motion.startMonitoring()
+        VStack(spacing: 20) {
+            Text("⌚ Apple Watch")
+                .font(.headline)
+
+            Button(action: {
+                if motion.isTracking {
+                    motion.stopMonitoring()
+                } else {
+                    motion.startMonitoring()
+                }
+            }) {
+                Text(motion.isTracking ? "🟢 Tracking…" : "Start Tracking")
+                    .padding()
+                    .background(motion.isTracking ? Color.green : Color.blue)
+                    .foregroundColor(.white)
+                    .cornerRadius(10)
             }
         }
+        .padding()
     }
-}
-
-
-#Preview {
-    ContentView()
 }

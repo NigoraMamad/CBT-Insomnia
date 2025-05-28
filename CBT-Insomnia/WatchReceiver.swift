@@ -9,10 +9,10 @@
 import WatchConnectivity
 import SwiftUI
 
-
 class WatchReceiver: NSObject, WCSessionDelegate, ObservableObject {
-    @Published var isWristFlat: Bool = false
-    @Published var isWristStill: Bool = false
+    @Published var isWristFlat = false
+    @Published var isWristStill = false
+    @Published var isTracking = false
 
     override init() {
         super.init()
@@ -24,16 +24,14 @@ class WatchReceiver: NSObject, WCSessionDelegate, ObservableObject {
     }
 
     func session(_ session: WCSession, activationDidCompleteWith activationState: WCSessionActivationState, error: Error?) {}
-
     func sessionDidBecomeInactive(_ session: WCSession) {}
-
     func sessionDidDeactivate(_ session: WCSession) {}
 
     func session(_ session: WCSession, didReceiveMessage message: [String : Any]) {
         DispatchQueue.main.async {
-            self.isWristFlat = message["isFlat"] as? Bool ?? false
-            self.isWristStill = message["isStill"] as? Bool ?? false
+            self.isTracking = message["isTracking"] as? Bool ?? self.isTracking
+            self.isWristFlat = message["isFlat"] as? Bool ?? self.isWristFlat
+            self.isWristStill = message["isStill"] as? Bool ?? self.isWristStill
         }
     }
 }
-
