@@ -11,7 +11,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
-		17B3BF002DE7418E00EC39C0 /* PBXContainerItemProxy */ = {
+		A534D3852DE749FA001ADB9F /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 17B3BA5A2DDE1C8200EC39C0 /* Project object */;
 			proxyType = 1;
@@ -116,7 +116,7 @@
 			buildRules = (
 			);
 			dependencies = (
-				17B3BF012DE7418E00EC39C0 /* PBXTargetDependency */,
+				A534D3862DE749FA001ADB9F /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
 				17B3BA642DDE1C8200EC39C0 /* CBT-Insomnia */,
@@ -223,10 +223,10 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
-		17B3BF012DE7418E00EC39C0 /* PBXTargetDependency */ = {
+		A534D3862DE749FA001ADB9F /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 17B3BEF42DE7418D00EC39C0 /* SleepDetection Watch App */;
-			targetProxy = 17B3BF002DE7418E00EC39C0 /* PBXContainerItemProxy */;
+			targetProxy = A534D3852DE749FA001ADB9F /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
