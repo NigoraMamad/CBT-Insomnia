@@ -11,11 +11,11 @@ import WatchConnectivity
 
 class MotionManager: NSObject, ObservableObject, WCSessionDelegate {
     private let motionManager = CMMotionManager()
-    private let session = WCSession.default
     private let pedometer = CMPedometer()
-    
+    private let session = WCSession.default
+
     @Published var isTracking = false
-    private var trackingStartDate: Date?
+    private var stepCount = 0
 
     override init() {
         super.init()
@@ -28,15 +28,15 @@ class MotionManager: NSObject, ObservableObject, WCSessionDelegate {
 
     func startMonitoring() {
         guard motionManager.isDeviceMotionAvailable, CMPedometer.isStepCountingAvailable() else {
-            print("❌ Motion or step counting not available")
+            print("❌ Motion or step count not available")
             return
         }
 
         motionManager.deviceMotionUpdateInterval = 0.5
-        trackingStartDate = Date()
         isTracking = true
+        stepCount = 0
 
-        print("✅ Motion tracking & step counting started")
+        print("✅ Motion + step tracking started")
 
         // Start motion updates
         motionManager.startDeviceMotionUpdates(to: .main) { [weak self] motion, error in
@@ -48,32 +48,14 @@ class MotionManager: NSObject, ObservableObject, WCSessionDelegate {
                         abs(motion.userAcceleration.z) < 0.02
             let isFlat = abs(gravity.z) > 0.9
 
-            // Query steps since start
-            if let startDate = self.trackingStartDate {
-                self.pedometer.queryPedometerData(from: startDate, to: Date()) { data, error in
-                    guard let data = data, error == nil else {
-                        print("❌ Step count error: \(error?.localizedDescription ?? "unknown")")
-                        return
-                    }
+            self.sendMessage(isStill: still, isFlat: isFlat, stepCount: self.stepCount)
+        }
 
-                    let steps = data.numberOfSteps.intValue
-
-                    let message: [String: Any] = [
-                        "isStill": still,
-                        "isFlat": isFlat,
-                        "isTracking": true,
-                        "stepCount": steps
-                    ]
-
-                    if self.session.isReachable {
-                        self.session.sendMessage(message, replyHandler: nil, errorHandler: { error in
-                            print("❌ Send error: \(error.localizedDescription)")
-                        })
-                        print("📤 Sent to iPhone: steps=\(steps), flat=\(isFlat), still=\(still)")
-                    } else {
-                        print("⚠️ iPhone not reachable")
-                    }
-                }
+        // ✅ Start live step count updates
+        pedometer.startUpdates(from: Date()) { [weak self] data, error in
+            guard let self = self, let data = data, error == nil else { return }
+            DispatchQueue.main.async {
+                self.stepCount = data.numberOfSteps.intValue
             }
         }
     }
@@ -82,20 +64,37 @@ class MotionManager: NSObject, ObservableObject, WCSessionDelegate {
         motionManager.stopDeviceMotionUpdates()
         pedometer.stopUpdates()
         isTracking = false
-
-        print("🛑 Stopped tracking")
+        print("🛑 Stopped monitoring")
 
         if session.isReachable {
             session.sendMessage(["isTracking": false], replyHandler: nil, errorHandler: nil)
         }
     }
 
-    // WCSessionDelegate required
+    private func sendMessage(isStill: Bool, isFlat: Bool, stepCount: Int) {
+        let message: [String: Any] = [
+            "isStill": isStill,
+            "isFlat": isFlat,
+            "isTracking": true,
+            "stepCount": stepCount
+        ]
+
+        if session.isReachable {
+            session.sendMessage(message, replyHandler: nil, errorHandler: { error in
+                print("❌ Send error: \(error.localizedDescription)")
+            })
+            print("📤 Sent → steps: \(stepCount), flat: \(isFlat), still: \(isStill)")
+        } else {
+            print("⚠️ iPhone not reachable")
+        }
+    }
+
+    // WCSessionDelegate
     func session(_ session: WCSession, activationDidCompleteWith activationState: WCSessionActivationState, error: Error?) {
         if let error = error {
-            print("❌ WCSession activation error: \(error.localizedDescription)")
+            print("❌ WCSession error: \(error.localizedDescription)")
         } else {
-            print("✅ WCSession activated: \(activationState.rawValue)")
+            print("✅ WCSession active")
         }
     }
 }
