@@ -11,7 +11,7 @@ struct WristDetectionView: View {
 
     var body: some View {
         VStack(spacing: 20) {
-            Text("📲 iPhone App")
+            Text("Good Michele")
                 .font(.title2)
                 .bold()
 
