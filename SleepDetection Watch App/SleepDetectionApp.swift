@@ -9,6 +9,11 @@ import SwiftUI
 
 @main
 struct SleepDetection_Watch_AppApp: App {
+    
+    init() {
+            _ = WatchSessionManager() // Keep this in memory or inject as an `@StateObject`
+        }
+
     var body: some Scene {
         WindowGroup {
             ContentView()
