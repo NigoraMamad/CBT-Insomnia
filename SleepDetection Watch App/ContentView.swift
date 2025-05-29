@@ -12,7 +12,7 @@ struct ContentView: View {
 
     var body: some View {
         VStack(spacing: 20) {
-            Text("⌚ Apple Watch")
+            Text("⌚ Matteo change")
                 .font(.headline)
 
             Button(action: {
