@@ -23,7 +23,7 @@ struct OnboardingPage1: View {
                         
                         Text("Sortie!")
                             .font(Font.custom("LiquidCrystal-Regular", size: 20))
-                            .foregroundColor(Color(hex: "#07FFDD"))
+                            .foregroundColor(Color.accent)
                     }
                     
                     Text("Your personal sleeping coach")

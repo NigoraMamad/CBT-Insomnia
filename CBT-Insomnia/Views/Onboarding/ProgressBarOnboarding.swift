@@ -19,12 +19,12 @@ struct ProgressBarOnboarding: View {
             
             // Background
             RoundedRectangle(cornerRadius: 40)
-                .fill(Color(hex: "#BDBDBD").opacity(0.3))
+                .fill(Color.gray.opacity(0.3))
                 .frame(height: 15)
 
             GeometryReader { geometry in
                 RoundedRectangle(cornerRadius: 40)
-                    .fill(Color(hex: "#07FFDD"))
+                    .fill(Color.accent)
                     .frame(width: geometry.size.width * progress, height: 15)
             }
             .frame(height: 15)

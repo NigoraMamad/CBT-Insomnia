@@ -31,7 +31,7 @@ struct OnboardingPage2: View {
                             
                             Text("insomnia.")
                                 .font(Font.custom("LiquidCrystal-Regular", size: 20))
-                                .foregroundColor(Color(hex: "#07FFDD"))
+                                .foregroundColor(Color.accent)
                         }
                     }
                     

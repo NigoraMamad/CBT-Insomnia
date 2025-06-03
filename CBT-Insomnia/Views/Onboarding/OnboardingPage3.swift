@@ -33,7 +33,7 @@ struct OnboardingPage3: View {
                     
                     Text("this helps us personalize your experience")
                         .font(Font.custom("LiquidCrystal-Regular", size: 15))
-                        .foregroundColor(Color(hex: "#969393"))
+                        .foregroundColor(Color.gray)
                     
                     Spacer().frame(height: 50)
                     
@@ -67,12 +67,12 @@ struct RetroDigitTextField: View {
             if text.isEmpty {
                 Text("INSERT YOUR AGE")
                     .font(Font.custom("LiquidCrystal-Regular", size: 26))
-                    .foregroundColor(Color(hex: "#07FFDD").opacity(0.6))
+                    .foregroundColor(Color.accent.opacity(0.6))
             }
 
             TextField("", text: $text)
                 .font(Font.custom("LiquidCrystal-Regular", size: 26))
-                .foregroundColor(Color(hex: "#07FFDD"))
+                .foregroundColor(Color.accent)
                 .multilineTextAlignment(.center)
                 .keyboardType(.numberPad)
                 .textInputAutocapitalization(.never)
@@ -81,7 +81,7 @@ struct RetroDigitTextField: View {
                 .padding(.horizontal, 20)
                 .background(
                     RoundedRectangle(cornerRadius: 0)
-                        .stroke(Color(hex: "#07FFDD"), lineWidth: 2)
+                        .stroke(Color.accent, lineWidth: 2)
                 )
         }
     }

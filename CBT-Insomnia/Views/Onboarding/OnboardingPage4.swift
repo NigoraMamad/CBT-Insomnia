@@ -83,16 +83,16 @@ struct SelectableSleepOption: View {
     var body: some View {
         Text(label)
             .font(Font.custom("LiquidCrystal-Regular", size: 20))
-            .foregroundColor(isSelected ? .black : Color(hex: "#07FFDD"))
+            .foregroundColor(isSelected ? .black : Color.accent)
             .frame(maxWidth: .infinity)
             .padding(.vertical, 12)
             .background(
                 RoundedRectangle(cornerRadius: 0)
-                    .fill(isSelected ? Color(hex: "#07FFDD") : Color.clear)
+                    .fill(isSelected ? Color.accent : Color.clear)
             )
             .overlay(
                 RoundedRectangle(cornerRadius: 0)
-                    .stroke(Color(hex: "#07FFDD"), lineWidth: 2)
+                    .stroke(Color.accent, lineWidth: 2)
             )
             .onTapGesture {
                 withAnimation(.easeInOut(duration: 0.2)) {
