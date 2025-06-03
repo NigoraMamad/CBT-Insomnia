@@ -29,7 +29,7 @@ struct OnboardingPage3: View {
                     
                     Spacer().frame(height: 50)
                     
-                    Image("test")
+                    RobotView()
                     
                     Spacer().frame(height: 40)
                     

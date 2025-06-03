@@ -11,7 +11,9 @@ import SwiftUI
 struct CBT_InsomniaApp: App {
     var body: some Scene {
         WindowGroup {
-            WristDetectionView()
+            NavigationStack{
+                OnboardingPage1()
+            }
         }
     }
 }

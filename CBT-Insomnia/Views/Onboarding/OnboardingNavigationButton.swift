@@ -25,5 +25,5 @@ struct OnboardingNavigationButton<Destination: View>: View {
 }
 
 #Preview {
-    OnboardingNavigationButton(label: "Netx", destination: OnboardingPage1())
+    OnboardingNavigationButton(label: "Next", destination: OnboardingPage1())
 }

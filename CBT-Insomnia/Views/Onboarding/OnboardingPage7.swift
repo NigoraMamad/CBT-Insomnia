@@ -30,7 +30,7 @@ struct OnboardingPage7: View {
                     
                     Spacer().frame(height: 60)
                     
-                    Image("test")
+                    RobotView()
                     
                     Spacer().frame(height: 30)
                     
@@ -39,7 +39,7 @@ struct OnboardingPage7: View {
                 }
                 
                 
-                OnboardingNavigationButton(label: "start", destination: OnboardingPage7())
+                OnboardingNavigationButton(label: "START", destination: ContentView())
                     .padding(.bottom, 30)
                     .padding(.horizontal)
             }
