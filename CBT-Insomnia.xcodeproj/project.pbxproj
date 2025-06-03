@@ -48,18 +48,6 @@
 			);
 			target = 17B3BA612DDE1C8200EC39C0 /* CBT-Insomnia */;
 		};
-		A58638432DEF25DC002B7B34 /* Exceptions for "CBT-Insomnia" folder in "SleepDetection Watch App" target */ = {
-			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
-			membershipExceptions = (
-				Extensions/FontExtension.swift,
-				Extensions/NeonEffect.swift,
-				"fonts/DS-DIGI.TTF",
-				"fonts/DS-DIGIB.TTF",
-				"fonts/LiquidCrystal-Bold.otf",
-				"fonts/LiquidCrystal-Normal.otf",
-			);
-			target = 17B3BEF42DE7418D00EC39C0 /* SleepDetection Watch App */;
-		};
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -67,7 +55,6 @@
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
 				17B3BA7E2DDE1FBC00EC39C0 /* Exceptions for "CBT-Insomnia" folder in "CBT-Insomnia" target */,
-				A58638432DEF25DC002B7B34 /* Exceptions for "CBT-Insomnia" folder in "SleepDetection Watch App" target */,
 			);
 			path = "CBT-Insomnia";
 			sourceTree = "<group>";
