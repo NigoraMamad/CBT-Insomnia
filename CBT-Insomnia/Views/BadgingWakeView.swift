@@ -8,6 +8,10 @@
 import SwiftUI
 
 struct BadgingWakeView: View {
+    
+    @StateObject private var stepCounter = StepCounter()
+    @State private var isStepCounterShown: Bool = false
+    
     var body: some View {
         ZStack {
             Color.black
@@ -19,11 +23,15 @@ struct BadgingWakeView: View {
                 RobotView()
                 
                 BadgeSleepButton(label: "Start tracking", isActive: true) {
-                    
+                    stepCounter.startTracking()
+                    isStepCounterShown = true
                 }
                 .font(.dsDigital(.regular, relativeTo: .callout))
             }
             .padding()
+        }
+        .fullScreenCover(isPresented: $isStepCounterShown) {
+            StepsView(stepCounter: stepCounter)
         }
         .ignoresSafeArea()
         .font(.dsDigital(.regular, relativeTo: .title))

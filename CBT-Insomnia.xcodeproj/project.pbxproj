@@ -7,8 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		17A637D02DEF311F00981E53 /* SplineRuntime in Frameworks */ = {isa = PBXBuildFile; productRef = 17A637CF2DEF311F00981E53 /* SplineRuntime */; };
 		17B3BF022DE7418E00EC39C0 /* SleepDetection Watch App.app in Embed Watch Content */ = {isa = PBXBuildFile; fileRef = 17B3BEF52DE7418D00EC39C0 /* SleepDetection Watch App.app */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
-		A58638DA2DEF2C84002B7B34 /* SplineRuntime in Frameworks */ = {isa = PBXBuildFile; productRef = A58638D92DEF2C84002B7B34 /* SplineRuntime */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -71,7 +71,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				A58638DA2DEF2C84002B7B34 /* SplineRuntime in Frameworks */,
+				17A637D02DEF311F00981E53 /* SplineRuntime in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -125,7 +125,7 @@
 			);
 			name = "CBT-Insomnia";
 			packageProductDependencies = (
-				A58638D92DEF2C84002B7B34 /* SplineRuntime */,
+				17A637CF2DEF311F00981E53 /* SplineRuntime */,
 			);
 			productName = "CBT-Insomnia";
 			productReference = 17B3BA622DDE1C8200EC39C0 /* CBT-Insomnia.app */;
@@ -181,7 +181,7 @@
 			mainGroup = 17B3BA592DDE1C8200EC39C0;
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
-				A58638D82DEF2C84002B7B34 /* XCLocalSwiftPackageReference "../../../../Downloads/spline-ios-main" */,
+				17A637CE2DEF311F00981E53 /* XCRemoteSwiftPackageReference "spline-ios" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 17B3BA632DDE1C8200EC39C0 /* Products */;
@@ -510,16 +510,21 @@
 		};
 /* End XCConfigurationList section */
 
-/* Begin XCLocalSwiftPackageReference section */
-		A58638D82DEF2C84002B7B34 /* XCLocalSwiftPackageReference "../../../../Downloads/spline-ios-main" */ = {
-			isa = XCLocalSwiftPackageReference;
-			relativePath = "../../../../Downloads/spline-ios-main";
+/* Begin XCRemoteSwiftPackageReference section */
+		17A637CE2DEF311F00981E53 /* XCRemoteSwiftPackageReference "spline-ios" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/splinetool/spline-ios";
+			requirement = {
+				branch = main;
+				kind = branch;
+			};
 		};
-/* End XCLocalSwiftPackageReference section */
+/* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		A58638D92DEF2C84002B7B34 /* SplineRuntime */ = {
+		17A637CF2DEF311F00981E53 /* SplineRuntime */ = {
 			isa = XCSwiftPackageProductDependency;
+			package = 17A637CE2DEF311F00981E53 /* XCRemoteSwiftPackageReference "spline-ios" */;
 			productName = SplineRuntime;
 		};
 /* End XCSwiftPackageProductDependency section */
