@@ -4,6 +4,9 @@
 <dict>
 	<key>UIAppFonts</key>
 	<array>
+		<string>LiquidCrystal-Light.otf</string>
+		<string>LiquidCrystal-ExBold.otf</string>
+		<string>LiquidCrystal-Bold.otf</string>
 		<string>LiquidCrystal-NormalItalic</string>
 		<string>LiquidCrystal-Normal.otf</string>
 	</array>
