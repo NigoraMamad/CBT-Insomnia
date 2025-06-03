@@ -18,20 +18,20 @@ struct OnboardingPage6: View {
                     
                     Spacer().frame(height: 50)
                     
-                    Text("allow the connection to")
-                        .font(Font.custom("LiquidCrystal-Regular", size: 20))
+                    Text("ALLOW THE CONNECTION TO")
+                        .font(.krungthep(.regular, relativeTo: .body))
                         .foregroundColor(.white)
                     
-                    Text("health in order to let me gather")
-                        .font(Font.custom("LiquidCrystal-Regular", size: 20))
+                    Text("HEALTH IN ORDER TO LET ME GATHER")
+                        .font(.krungthep(.regular, relativeTo: .body))
                         .foregroundColor(.white)
                     
-                    Text("data about your sleep!")
-                        .font(Font.custom("LiquidCrystal-Regular", size: 20))
+                    Text("DATA ABOUT YOUR SLEEP!")
+                        .font(.krungthep(.regular, relativeTo: .body))
                         .foregroundColor(.white)
                     
-                    Text("it is crucial!")
-                        .font(Font.custom("LiquidCrystal-Regular", size: 20))
+                    Text("IT IS CRUCIAL!")
+                        .font(.krungthep(.regular, relativeTo: .body))
                         .foregroundColor(.white)
                     
                     Spacer().frame(height: 60)

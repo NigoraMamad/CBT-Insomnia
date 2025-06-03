@@ -7,7 +7,7 @@ struct OnboardingPage2: View {
                 .ignoresSafeArea()
             
             VStack(spacing: 0) {
-               
+                
                 VStack(spacing: 0) {
                     ProgressBarOnboarding(progress: 1.0 / 6.0)
                         .padding(.top, 10)
@@ -16,21 +16,21 @@ struct OnboardingPage2: View {
                         .frame(height: 50)
                     
                     VStack(spacing: 5) {
-                        Text("I will support you")
-                            .font(Font.custom("LiquidCrystal-Regular", size: 20))
+                        Text("I WILL SUPPORT YOU")
+                            .font(.krungthep(.regular, relativeTo: .body))
                             .foregroundColor(.white)
                         
-                        Text("throughout your journey in ")
-                            .font(Font.custom("LiquidCrystal-Regular", size: 20))
+                        Text("THROUGHOUT YOUR JOURNEY IN")
+                            .font(.krungthep(.regular, relativeTo: .body))
                             .foregroundColor(.white)
                         
                         HStack(spacing: 6) {
-                            Text("overcoming")
-                                .font(Font.custom("LiquidCrystal-Regular", size: 20))
+                            Text("OVERCOMING")
+                                .font(.krungthep(.regular, relativeTo: .body))
                                 .foregroundColor(.white)
                             
-                            Text("insomnia.")
-                                .font(Font.custom("LiquidCrystal-Regular", size: 20))
+                            Text("INSOMNIA.")
+                                .font(.krungthep(.regular, relativeTo: .body))
                                 .foregroundColor(Color.accent)
                         }
                     }
@@ -41,8 +41,8 @@ struct OnboardingPage2: View {
                     
                     Spacer()
                 }
-
-              
+                
+                
                 OnboardingNavigationButton(label: "NEXT", destination: OnboardingPage3())
                     .padding(.bottom, 30)
                     .padding(.horizontal)

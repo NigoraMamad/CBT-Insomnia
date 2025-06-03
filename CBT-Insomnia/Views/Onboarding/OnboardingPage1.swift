@@ -17,17 +17,17 @@ struct OnboardingPage1: View {
                         .frame(height: 50)
                     
                     HStack {
-                        Text("Hi, I'm")
-                            .font(Font.custom("LiquidCrystal-Regular", size: 20))
+                        Text("HI, I'M")
+                            .font(.krungthep(.regular, relativeTo: .body))
                             .foregroundColor(.white)
                         
-                        Text("Sortie!")
-                            .font(Font.custom("LiquidCrystal-Regular", size: 20))
+                        Text("SORTIE!")
+                            .font(.krungthep(.regular, relativeTo: .body))
                             .foregroundColor(Color.accent)
                     }
                     
-                    Text("Your personal sleeping coach")
-                        .font(Font.custom("LiquidCrystal-Regular", size: 20))
+                    Text("YOUR PERSONAL SLEEPING COACH")
+                        .font(.krungthep(.regular, relativeTo: .body))
                         .foregroundColor(.white)
                     
                     Spacer()

@@ -10,7 +10,7 @@ struct OnboardingNavigationButton<Destination: View>: View {
     var body: some View {
         NavigationLink(destination: destination) {
             Text(label)
-                .font(Font.custom("LiquidCrystal-Regular", size: 24))
+                .font(.krungthep(.regular, relativeTo: .title))
                 .foregroundColor(.black)
                 .frame(maxWidth: .infinity)
                 .padding()
@@ -25,5 +25,5 @@ struct OnboardingNavigationButton<Destination: View>: View {
 }
 
 #Preview {
-    OnboardingNavigationButton(label: "Next", destination: OnboardingPage1())
+    OnboardingNavigationButton(label: "NEXT", destination: OnboardingPage1())
 }

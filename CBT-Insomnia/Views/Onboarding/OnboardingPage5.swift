@@ -21,18 +21,18 @@ struct OnboardingPage5: View {
                     Spacer().frame(height: 50)
                     
                     Text("NOTIFICATIONS ARE ESSENTIAL")
-                        .font(Font.custom("LiquidCrystal-Regular", size: 20))
+                        .font(.krungthep(.regular, relativeTo: .body))
                         .foregroundColor(.white)
                     
                     Text("TO MAKE THE TERAPY AS")
-                        .font(Font.custom("LiquidCrystal-Regular", size: 20))
+                        .font(.krungthep(.regular, relativeTo: .body))
                         .foregroundColor(.white)
                     
                     Text("EFFICIENT")
-                        .font(Font.custom("LiquidCrystal-Regular", size: 20))
+                        .font(.krungthep(.regular, relativeTo: .body))
                         .foregroundColor(.white)
                     
-                    Spacer().frame(height: 60)
+                    Spacer().frame(height: 10)
                     
                     RobotView()
                     
@@ -46,7 +46,7 @@ struct OnboardingPage5: View {
                     destination: OnboardingPage6(),
                     customAction: { completion in
                         requestNotificationPermission {
-                            completion() 
+                            completion()
                         }
                     }
                 )
@@ -88,7 +88,7 @@ struct OnboardingNavigationButton5<Destination: View>: View {
                 }
             }) {
                 Text(label)
-                    .font(Font.custom("LiquidCrystal-Regular", size: 24))
+                    .font(.krungthep(.regular, relativeTo: .title2))
                     .foregroundColor(.black)
                     .frame(maxWidth: .infinity)
                     .padding()
