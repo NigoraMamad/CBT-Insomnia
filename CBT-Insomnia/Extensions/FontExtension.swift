@@ -7,28 +7,27 @@
 
 import SwiftUI
 
-enum LiquidCrystalStyle: String {
-    case regular = "LiquidCrystal-Regular"
-    case bold = "LiquidCrystal-Bold"
-}
-
 enum DsDigitalStyle: String {
     case regular = "DS-Digital"
     case bold = "DS-Digital-Bold"
 }
 
+enum Krungthep: String {
+    case regular = "Krungthep"
+}
+
 extension Font {
-    static func liquidCrystal(_ style: LiquidCrystalStyle, relativeTo textStyle: TextStyle) -> Font {
-        return .custom(style.rawValue, size: UIFont.preferredFont(forTextStyle: textStyle.toUIFontTextStyle).pointSize)
-    }
-    static func liquidCrystal(_ style: LiquidCrystalStyle, size: CGFloat) -> Font {
-        .custom(style.rawValue, size: size)
-    }
-    
     static func dsDigital(_ style: DsDigitalStyle, relativeTo textStyle: TextStyle) -> Font {
         return .custom(style.rawValue, size: UIFont.preferredFont(forTextStyle: textStyle.toUIFontTextStyle).pointSize, relativeTo: textStyle)
     }
     static func dsDigital(_ style: DsDigitalStyle, size: CGFloat) -> Font {
+        return .custom(style.rawValue, size: size)
+    }
+    
+    static func krungthep(_ style: Krungthep, relativeTo textStyle: TextStyle) -> Font {
+        return .custom(style.rawValue, size: UIFont.preferredFont(forTextStyle: textStyle.toUIFontTextStyle).pointSize, relativeTo: textStyle)
+    }
+    static func krungthep(_ style: Krungthep, size: CGFloat) -> Font {
         return .custom(style.rawValue, size: size)
     }
 }

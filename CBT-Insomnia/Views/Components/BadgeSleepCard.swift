@@ -23,7 +23,7 @@ struct BadgeSleepCard: View {
                 Label(fixedBedTime, systemImage: "moon.zzz.fill")
                 Spacer()
                 BadgeSleepButton(
-                    label: "I'm going to bed",
+                    label: "In Bed",
                     isActive: activeButton == .bed
                 ) {
                     activeButton = .wake
@@ -35,7 +35,7 @@ struct BadgeSleepCard: View {
                 Label(fixedWakeTime, systemImage: "sun.max.fill")
                 Spacer()
                 BadgeSleepButton(
-                    label: "I'm awake",
+                    label: "Awake",
                     isActive: activeButton == .wake
                 ) {
                     activeButton = .bed
@@ -44,14 +44,8 @@ struct BadgeSleepCard: View {
             .padding()
         }
         .foregroundStyle(.white)
-        .font(.dsDigital(.regular, relativeTo: .callout))
-        .frame(width: 340, height: 134)
-        .background {
-            Rectangle()
-                .stroke(style: .init(lineWidth: 2))
-                .foregroundStyle(.white)
-                .frame(width: 340, height: 134)
-        }
+        .font(.krungthep(.regular, relativeTo: .callout))
+        .frame(width: 340, height: 136)
     }
 }
 

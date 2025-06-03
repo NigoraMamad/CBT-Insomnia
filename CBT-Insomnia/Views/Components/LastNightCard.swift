@@ -17,14 +17,14 @@ struct LastNightCard: View {
     var body: some View {
         VStack(alignment: .leading) {
             Text("Last Night's Efficiency")
-                .font(.dsDigital(.bold, relativeTo: .body))
-                .foregroundStyle(.accent)
+                .font(.krungthep(.regular, relativeTo: .body))
+                .foregroundStyle(.white)
                 .padding(.bottom, 4)
         
             VStack {
                 HStack {
                     Text(day)
-                        .font(.dsDigital(.regular, relativeTo: .body))
+                        .font(.krungthep(.regular, relativeTo: .body))
                     Spacer()
                     Image(systemName: "chevron.right")
                 }
@@ -39,8 +39,7 @@ struct LastNightCard: View {
                         .neon()
                         .font(.largeTitle)
                     Text("You slept \(nighTotalSleep) hours")
-                        .font(.dsDigital(.regular, relativeTo: .body))
-                    
+                        .font(.krungthep(.regular, relativeTo: .body))
                 }
                 
                 Spacer()
@@ -50,7 +49,7 @@ struct LastNightCard: View {
                     Spacer()
                     Label(wakeTime, systemImage: "sun.max.fill")
                 }
-                .font(.dsDigital(.regular, relativeTo: .callout))
+                .font(.krungthep(.regular, relativeTo: .callout))
                 .foregroundStyle(.secondary)
                 .padding()
             }

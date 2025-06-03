@@ -17,12 +17,11 @@ struct BadgeSleepButton: View {
             Text(label)
                 .padding()
                 .foregroundStyle(isActive ? .black : .gray)
-                .frame(width: 135, height: 54)
+                .frame(width: 140, height: 54)
                 .background {
                     if isActive {
                         Rectangle()
                             .fill(.accent)
-                            .neon()
                     } else {
                         Rectangle()
                             .stroke(.gray, lineWidth: 1)
