@@ -1,12 +1,3 @@
-//
-//  ProgressBarOnboarding.swift
-//  AlarmTest
-//
-//  Created by Gianpietro Panico on 30/05/25.
-//
-
-import SwiftUI
-
 import SwiftUI
 
 struct ProgressBarOnboarding: View {
@@ -29,7 +20,7 @@ struct ProgressBarOnboarding: View {
             }
             .frame(height: 15)
         }
-        .frame(width: 268, height: 15) //larghezza barra
+        .frame(width: 268, height: 15) 
     }
 }
 

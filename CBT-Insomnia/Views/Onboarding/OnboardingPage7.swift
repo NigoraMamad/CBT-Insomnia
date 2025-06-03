@@ -5,15 +5,6 @@
 //  Created by Gianpietro Panico on 03/06/25.
 //
 
-//
-//  OnboardingPage6.swift
-//  AlarmTest
-//
-//  Created by Gianpietro Panico on 30/05/25.
-//
-
-
-
 
 import SwiftUI
 
@@ -39,7 +30,7 @@ struct OnboardingPage7: View {
                     
                     Spacer().frame(height: 60)
                     
-                    Image("test")
+                    RobotView()
                     
                     Spacer().frame(height: 30)
                     
@@ -48,7 +39,7 @@ struct OnboardingPage7: View {
                 }
                 
                 
-                OnboardingNavigationButton(label: "start", destination: OnboardingPage7())
+                OnboardingNavigationButton(label: "START", destination: ContentView())
                     .padding(.bottom, 30)
                     .padding(.horizontal)
             }

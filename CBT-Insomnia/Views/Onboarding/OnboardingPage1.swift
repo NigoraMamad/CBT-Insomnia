@@ -33,14 +33,14 @@ struct OnboardingPage1: View {
                     Spacer()
                         .frame(height: 100)
                     
-                    Image("test")
+                    RobotView()
                     
                     Spacer()
                 }
                 
                 Spacer()
                 
-          
+                
                 OnboardingNavigationButton(label: "NEXT", destination: OnboardingPage2())
                     .padding(.bottom, 30)
                     .padding(.horizontal)

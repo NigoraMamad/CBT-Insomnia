@@ -1,11 +1,3 @@
-//
-//  Untitled.swift
-//  AlarmTest
-//
-//  Created by Gianpietro Panico on 30/05/25.
-//
-
-import SwiftUI
 
 import SwiftUI
 
@@ -37,7 +29,7 @@ struct OnboardingPage3: View {
                     
                     Spacer().frame(height: 50)
                     
-                    Image("test")
+                    RobotView()
                     
                     Spacer().frame(height: 40)
                     

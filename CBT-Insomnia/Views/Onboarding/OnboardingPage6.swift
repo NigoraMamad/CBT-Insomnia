@@ -1,9 +1,3 @@
-//
-//  OnboardingPage6.swift
-//  AlarmTest
-//
-//  Created by Gianpietro Panico on 30/05/25.
-//
 
 
 import SwiftUI
@@ -42,7 +36,7 @@ struct OnboardingPage6: View {
                     
                     Spacer().frame(height: 60)
                     
-                    Image("test")
+                    RobotView()
                     
                     Spacer().frame(height: 30)
                     
@@ -50,21 +44,29 @@ struct OnboardingPage6: View {
                     Spacer()
                 }
                 
-                
-                OnboardingNavigationButton(label: "NEXT", destination: OnboardingPage3())
-                    .padding(.bottom, 30)
-                    .padding(.horizontal)
-                
-                
-                
-                    .padding(.bottom, 30)
-                
-                    .padding()
+                OnboardingNavigationButton5(
+                    label: "ENABLE HEALTH",
+                    destination: OnboardingPage7(),
+                    customAction: { completion in
+                        requestHealthKitPermission {
+                            completion()
+                        }
+                    }
+                )
+                .padding(.bottom, 30)
             }
+            .padding()
         }
     }
 }
+
 func requestHealthKitPermission(completion: @escaping () -> Void) {
+#if targetEnvironment(simulator)
+    print("Simulator: HealthKit not available, bypass request")
+    completion()
+    return
+#endif
+    
     let healthStore = HKHealthStore()
     
     guard HKHealthStore.isHealthDataAvailable() else {
@@ -73,7 +75,6 @@ func requestHealthKitPermission(completion: @escaping () -> Void) {
     }
     
     let sleepType = HKObjectType.categoryType(forIdentifier: .sleepAnalysis)!
-    
     let typesToRead: Set = [sleepType]
     
     healthStore.requestAuthorization(toShare: [], read: typesToRead) { success, error in

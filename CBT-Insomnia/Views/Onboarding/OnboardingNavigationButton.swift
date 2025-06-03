@@ -1,10 +1,3 @@
-//
-//  OnboardingNavigationButton.swift
-//  AlarmTest
-//
-//  Created by Gianpietro Panico on 30/05/25.
-//
-
 
 import SwiftUI
 
@@ -32,5 +25,5 @@ struct OnboardingNavigationButton<Destination: View>: View {
 }
 
 #Preview {
-    OnboardingNavigationButton(label: "Netx", destination: OnboardingPage1())
+    OnboardingNavigationButton(label: "Next", destination: OnboardingPage1())
 }

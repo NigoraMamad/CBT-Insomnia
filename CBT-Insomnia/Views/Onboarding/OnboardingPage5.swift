@@ -1,9 +1,3 @@
-//
-//  OnboardingPage5.swift
-//  AlarmTest
-//
-//  Created by Gianpietro Panico on 30/05/25.
-//
 
 
 import SwiftUI
@@ -40,7 +34,7 @@ struct OnboardingPage5: View {
                     
                     Spacer().frame(height: 60)
                     
-                    Image("test")
+                    RobotView()
                     
                     Spacer().frame(height: 30)
                     
@@ -48,7 +42,7 @@ struct OnboardingPage5: View {
                 }
                 
                 OnboardingNavigationButton5(
-                    label: "enable notifications",
+                    label: "ENABLE NOTIFICATIONS",
                     destination: OnboardingPage6(),
                     customAction: { completion in
                         requestNotificationPermission {
