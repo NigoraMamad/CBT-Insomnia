@@ -181,7 +181,7 @@
 			mainGroup = 17B3BA592DDE1C8200EC39C0;
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
-				A58638D82DEF2C84002B7B34 /* XCLocalSwiftPackageReference "../../../../Downloads/spline-ios-main" */,
+				B8B66F8E2DEF4606002C4CC7 /* XCRemoteSwiftPackageReference "spline-ios" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 17B3BA632DDE1C8200EC39C0 /* Products */;
@@ -510,12 +510,16 @@
 		};
 /* End XCConfigurationList section */
 
-/* Begin XCLocalSwiftPackageReference section */
-		A58638D82DEF2C84002B7B34 /* XCLocalSwiftPackageReference "../../../../Downloads/spline-ios-main" */ = {
-			isa = XCLocalSwiftPackageReference;
-			relativePath = "../../../../Downloads/spline-ios-main";
+/* Begin XCRemoteSwiftPackageReference section */
+		B8B66F8E2DEF4606002C4CC7 /* XCRemoteSwiftPackageReference "spline-ios" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/splinetool/spline-ios";
+			requirement = {
+				branch = main;
+				kind = branch;
+			};
 		};
-/* End XCLocalSwiftPackageReference section */
+/* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
 		A58638D92DEF2C84002B7B34 /* SplineRuntime */ = {
