@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		17B3BF022DE7418E00EC39C0 /* SleepDetection Watch App.app in Embed Watch Content */ = {isa = PBXBuildFile; fileRef = 17B3BEF52DE7418D00EC39C0 /* SleepDetection Watch App.app */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		A58638DA2DEF2C84002B7B34 /* SplineRuntime in Frameworks */ = {isa = PBXBuildFile; productRef = A58638D92DEF2C84002B7B34 /* SplineRuntime */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -47,6 +48,18 @@
 			);
 			target = 17B3BA612DDE1C8200EC39C0 /* CBT-Insomnia */;
 		};
+		A58638432DEF25DC002B7B34 /* Exceptions for "CBT-Insomnia" folder in "SleepDetection Watch App" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Extensions/FontExtension.swift,
+				Extensions/NeonEffect.swift,
+				"fonts/DS-DIGI.TTF",
+				"fonts/DS-DIGIB.TTF",
+				"fonts/LiquidCrystal-Bold.otf",
+				"fonts/LiquidCrystal-Normal.otf",
+			);
+			target = 17B3BEF42DE7418D00EC39C0 /* SleepDetection Watch App */;
+		};
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -54,6 +67,7 @@
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
 				17B3BA7E2DDE1FBC00EC39C0 /* Exceptions for "CBT-Insomnia" folder in "CBT-Insomnia" target */,
+				A58638432DEF25DC002B7B34 /* Exceptions for "CBT-Insomnia" folder in "SleepDetection Watch App" target */,
 			);
 			path = "CBT-Insomnia";
 			sourceTree = "<group>";
@@ -70,6 +84,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A58638DA2DEF2C84002B7B34 /* SplineRuntime in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -123,6 +138,7 @@
 			);
 			name = "CBT-Insomnia";
 			packageProductDependencies = (
+				A58638D92DEF2C84002B7B34 /* SplineRuntime */,
 			);
 			productName = "CBT-Insomnia";
 			productReference = 17B3BA622DDE1C8200EC39C0 /* CBT-Insomnia.app */;
@@ -177,6 +193,9 @@
 			);
 			mainGroup = 17B3BA592DDE1C8200EC39C0;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				A58638D82DEF2C84002B7B34 /* XCLocalSwiftPackageReference "../../../../Downloads/spline-ios-main" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 17B3BA632DDE1C8200EC39C0 /* Products */;
 			projectDirPath = "";
@@ -503,6 +522,20 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCLocalSwiftPackageReference section */
+		A58638D82DEF2C84002B7B34 /* XCLocalSwiftPackageReference "../../../../Downloads/spline-ios-main" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = "../../../../Downloads/spline-ios-main";
+		};
+/* End XCLocalSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		A58638D92DEF2C84002B7B34 /* SplineRuntime */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = SplineRuntime;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 17B3BA5A2DDE1C8200EC39C0 /* Project object */;
 }
