@@ -9,6 +9,7 @@ import SwiftUI
 
 @main
 struct CBT_InsomniaApp: App {
+    @State var manager = HealthManager()
     var body: some Scene {
         WindowGroup {
             WristDetectionView()
