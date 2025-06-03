@@ -2,19 +2,6 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-<<<<<<< HEAD
-	<key>NSHealthShareUsageDescription</key>
-	<string>This app reads your sleep data to provide personalized insights.</string>
-	<key>NSHealthUpdateUsageDescription</key>
-	<string>This app updates your sleep records if needed.</string>
-	<key>NSMotionUsageDescription</key>
-	<string>This app uses motion data to track steps.</string>
-	<key>UIAppFonts</key>
-	<array>
-		<string>DS-DIGI.TTF</string>
-		<string>DS-DIGIB.TTF</string>
-	</array>
-=======
     <key>NSHealthShareUsageDescription</key>
     <string>This app reads your sleep data to provide personalized insights.</string>
     <key>NSHealthUpdateUsageDescription</key>
@@ -26,6 +13,5 @@
         <string>DS-DIGI.TTF</string>
         <string>DS-DIGIB.TTF</string>
     </array>
->>>>>>> Onboarding
 </dict>
 </plist>
