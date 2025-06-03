@@ -40,7 +40,7 @@ struct OnboardingPage1: View {
                 
                 Spacer()
                 
-          
+                
                 OnboardingNavigationButton(label: "NEXT", destination: OnboardingPage2())
                     .padding(.bottom, 30)
                     .padding(.horizontal)

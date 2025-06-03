@@ -5,15 +5,6 @@
 //  Created by Gianpietro Panico on 03/06/25.
 //
 
-//
-//  OnboardingPage6.swift
-//  AlarmTest
-//
-//  Created by Gianpietro Panico on 30/05/25.
-//
-
-
-
 
 import SwiftUI
 

@@ -1,11 +1,3 @@
-//
-//  OnboardingPage4.swift
-//  AlarmTest
-//
-//  Created by Gianpietro Panico on 30/05/25.
-//
-
-
 
 import SwiftUI
 
