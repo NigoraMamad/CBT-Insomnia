@@ -14,6 +14,15 @@ extension Date {
     }
 }
 
+struct Activity {
+    let id: Int
+    let title: String
+    let subtitle: String
+    let image: String
+    let amount: String
+}
+
+
 class HealthManager: ObservableObject {
     
     @Published var activities: [String: Activity] = [:]

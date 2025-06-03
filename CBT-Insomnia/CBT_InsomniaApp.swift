@@ -12,7 +12,7 @@ struct CBT_InsomniaApp: App {
     @State var manager = HealthManager()
     var body: some Scene {
         WindowGroup {
-            HomeView()
+            StaticsView()
                 .environmentObject(manager)
         }
     }
