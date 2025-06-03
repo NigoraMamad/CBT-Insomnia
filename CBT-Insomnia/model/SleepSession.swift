@@ -23,6 +23,8 @@ class SleepSession {
     var timeInBed: TimeInterval
     var sleepDuration: TimeInterval
     var sleepEfficiency: Double
+    
+    @Relationship var challenge: SleepChallenge?
 
 
     init(
@@ -31,7 +33,8 @@ class SleepSession {
         wakeUpTime: Date,
         rem: TimeInterval,
         core: TimeInterval,
-        deep: TimeInterval
+        deep: TimeInterval,
+        challenge: SleepChallenge
     ) {
         let timeInBed = wakeUpTime.timeIntervalSince(bedTime)
         let sleepDuration = rem + core + deep
@@ -46,5 +49,6 @@ class SleepSession {
         self.timeInBed = timeInBed
         self.sleepDuration = sleepDuration
         self.sleepEfficiency = efficiency
+        self.challenge = challenge
     }
 }
