@@ -15,7 +15,7 @@ struct TrackingBedView: View {
             VStack {
                 Image(systemName: "bed.double.fill")
                     .foregroundStyle(.accent)
-                    .neon(glowRadius: 2.5)
+                    .neon()
                     .font(.system(size: 65))
                 
                 

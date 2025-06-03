@@ -14,19 +14,18 @@ struct BadgingBedView: View {
             
             VStack {
                 Text("Lay down in bed and wait for me to start tracking your sleep!")
-                    .kerning(2)
                 
                 RobotView()
                 
-                BadgeSleepButton(label: "Start tracking", isActive: true) {
+                BadgeSleepButton(label: "Start", isActive: true) {
                     
                 }
-                .font(.dsDigital(.regular, relativeTo: .callout))
+                .font(.krungthep(.regular, relativeTo: .callout))
             }
             .padding()
         }
         .ignoresSafeArea()
-        .font(.dsDigital(.regular, relativeTo: .title))
+        .font(.krungthep(.regular, relativeTo: .title2))
         .foregroundStyle(.white)
     }
 }
