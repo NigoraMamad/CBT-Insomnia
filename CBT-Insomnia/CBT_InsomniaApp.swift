@@ -16,6 +16,8 @@ struct AlarmTestApp: App {
             NavigationStack {
                 if onboardingCompleted {
                     ContentView()
+                        .preferredColorScheme(.dark)
+
                 } else {
                     OnboardingPage1()
                 }
