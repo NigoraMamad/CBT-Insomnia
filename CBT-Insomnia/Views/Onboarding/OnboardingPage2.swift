@@ -1,6 +1,8 @@
 import SwiftUI
 
 struct OnboardingPage2: View {
+
+    
     var body: some View {
         ZStack {
             Color.black
@@ -43,7 +45,7 @@ struct OnboardingPage2: View {
                 }
                 
                 
-                OnboardingNavigationButton(label: "NEXT", destination: OnboardingPage3())
+                OnboardingNavigationButton(label: "NEXT",  destination: OnboardingPage3())
                     .padding(.bottom, 30)
                     .padding(.horizontal)
             }

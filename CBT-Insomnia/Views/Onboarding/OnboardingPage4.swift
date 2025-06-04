@@ -4,6 +4,7 @@ import SwiftUI
 struct OnboardingPage4: View {
     
     @State private var selectedSleepOption: String = ""
+
     
     var body: some View {
         ZStack {
@@ -30,6 +31,7 @@ struct OnboardingPage4: View {
                     
                     
                     VStack(spacing: 20) {
+                        
                         SelectableSleepOption(
                             label: "LESS THAN 5 HOURS",
                             isSelected: selectedSleepOption == "LESS THAN 5 HOURS",
@@ -45,6 +47,15 @@ struct OnboardingPage4: View {
                                 selectedSleepOption = "5-7 HOURS"
                             }
                         )
+                        
+                        SelectableSleepOption(
+                            label: "MORE THAN 8 HOURS",
+                            isSelected: selectedSleepOption == "MORE THAN 8 HOURS",
+                            onTap: {
+                                selectedSleepOption = "MORE THAN 8 HOURS"
+                            }
+                        )
+                        
                     }
                     .padding(20)
                     
@@ -52,7 +63,7 @@ struct OnboardingPage4: View {
                 }
                 
                 
-                OnboardingNavigationButton(label: "NEXT", destination: OnboardingPage5())
+                OnboardingNavigationButton(label: "NEXT", destination: OnboardingPage5(), canProceed: { !selectedSleepOption.isEmpty })
                     .padding(.bottom, 30)
                     .padding(.horizontal)
             }
@@ -60,7 +71,6 @@ struct OnboardingPage4: View {
         }
     }
 }
-
 
 
 
@@ -73,16 +83,16 @@ struct SelectableSleepOption: View {
     var body: some View {
         Text(label)
             .font(.krungthep(.regular, relativeTo: .title))
-            .foregroundColor(isSelected ? .black : Color.accent)
+            .foregroundColor(isSelected ? .black : .white)
             .frame(maxWidth: .infinity)
             .padding(.vertical, 12)
             .background(
                 RoundedRectangle(cornerRadius: 0)
-                    .fill(isSelected ? Color.accent : Color.clear)
+                    .fill(isSelected ? .white : Color.clear)
             )
             .overlay(
                 RoundedRectangle(cornerRadius: 0)
-                    .stroke(Color.accent, lineWidth: 2)
+                    .stroke(Color.white, lineWidth: 2)
             )
             .onTapGesture {
                 withAnimation(.easeInOut(duration: 0.2)) {
@@ -92,6 +102,8 @@ struct SelectableSleepOption: View {
             .animation(.easeInOut(duration: 0.2), value: isSelected)
     }
 }
+
+
 #Preview {
     OnboardingPage4()
 }

@@ -8,11 +8,18 @@
 import SwiftUI
 
 @main
-struct CBT_InsomniaApp: App {
+struct AlarmTestApp: App {
+    @AppStorage("onboardingCompleted") var onboardingCompleted = false
+
     var body: some Scene {
         WindowGroup {
-          ContentView()
-                .preferredColorScheme(.dark)
+            NavigationStack {
+                if onboardingCompleted {
+                    ContentView()
+                } else {
+                    OnboardingPage1()
+                }
+            }
         }
     }
 }
