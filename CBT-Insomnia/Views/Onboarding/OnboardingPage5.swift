@@ -6,7 +6,7 @@ import UserNotifications
 
 struct OnboardingPage5: View {
     @State private var goToNextPage = false
-    let font = Font.custom("LiquidCrystal-Regular", size: 20)
+   
     
     var body: some View {
         ZStack {
