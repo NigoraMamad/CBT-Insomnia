@@ -8,7 +8,7 @@
 import SwiftUI
 
 @main
-struct AlarmTestApp: App {
+struct CBT_InsomniaApp: App {
     @AppStorage("onboardingCompleted") var onboardingCompleted = false
 
     var body: some Scene {

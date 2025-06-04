@@ -48,6 +48,3 @@ struct OnboardingNavigationButton<Destination: View>: View {
 #Preview {
     OnboardingNavigationButton(label: "NEXT", destination: OnboardingPage1())
 }
-#Preview {
-    OnboardingNavigationButton(label: "NEXT", destination: OnboardingPage1())
-}
