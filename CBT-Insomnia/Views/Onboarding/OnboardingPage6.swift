@@ -4,7 +4,9 @@ import SwiftUI
 import HealthKit
 
 struct OnboardingPage6: View {
+    
     @State private var selectedSleepOption: String = ""
+
     
     var body: some View {
         ZStack {

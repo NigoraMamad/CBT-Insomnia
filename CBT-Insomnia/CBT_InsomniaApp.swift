@@ -9,12 +9,19 @@ import SwiftUI
 
 @main
 struct CBT_InsomniaApp: App {
-    @State var manager = HealthManager()
+    @AppStorage("onboardingCompleted") var onboardingCompleted = false
+
     var body: some Scene {
         WindowGroup {
-          ContentView()
-                .preferredColorScheme(.dark)
-                .environmentObject(manager)
+            NavigationStack {
+                if onboardingCompleted {
+                    ContentView()
+                        .preferredColorScheme(.dark)
+
+                } else {
+                    OnboardingPage1()
+                }
+            }
         }
     }
 }
