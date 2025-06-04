@@ -8,6 +8,9 @@
 import SwiftUI
 
 struct ContentView: View {
+    
+    @EnvironmentObject var manager: HealthManager
+    
     let fixedBedTime: String = "02:00"
     let fixedWakeTime: String = "07:00"
     let day: String = "Monday"
@@ -19,31 +22,37 @@ struct ContentView: View {
     @State private var isBadgingWakeViewShown = false
     
     var body: some View {
-        ZStack {
-            Color.black
-            
-            VStack {
-                Spacer()
+        
+        NavigationStack {
+            ZStack {
+                Color.black
                 
-                RobotView()
-                BadgeSleepCard(
-                                    fixedBedTime: fixedBedTime,
-                                    fixedWakeTime: fixedWakeTime,
-                                    onWakeTap: {
-                                        isBadgingWakeViewShown = true
-                                    }
-                                )
-                                .padding()
-                LastNightCard(day: day, nightEfficiency: nightEfficiency, nighTotalSleep: nightTotalSleep, bedTime: bedTime, wakeTime: wakeTime)
+                VStack {
+                    Spacer()
+                    
+                    RobotView()
+                    BadgeSleepCard(
+                        fixedBedTime: fixedBedTime,
+                        fixedWakeTime: fixedWakeTime,
+                        onWakeTap: {
+                            isBadgingWakeViewShown = true
+                        }
+                    )
+                    .padding()
+                    
+                    NavigationLink(destination: StatisticsView().environmentObject(manager)) {
+                        LastNightCard(day: day, nightEfficiency: nightEfficiency, nighTotalSleep: nightTotalSleep, bedTime: bedTime, wakeTime: wakeTime)
+                    } // -> NavigationLink
+                    
+                    Spacer()
+                }
                 
-                Spacer()
             }
-            
+            .fullScreenCover(isPresented: $isBadgingWakeViewShown) {
+                BadgingWakeView()
+            }
+            .ignoresSafeArea()
         }
-               .fullScreenCover(isPresented: $isBadgingWakeViewShown) {
-                   BadgingWakeView()
-               }
-        .ignoresSafeArea()
     }
 }
 
