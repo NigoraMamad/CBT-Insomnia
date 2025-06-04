@@ -39,7 +39,7 @@ struct BadgingWakeView: View {
                     Button(action: {
                         dismiss()
                     }) {
-                        Image(systemName: "arrow.backward")
+                        Image(systemName: "xmark")
                     }
                 }
             }
