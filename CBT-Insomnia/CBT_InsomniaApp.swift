@@ -11,7 +11,8 @@ import SwiftUI
 struct CBT_InsomniaApp: App {
     var body: some Scene {
         WindowGroup {
-            BadgingWakeView()
+          ContentView()
+                .preferredColorScheme(.dark)
         }
     }
 }
