@@ -16,10 +16,16 @@ struct LastNightCard: View {
     
     var body: some View {
         VStack(alignment: .leading) {
-            Text("Last Night's Efficiency")
-                .font(.krungthep(.regular, relativeTo: .body))
-                .foregroundStyle(.white)
-                .padding(.bottom, 4)
+            HStack {
+                Text("Last Night's")
+                    .font(.krungthep(.regular, relativeTo: .body))
+                    .foregroundStyle(.white)
+                    .padding(.bottom, 4)
+                Text("Efficiency")
+                    .font(.krungthep(.regular, relativeTo: .body))
+                    .foregroundStyle(.accent)
+                    .padding(.bottom, 4)
+            }
         
             VStack {
                 HStack {
@@ -35,8 +41,6 @@ struct LastNightCard: View {
                 VStack {
                     Text(nightEfficiency.formatted(.percent))
                         .font(.dsDigital(.bold, size: 96))
-                        .foregroundStyle(.accent)
-                        .neon()
                         .font(.largeTitle)
                     Text("You slept \(nighTotalSleep) hours")
                         .font(.krungthep(.regular, relativeTo: .body))
@@ -50,16 +54,14 @@ struct LastNightCard: View {
                     Label(wakeTime, systemImage: "sun.max.fill")
                 }
                 .font(.krungthep(.regular, relativeTo: .callout))
-                .foregroundStyle(.secondary)
                 .padding()
             }
-            .foregroundStyle(.white)
-            .frame(width: 340, height: 220)
+            .foregroundStyle(.black)
+            .frame(width: 340, height: 240)
             .background {
-                Rectangle()
-                    .stroke(style: .init(lineWidth: 2))
+                RoundedRectangle(cornerRadius: 20)
                     .foregroundStyle(.white)
-                    .frame(width: 340, height: 220)
+                    .frame(width: 340, height: 240)
             }
         }
     }

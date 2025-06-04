@@ -20,10 +20,10 @@ struct BadgeSleepButton: View {
                 .frame(width: 140, height: 54)
                 .background {
                     if isActive {
-                        Rectangle()
+                        RoundedRectangle(cornerRadius: 10)
                             .fill(.accent)
                     } else {
-                        Rectangle()
+                        RoundedRectangle(cornerRadius: 10)
                             .stroke(.gray, lineWidth: 1)
                     }
                 }
