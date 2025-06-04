@@ -16,6 +16,7 @@ struct ContentView: View {
     let bedTime: String = "02:20"
     let wakeTime: String = "07:10"
     
+    @State private var isBadgingBedViewShown = false
     @State private var isBadgingWakeViewShown = false
     
     var body: some View {
@@ -27,22 +28,28 @@ struct ContentView: View {
                 
                 RobotView()
                 BadgeSleepCard(
-                                    fixedBedTime: fixedBedTime,
-                                    fixedWakeTime: fixedWakeTime,
-                                    onWakeTap: {
-                                        isBadgingWakeViewShown = true
-                                    }
-                                )
-                                .padding()
+                    fixedBedTime: fixedBedTime,
+                    fixedWakeTime: fixedWakeTime,
+                    onBedTap: {
+                        isBadgingBedViewShown = true
+                    },
+                    onWakeTap: {
+                        isBadgingWakeViewShown = true
+                    }
+                )
+                .padding()
                 LastNightCard(day: day, nightEfficiency: nightEfficiency, nighTotalSleep: nightTotalSleep, bedTime: bedTime, wakeTime: wakeTime)
                 
                 Spacer()
             }
             
         }
-               .fullScreenCover(isPresented: $isBadgingWakeViewShown) {
-                   BadgingWakeView()
-               }
+        .fullScreenCover(isPresented: $isBadgingBedViewShown) {
+            BadgingBedView()
+        }
+        .fullScreenCover(isPresented: $isBadgingWakeViewShown) {
+            BadgingWakeView()
+        }
         .ignoresSafeArea()
     }
 }

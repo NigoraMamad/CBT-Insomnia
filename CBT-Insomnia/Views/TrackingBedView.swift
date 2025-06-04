@@ -8,20 +8,86 @@
 import SwiftUI
 
 struct TrackingBedView: View {
+    @StateObject var receiver = WatchReceiver()
+    @State private var showGoodnight = false
+    @State private var isMainViewShown = false
+    
     var body: some View {
         ZStack {
             Color.black
             
             VStack {
+                Spacer()
+                
                 Image(systemName: "bed.double.fill")
                     .foregroundStyle(.accent)
-                    .neon()
+                    .neon(glowRadius: 1)
                     .font(.system(size: 65))
+                    .padding(.bottom, 20)
                 
+                VStack(spacing: 20) {
+                    if !receiver.isTracking && !showGoodnight {
+                        // Initial state - waiting for tracking to start
+                        Text("Go to bed and badge-in your night")
+                            .multilineTextAlignment(.center)
+                            .padding(.horizontal, 40)
+                    } else if receiver.isTracking && !showGoodnight {
+                        // Tracking state - show progress and feedback
+                        Text("Tracking")
+                        
+                        ProgressView()
+                            .progressViewStyle(CircularProgressViewStyle(tint: .accent))
+                            .scaleEffect(1.5)
+                        
+                        if receiver.isWristFlat && receiver.isWristStill {
+                            Text("You are in bed!")
+                                .foregroundColor(.green)
+                                .font(.system(size: 18, weight: .medium))
+                        }
+                    } else if showGoodnight {
+                        // Goodnight state
+                        Text("Okay goodnight!")
+                            .multilineTextAlignment(.center)
+                            .font(.system(size: 24, weight: .medium))
+                    }
+                }
+                .frame(height: 200) // Fixed height to prevent layout jumping
                 
+                Spacer()
+            }
+            
+            // Show OK button when in goodnight state
+            if showGoodnight {
+                VStack {
+                    Spacer()
+                    BadgeSleepButton(label: "OK!", isActive: true) {
+                        isMainViewShown = true
+                    }
+                    .padding(.bottom, 40)
+                }
             }
         }
+        .font(.krungthep(.regular, relativeTo: .title))
+        .foregroundColor(.white)
         .ignoresSafeArea()
+        .onChange(of: receiver.isWristFlat) { _, newValue in
+            checkForGoodnight()
+        }
+        .onChange(of: receiver.isWristStill) { _, newValue in
+            checkForGoodnight()
+        }
+        .fullScreenCover(isPresented: $isMainViewShown) {
+            ContentView() // or whatever your main view is called
+        }
+    }
+    
+    private func checkForGoodnight() {
+        if receiver.isTracking && receiver.isWristFlat && receiver.isWristStill && !showGoodnight {
+            // Add a small delay for better UX
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
+                showGoodnight = true
+            }
+        }
     }
 }
 

@@ -8,7 +8,6 @@
 import SwiftUI
 
 struct BadgingWakeView: View {
-    
     @StateObject private var stepCounter = StepCounter()
     @State private var isStepCounterShown: Bool = false
     
