@@ -49,7 +49,7 @@ struct StepsView: View {
             if stepCounter.isStoppedTracking {
                 VStack {
                     Spacer()
-                    BadgeSleepButton(label: "OK!", isActive: false) {
+                    BadgeSleepButton(label: "OK!", isActive: true) {
                         isMainViewShown = true
                     }
                     .padding(.bottom, 40)

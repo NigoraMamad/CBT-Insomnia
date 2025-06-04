@@ -39,7 +39,7 @@ struct BadgeSleepCard: View {
                                 isActive: activeButton == .wake
                             ) {
                                 activeButton = .bed
-                                onWakeTap?()  // 🔗 Trigger navigation
+                                onWakeTap?() 
                             }
                         }
                         .padding()
