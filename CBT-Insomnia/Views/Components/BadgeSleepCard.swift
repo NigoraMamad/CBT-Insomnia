@@ -10,6 +10,7 @@ import SwiftUI
 struct BadgeSleepCard: View {
     let fixedBedTime: String
     let fixedWakeTime: String
+    var onBedTap: (() -> Void)? = nil
     var onWakeTap: (() -> Void)? = nil
     @State private var activeButton: SleepButtonType? = .bed
     
@@ -27,22 +28,23 @@ struct BadgeSleepCard: View {
                     isActive: activeButton == .bed
                 ) {
                     activeButton = .wake
+                    onBedTap?()
                 }
             }
             .padding()
             
             VStack {
-                            Label(fixedWakeTime, systemImage: "sun.max.fill")
-                            Spacer()
-                            BadgeSleepButton(
-                                label: "Awake",
-                                isActive: activeButton == .wake
-                            ) {
-                                activeButton = .bed
-                                onWakeTap?() 
-                            }
-                        }
-                        .padding()
+                Label(fixedWakeTime, systemImage: "sun.max.fill")
+                Spacer()
+                BadgeSleepButton(
+                    label: "Awake",
+                    isActive: activeButton == .wake
+                ) {
+                    activeButton = .bed
+                    onWakeTap?()
+                }
+            }
+            .padding()
         }
         .foregroundStyle(.white)
         .font(.krungthep(.regular, relativeTo: .callout))

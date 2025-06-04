@@ -16,6 +16,7 @@ struct ContentView: View {
     let bedTime: String = "02:20"
     let wakeTime: String = "07:10"
     
+    @State private var isBadgingBedViewShown = false
     @State private var isBadgingWakeViewShown = false
     
     var body: some View {
@@ -29,6 +30,9 @@ struct ContentView: View {
                 BadgeSleepCard(
                     fixedBedTime: fixedBedTime,
                     fixedWakeTime: fixedWakeTime,
+                    onBedTap: {
+                        isBadgingBedViewShown = true
+                    },
                     onWakeTap: {
                         isBadgingWakeViewShown = true
                     }
@@ -40,6 +44,9 @@ struct ContentView: View {
                 Spacer()
             }
             
+        }
+        .fullScreenCover(isPresented: $isBadgingBedViewShown) {
+            BadgingBedView()
         }
         .fullScreenCover(isPresented: $isBadgingWakeViewShown) {
             BadgingWakeView()

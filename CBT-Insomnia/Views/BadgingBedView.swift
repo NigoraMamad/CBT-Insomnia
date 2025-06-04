@@ -8,6 +8,8 @@
 import SwiftUI
 
 struct BadgingBedView: View {
+    @State private var isTrackingBedShown: Bool = false
+    
     var body: some View {
         ZStack {
             Color.black
@@ -18,11 +20,14 @@ struct BadgingBedView: View {
                 RobotView()
                 
                 BadgeSleepButton(label: "Start", isActive: true) {
-                    
+                    isTrackingBedShown = true
                 }
                 .font(.krungthep(.regular, relativeTo: .callout))
             }
             .padding()
+        }
+        .fullScreenCover(isPresented: $isTrackingBedShown) {
+            TrackingBedView()
         }
         .ignoresSafeArea()
         .font(.krungthep(.regular, relativeTo: .title2))
