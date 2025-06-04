@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct StepsView: View {
-    @Environment(\.dismiss) var dismiss
+   
     @ObservedObject var stepCounter: StepCounter
     @State private var isWaitingForRealSteps = false
     @State private var isMainViewShown = false
@@ -58,15 +58,7 @@ struct StepsView: View {
                     }
                 }
             }
-            .toolbar {
-                ToolbarItem(placement: .navigationBarLeading) {
-                    Button(action: {
-                        dismiss()
-                    }) {
-                        Image(systemName: "arrow.backward")
-                    }
-                }
-            }
+           
         }
         .font(.dsDigital(.regular, relativeTo: .title))
         .foregroundColor(.white)

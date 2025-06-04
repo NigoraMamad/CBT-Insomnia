@@ -9,6 +9,8 @@ import SwiftUI
 
 struct BadgingWakeView: View {
     
+    @Environment(\.dismiss) var dismiss
+    
     @StateObject private var stepCounter = StepCounter()
     @State private var isStepCounterShown: Bool = false
     
@@ -23,23 +25,27 @@ struct BadgingWakeView: View {
                     RobotView()
                     
                     BadgeSleepButton(label: "Start tracking", isActive: true) {
-                                            stepCounter.startTracking()
-                                            isStepCounterShown = true
-                                        }
-                                        .font(.krungthep(.regular, relativeTo: .callout))
-
-                                        // ✅ Hidden NavigationLink driven by state
-                                        NavigationLink(
-                                            destination: StepsView(stepCounter: stepCounter),
-                                            isActive: $isStepCounterShown
-                                        ) {
-                                            StepsView(stepCounter:  stepCounter)
-                                        }
+                        stepCounter.startTracking()
+                        isStepCounterShown = true
+                    }
+                    .font(.krungthep(.regular, relativeTo: .callout))
                     
                     
                 }
                 .padding()
             }
+            .toolbar {
+                ToolbarItem(placement: .navigationBarLeading) {
+                    Button(action: {
+                        dismiss()
+                    }) {
+                        Image(systemName: "arrow.backward")
+                    }
+                }
+            }
+        }
+        .fullScreenCover(isPresented: $isStepCounterShown) {
+            StepsView(stepCounter: stepCounter)
         }
         .ignoresSafeArea()
         .font(.krungthep(.regular, relativeTo: .title2))
