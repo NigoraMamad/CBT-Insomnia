@@ -13,24 +13,33 @@ struct BadgingWakeView: View {
     @State private var isStepCounterShown: Bool = false
     
     var body: some View {
-        ZStack {
-            Color.black
-            
-            VStack {
-                Text("Hi there! I see you just woke up! Let's take some steps together to start your day.")
+        NavigationStack{
+            ZStack {
+                Color.black
                 
-                RobotView()
-                
-                BadgeSleepButton(label: "Start tracking", isActive: true) {
-                    stepCounter.startTracking()
-                    isStepCounterShown = true
+                VStack {
+                    Text("Hi there! I see you just woke up! Let's take some steps together to start your day.")
+                    
+                    RobotView()
+                    
+                    BadgeSleepButton(label: "Start tracking", isActive: true) {
+                                            stepCounter.startTracking()
+                                            isStepCounterShown = true
+                                        }
+                                        .font(.krungthep(.regular, relativeTo: .callout))
+
+                                        // ✅ Hidden NavigationLink driven by state
+                                        NavigationLink(
+                                            destination: StepsView(stepCounter: stepCounter),
+                                            isActive: $isStepCounterShown
+                                        ) {
+                                            StepsView(stepCounter:  stepCounter)
+                                        }
+                    
+                    
                 }
-                .font(.krungthep(.regular, relativeTo: .callout))
+                .padding()
             }
-            .padding()
-        }
-        .fullScreenCover(isPresented: $isStepCounterShown) {
-            StepsView(stepCounter: stepCounter)
         }
         .ignoresSafeArea()
         .font(.krungthep(.regular, relativeTo: .title2))
@@ -41,3 +50,4 @@ struct BadgingWakeView: View {
 #Preview {
     BadgingWakeView()
 }
+
