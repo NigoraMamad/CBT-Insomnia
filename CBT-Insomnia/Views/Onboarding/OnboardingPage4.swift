@@ -18,18 +18,16 @@ struct OnboardingPage4: View {
                     Spacer().frame(height: 50)
                     
                     Text("HOW MANY HOURS DO YOU")
-                        .font(Font.custom("LiquidCrystal-Regular", size: 20))
+                        .font(.krungthep(.regular, relativeTo: .body))
                         .foregroundColor(.white)
                     
                     Text("USUALLY SLEEP AT NIGHT?")
-                        .font(Font.custom("LiquidCrystal-Regular", size: 20))
+                        .font(.krungthep(.regular, relativeTo: .body))
                         .foregroundColor(.white)
                     
-                    Spacer().frame(height: 60)
                     
                     RobotView()
                     
-                    Spacer().frame(height: 30)
                     
                     VStack(spacing: 20) {
                         SelectableSleepOption(
@@ -74,7 +72,7 @@ struct SelectableSleepOption: View {
 
     var body: some View {
         Text(label)
-            .font(Font.custom("LiquidCrystal-Regular", size: 20))
+            .font(.krungthep(.regular, relativeTo: .title))
             .foregroundColor(isSelected ? .black : Color.accent)
             .frame(maxWidth: .infinity)
             .padding(.vertical, 12)

@@ -13,6 +13,7 @@ class StepCounter: ObservableObject {
 
     @Published var stepCount: Int = 0
     @Published var isTracking = false
+    @Published var isStoppedTracking = false
     @Published var showGoalReachedAlert = false
 
     func startTracking() {
@@ -46,6 +47,7 @@ class StepCounter: ObservableObject {
     func stopTracking() {
         pedometer.stopUpdates()
         isTracking = false
+        isStoppedTracking = true
     }
 
     func reset() {

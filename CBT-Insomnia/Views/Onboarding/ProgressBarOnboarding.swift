@@ -20,7 +20,7 @@ struct ProgressBarOnboarding: View {
             }
             .frame(height: 15)
         }
-        .frame(width: 268, height: 15) 
+        .frame(width: 268, height: 15)
     }
 }
 

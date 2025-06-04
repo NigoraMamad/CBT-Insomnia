@@ -17,16 +17,16 @@ struct OnboardingPage3: View {
                     
                     Spacer().frame(height: 50)
                     
-                    Text("how old are you?")
-                        .font(Font.custom("LiquidCrystal-Regular", size: 20))
+                    Text("HOW OLD ARE YOU ?")
+                        .font(.krungthep(.regular, relativeTo: .body))
                         .foregroundColor(.white)
                     
-                    Spacer().frame(height: 20)
+                    Spacer().frame(height: 10)
                     
-                    Text("this helps us personalize your experience")
-                        .font(Font.custom("LiquidCrystal-Regular", size: 15))
+                    Text("THIS HELPS US TO PERSONALIZE YOUR EXPERIENCE")
+                        .font(.krungthep(.regular, relativeTo: .caption))
                         .foregroundColor(Color.gray)
-                    
+                        
                     Spacer().frame(height: 50)
                     
                     RobotView()
@@ -58,7 +58,7 @@ struct RetroDigitTextField: View {
         ZStack(alignment: .center) {
             if text.isEmpty {
                 Text("INSERT YOUR AGE")
-                    .font(Font.custom("LiquidCrystal-Regular", size: 26))
+                    .font(.krungthep(.regular, relativeTo: .title))
                     .foregroundColor(Color.accent.opacity(0.6))
             }
 
