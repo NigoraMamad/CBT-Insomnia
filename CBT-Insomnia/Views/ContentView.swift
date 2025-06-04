@@ -27,22 +27,23 @@ struct ContentView: View {
                 
                 RobotView()
                 BadgeSleepCard(
-                                    fixedBedTime: fixedBedTime,
-                                    fixedWakeTime: fixedWakeTime,
-                                    onWakeTap: {
-                                        isBadgingWakeViewShown = true
-                                    }
-                                )
-                                .padding()
+                    fixedBedTime: fixedBedTime,
+                    fixedWakeTime: fixedWakeTime,
+                    onWakeTap: {
+                        isBadgingWakeViewShown = true
+                    }
+                )
+                .padding()
+                
                 LastNightCard(day: day, nightEfficiency: nightEfficiency, nighTotalSleep: nightTotalSleep, bedTime: bedTime, wakeTime: wakeTime)
                 
                 Spacer()
             }
             
         }
-               .fullScreenCover(isPresented: $isBadgingWakeViewShown) {
-                   BadgingWakeView()
-               }
+        .fullScreenCover(isPresented: $isBadgingWakeViewShown) {
+            BadgingWakeView()
+        }
         .ignoresSafeArea()
     }
 }
