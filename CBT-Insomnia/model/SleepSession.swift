@@ -16,15 +16,15 @@ class SleepSession {
     var timeInBed: TimeInterval
     var sleepDuration: TimeInterval
     var sleepEfficiency: Double
-    
-    @Relationship var challenge: SleepChallenge?
+
+    @Relationship var schedule: SleepSchedule?
 
     init(
         id: UUID = UUID(),
         bedTime: Date,
         wakeUpTime: Date,
         sleepDuration: TimeInterval,
-        challenge: SleepChallenge? = nil
+        schedule: SleepSchedule? = nil
     ) {
         let timeInBed = wakeUpTime.timeIntervalSince(bedTime)
         let efficiency = timeInBed > 0 ? (sleepDuration / timeInBed) * 100 : 0
@@ -35,6 +35,6 @@ class SleepSession {
         self.timeInBed = timeInBed
         self.sleepDuration = sleepDuration
         self.sleepEfficiency = efficiency
-        self.challenge = challenge
+        self.schedule = schedule
     }
 }
