@@ -11,7 +11,6 @@ import Foundation
 @Model
 class SleepSession {
     var id: UUID
-    var bedTime: Date
     var wakeUpTime: Date
     var timeInBed: TimeInterval
     var sleepDuration: TimeInterval
@@ -30,7 +29,6 @@ class SleepSession {
         let efficiency = timeInBed > 0 ? (sleepDuration / timeInBed) * 100 : 0
 
         self.id = id
-        self.bedTime = bedTime
         self.wakeUpTime = wakeUpTime
         self.timeInBed = timeInBed
         self.sleepDuration = sleepDuration
