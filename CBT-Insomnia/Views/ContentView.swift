@@ -31,6 +31,12 @@ struct ContentView: View {
                 VStack {
                     Spacer()
                     
+                    Dialogue(
+                        mainPlaceholder:"GOOD MORNING!",
+                        placeholder: ""
+                    ) // -> Dialogue
+                        .padding(.top, 10)
+                    
                     RobotView()
                     BadgeSleepCard(
                         fixedBedTime: fixedBedTime,
