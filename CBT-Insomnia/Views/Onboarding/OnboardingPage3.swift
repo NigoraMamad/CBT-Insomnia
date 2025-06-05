@@ -1,26 +1,22 @@
-
 import SwiftUI
 
 struct OnboardingPage3: View {
     
-    @State private var age: String = ""
+    @AppStorage("userName") private var name: String = ""
 
-    
     var body: some View {
         ZStack {
             Color.black.ignoresSafeArea()
-            
+
             VStack(spacing: 0) {
-                
-                ScrollView{
-                    
+                ScrollView {
                     VStack(spacing: 0) {
                         ProgressBarOnboarding(progress: 2.0 / 6.0)
                             .padding(.top, 10)
                         
                         Spacer().frame(height: 50)
                         
-                        Text("HOW OLD ARE YOU ?")
+                        Text("WHAT'S YOUR NAME")
                             .font(.krungthep(.regular, relativeTo: .body))
                             .foregroundColor(.white)
                         
@@ -32,86 +28,57 @@ struct OnboardingPage3: View {
                         
                         RobotView()
                         
-                        VStack(spacing: 20) {
-                            
-                            SelectableSleepOption(
-                                label: "UNDER 18",
-                                isSelected: age == "UNDER 18",
-                                onTap: {
-                                    age = "UNDER 18"
-                                }
-                            )
-                            
-                            SelectableSleepOption(
-                                label: "18-30",
-                                isSelected: age == "18-30",
-                                onTap: {
-                                    age = "18-30"
-                                }
-                            )
-                            
-                            SelectableSleepOption(
-                                label: "31-50",
-                                isSelected: age == "31-50",
-                                onTap: {
-                                    age = "31-50"
-                                }
-                            )
-                            
-                            SelectableSleepOption(
-                                label: "OVER 50",
-                                isSelected: age == "OVER 50",
-                                onTap: {
-                                    age = "OVER 50"
-                                }
-                            )
-                            
-                        }
-                        
-                        .padding(20)
-                        Spacer()
+                        RetroDigitTextField(text: $name)
+                            .padding(.top, 30)
+                            .padding(.horizontal, 20)
                     }
-                    
-                    OnboardingNavigationButton(label: "NEXT", destination: OnboardingPage4(), canProceed: { !age.isEmpty })
-                        .padding(.bottom, 30)
-                        .padding(.horizontal)
+                    .padding(.bottom, 40) // spazio extra per non coprire contenuto
                 }
-                .padding()
+
+                OnboardingNavigationButton(
+                    label: "NEXT",
+                    destination: OnboardingPage4(),
+                    canProceed: { !name.trimmingCharacters(in: .whitespaces).isEmpty }
+                )
+                .padding(.bottom, 30)
+                .padding(.horizontal)
             }
+            .padding()
         }
     }
 }
 
 
-/*
 struct RetroDigitTextField: View {
     @Binding var text: String
     
     var body: some View {
         ZStack(alignment: .center) {
             if text.isEmpty {
-                Text("INSERT YOUR AGE")
+                Text("INSERT YOUR NAME")
                     .font(.krungthep(.regular, relativeTo: .title))
-                    .foregroundColor(Color.accent.opacity(0.6))
+                    .foregroundColor(.white)
             }
             
             TextField("", text: $text)
-                .font(Font.custom("LiquidCrystal-Regular", size: 26))
-                .foregroundColor(Color.accent)
+                .font(.krungthep(.regular, relativeTo: .title))
+                .foregroundColor(.white)
+                .frame(height: 40)
+                .padding(.horizontal, 12)
+                .frame(maxWidth: .infinity)
                 .multilineTextAlignment(.center)
-                .keyboardType(.numberPad)
+                .keyboardType(.default)
                 .textInputAutocapitalization(.never)
                 .disableAutocorrection(true)
-                .padding(.vertical, 12)
-                .padding(.horizontal, 20)
                 .background(
                     RoundedRectangle(cornerRadius: 0)
-                        .stroke(Color.accent, lineWidth: 2)
+                        .stroke(.white)
                 )
         }
     }
 }
-*/
+
+
 
 #Preview {
     OnboardingPage3()
