@@ -36,11 +36,11 @@ struct OnboardingPage6: View {
                         .font(.krungthep(.regular, relativeTo: .body))
                         .foregroundColor(.white)
                     
-                    Spacer().frame(height: 60)
+                    Spacer().frame(height: 40)
                     
                     RobotView()
                     
-                    Spacer().frame(height: 30)
+                    Spacer().frame(height: 10)
                     
                     
                     Spacer()
