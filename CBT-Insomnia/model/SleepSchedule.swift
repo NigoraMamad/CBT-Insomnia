@@ -23,7 +23,7 @@ class SleepSchedule {
         weekStart: Date = Date(),
         bedTime: DateComponents,
         wakeUpTime: DateComponents,
-        minEfficiencyGoal: Double = 80.0
+        minEfficiencyGoal: Double = 90.0
     ) {
         self.id = id
         self.weekStart = weekStart
