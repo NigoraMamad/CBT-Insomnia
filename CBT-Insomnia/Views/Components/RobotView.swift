@@ -14,10 +14,10 @@ struct RobotView: View {
 //        let url = URL(string: "https://build.spline.design/UCEi0z8BmCZ6SrFM6KwO/scene.splineswift")!
 
         // fetching from local
-         let url = Bundle.main.url(forResource: "robot", withExtension: "splineswift")!
+         let url = Bundle.main.url(forResource: "robot2", withExtension: "splineswift")!
 
         SplineView(sceneFileURL: url).ignoresSafeArea(.all)
-            .frame(height: 300) 
+            .frame(height: 200) 
     }
 }
 
