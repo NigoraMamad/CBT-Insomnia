@@ -19,6 +19,9 @@ struct ContentView: View {
     let bedTime: String = "02:20"
     let wakeTime: String = "07:10"
     
+    @AppStorage("userName") private var name: String = ""
+    
+    
     @State private var isBadgingBedViewShown = false
     @State private var isBadgingWakeViewShown = false
     
@@ -31,11 +34,14 @@ struct ContentView: View {
                 VStack {
                     Spacer()
                     
+                    
                     Dialogue(
-                        mainPlaceholder:"GOOD MORNING!",
+                        mainPlaceholder: dialogueText(for: getMainPHForCurrentTime(), name: name),
                         placeholder: ""
-                    ) // -> Dialogue
-                        .padding(.top, 10)
+                    )
+                    .padding(.top, 10)
+                    
+                    
                     
                     RobotView()
                     BadgeSleepCard(
@@ -67,7 +73,37 @@ struct ContentView: View {
             .ignoresSafeArea()
         }
     }
+    
+    func getMainPHForCurrentTime() -> MainPH {
+        let hour = Calendar.current.component(.hour, from: Date())
+        
+        switch hour {
+        case 6..<12:
+            return .morning
+        case 12..<17:
+            return .naps
+        case 17..<21:
+            return .evening
+        default:
+            return .sleeping
+        }
+    }
+    
+    
+    func dialogueText(for phase: MainPH, name: String) -> String {
+        switch phase {
+        case .morning:
+            return "GOOD MORNING, \(name.uppercased())!"
+        case .naps:
+            return "DO NOT TAKE NAPS, \(name.uppercased())!"
+        case .evening:
+            return "GOOD EVENING, \(name.uppercased())!"
+        case .sleeping:
+            return "ZZZ"
+        }
+    }
 }
+
 
 #Preview {
     ContentView()
