@@ -9,7 +9,7 @@ import SwiftUI
 
 struct ContentView: View {
     
-    @EnvironmentObject var manager: HealthManager
+    @State var manager = HealthManager()
     
     let fixedBedTime: String = "02:00"
     let fixedWakeTime: String = "07:00"
@@ -52,13 +52,14 @@ struct ContentView: View {
                 }
                 
             }
-        .fullScreenCover(isPresented: $isBadgingBedViewShown) {
-            BadgingBedView()
+            .fullScreenCover(isPresented: $isBadgingBedViewShown) {
+                BadgingBedView()
+            }
+            .fullScreenCover(isPresented: $isBadgingWakeViewShown) {
+                BadgingWakeView()
+            }
+            .ignoresSafeArea()
         }
-        .fullScreenCover(isPresented: $isBadgingWakeViewShown) {
-            BadgingWakeView()
-        }
-        .ignoresSafeArea()
     }
 }
 
