@@ -82,10 +82,11 @@ struct SelectableSleepOption: View {
 
     var body: some View {
         Text(label)
-            .font(.krungthep(.regular, relativeTo: .title))
+            .font(.krungthep(.regular, relativeTo: .title2))
             .foregroundColor(isSelected ? .black : .white)
+            .frame(height: 40)
+            .padding(.horizontal, 12)
             .frame(maxWidth: .infinity)
-            .padding(.vertical, 12)
             .background(
                 RoundedRectangle(cornerRadius: 0)
                     .fill(isSelected ? .white : Color.clear)

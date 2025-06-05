@@ -66,9 +66,10 @@ struct OnboardingPage3: View {
                                 }
                             )
                             
-                            
-                            Spacer()
                         }
+                        
+                        .padding(20)
+                        Spacer()
                     }
                     
                     OnboardingNavigationButton(label: "NEXT", destination: OnboardingPage4(), canProceed: { !age.isEmpty })
@@ -82,7 +83,7 @@ struct OnboardingPage3: View {
 }
 
 
-
+/*
 struct RetroDigitTextField: View {
     @Binding var text: String
     
@@ -110,6 +111,7 @@ struct RetroDigitTextField: View {
         }
     }
 }
+*/
 
 #Preview {
     OnboardingPage3()

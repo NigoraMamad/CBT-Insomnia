@@ -22,7 +22,7 @@ struct OnboardingPage7: View {
                 Spacer().frame(height: 50)
 
                 Text("YOU'RE ALL SET!")
-                    .font(.krungthep(.regular, relativeTo: .title))
+                    .font(.krungthep(.regular, relativeTo: .body))
                     .foregroundColor(.white)
 
                 Spacer().frame(height: 60)
