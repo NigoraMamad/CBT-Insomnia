@@ -18,7 +18,7 @@ struct CBT_InsomniaApp: App {
                     ContentView()
                         .preferredColorScheme(.dark)
                         .onAppear {
-                            NotificationManager.shared.requestAuthorization()
+                            //NotificationManager.shared.requestAuthorization()
                         }
                     
                 } else {
