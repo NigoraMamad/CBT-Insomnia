@@ -2,7 +2,9 @@ import SwiftUI
 
 struct OnboardingPage4: View {
     
-    @State private var selectedSleepOption: SleepDuration? = nil
+    @State private var selectedSleepOption: SleepDuration = .eight
+    @State private var showAlert = false
+
     private let defaults = UserDefaultsService()
     
     var body: some View {
@@ -47,20 +49,27 @@ struct OnboardingPage4: View {
                 }
                 
                 OnboardingNavigationButton(
-                    label: "NEXT",
-                    destination: OnboardingPage5(),
-                    customAction: { proceed in
-                        if let option = selectedSleepOption {
-                            defaults.saveSleepDuration(option)
-                        }
-                        proceed()
-                    }
-                    
-                )
+                                    label: "NEXT",
+                                    destination: OnboardingPage5(),
+                                    customAction: { proceed in
+                                        defaults.saveSleepDuration(selectedSleepOption)
+                                        print("✅ Saved sleep duration: \(selectedSleepOption.rawValue)")
+                                        proceed()
+                                    }
+                                )
                 .padding(.bottom, 30)
                 .padding(.horizontal)
+                .alert("Please select a sleep duration", isPresented: $showAlert) {
+                                   Button("OK", role: .cancel) { }
+                               }
             }
             .padding()
+            .onAppear {
+                            if let saved = defaults.getSleepDuration() {
+                                selectedSleepOption = saved
+                                print("🔁 Loaded previous duration: \(saved.rawValue)")
+                            }
+                        }
         }
     }
 }
