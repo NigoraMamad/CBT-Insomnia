@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import WatchConnectivity
 
 struct TrackingBedView: View {
     @StateObject var receiver = WatchReceiver()
@@ -86,6 +87,11 @@ struct TrackingBedView: View {
             // Add a small delay for better UX
             DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
                 showGoodnight = true
+                
+                // Tell the watch to stop tracking
+                WCSession.default.sendMessage(["command": "stopTracking"], replyHandler: nil, errorHandler: { error in
+                    print("❌ Failed to send stop command: \(error.localizedDescription)")
+                })
             }
         }
     }

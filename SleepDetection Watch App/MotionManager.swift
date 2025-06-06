@@ -97,4 +97,13 @@ class MotionManager: NSObject, ObservableObject, WCSessionDelegate {
             print("✅ WCSession active")
         }
     }
+    
+    func session(_ session: WCSession, didReceiveMessage message: [String : Any]) {
+        DispatchQueue.main.async {
+            if let command = message["command"] as? String, command == "stopTracking" {
+                self.stopMonitoring()
+            }
+        }
+    }
+
 }
