@@ -25,31 +25,31 @@ class NotificationManager {
     }
 
     // Schedule both bedtime and wake-up notifications
-    func schedule(for schedule: SleepSchedule) {
-        cancel(for: schedule) // clean up old ones first
-
-        let idPrefix = schedule.id.uuidString
-
-        scheduleNotification(
-            id: "bed-\(idPrefix)",
-            title: "Bedtime",
-            body: "It's time to go to bed.",
-            time: schedule.bedTime
-        )
-
-        scheduleNotification(
-            id: "wake-\(idPrefix)",
-            title: "Wake Up ",
-            body: "Time to start your day!",
-            time: schedule.wakeUpTime
-        )
-    }
-
-    // Cancel both notifications for a schedule
-    func cancel(for schedule: SleepSchedule) {
-        let idPrefix = schedule.id.uuidString
-        center.removePendingNotificationRequests(withIdentifiers: ["bed-\(idPrefix)", "wake-\(idPrefix)"])
-    }
+//    func schedule(for schedule: SleepSchedule) {
+//        cancel(for: schedule) // clean up old ones first
+//
+//        let idPrefix = schedule.id.uuidString
+//
+//        scheduleNotification(
+//            id: "bed-\(idPrefix)",
+//            title: "Bedtime",
+//            body: "It's time to go to bed.",
+//            time: schedule.bedTime
+//        )
+//
+//        scheduleNotification(
+//            id: "wake-\(idPrefix)",
+//            title: "Wake Up ",
+//            body: "Time to start your day!",
+//            time: schedule.wakeUpTime
+//        )
+//    }
+//
+//    // Cancel both notifications for a schedule
+//    func cancel(for schedule: SleepSchedule) {
+//        let idPrefix = schedule.id.uuidString
+//        center.removePendingNotificationRequests(withIdentifiers: ["bed-\(idPrefix)", "wake-\(idPrefix)"])
+//    }
 
     // Helper to create and add a single daily notification
     private func scheduleNotification(id: String, title: String, body: String, time: DateComponents) {
