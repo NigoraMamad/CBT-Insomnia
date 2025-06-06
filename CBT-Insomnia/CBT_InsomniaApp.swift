@@ -17,9 +17,9 @@ struct CBT_InsomniaApp: App {
                 if onboardingCompleted {
                     ContentView()
                         .preferredColorScheme(.dark)
-                        .onAppear {
-                            NotificationManager.shared.requestAuthorization()
-                        }
+//                        .onAppear {
+//                            NotificationManager.shared.requestAuthorization()
+//                        }
                     
                 } else {
                     OnboardingPage1()
