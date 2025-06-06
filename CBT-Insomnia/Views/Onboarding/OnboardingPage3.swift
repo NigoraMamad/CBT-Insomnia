@@ -11,7 +11,7 @@ struct OnboardingPage3: View {
             VStack(spacing: 0) {
                 ScrollView {
                     VStack(spacing: 0) {
-                        ProgressBarOnboarding(progress: 2.0 / 6.0)
+                        ProgressBarOnboarding(progress: 2.0 / 7.0)
                             .padding(.top, 10)
                         
                         Spacer().frame(height: 50)

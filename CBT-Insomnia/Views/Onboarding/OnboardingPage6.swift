@@ -1,56 +1,51 @@
 
 
 import SwiftUI
-import HealthKit
+import UserNotifications
+
 
 struct OnboardingPage6: View {
-    
-    @State private var selectedSleepOption: String = ""
-
+    @State private var goToNextPage = false
+   
     
     var body: some View {
         ZStack {
             Color.black.ignoresSafeArea()
             
             VStack(spacing: 0) {
-                
+                // Contenuto principale
                 VStack(spacing: 0) {
-                    ProgressBarOnboarding(progress: 5.0 / 6.0)
+                    ProgressBarOnboarding(progress: 5.0 / 7.0)
                         .padding(.top, 10)
                     
                     Spacer().frame(height: 50)
                     
-                    Text("ALLOW THE CONNECTION TO")
+                    Text("NOTIFICATIONS ARE ESSENTIAL")
                         .font(.krungthep(.regular, relativeTo: .body))
                         .foregroundColor(.white)
                     
-                    Text("HEALTH IN ORDER TO LET ME GATHER")
+                    Text("TO MAKE THE TERAPY AS")
                         .font(.krungthep(.regular, relativeTo: .body))
                         .foregroundColor(.white)
                     
-                    Text("DATA ABOUT YOUR SLEEP!")
+                    Text("EFFICIENT")
                         .font(.krungthep(.regular, relativeTo: .body))
                         .foregroundColor(.white)
-                    
-                    Text("IT IS CRUCIAL!")
-                        .font(.krungthep(.regular, relativeTo: .body))
-                        .foregroundColor(.white)
-                    
-                    Spacer().frame(height: 40)
-                    
-                    RobotView()
                     
                     Spacer().frame(height: 10)
                     
+                    RobotView()
+                    
+                    Spacer().frame(height: 30)
                     
                     Spacer()
                 }
                 
                 OnboardingNavigationButton5(
-                    label: "ENABLE HEALTH",
+                    label: "ENABLE NOTIFICATIONS",
                     destination: OnboardingPage7(),
                     customAction: { completion in
-                        requestHealthKitPermission {
+                        requestNotificationPermission {
                             completion()
                         }
                     }
@@ -60,33 +55,58 @@ struct OnboardingPage6: View {
             .padding()
         }
     }
-}
-
-func requestHealthKitPermission(completion: @escaping () -> Void) {
-#if targetEnvironment(simulator)
-    print("Simulator: HealthKit not available, bypass request")
-    completion()
-    return
-#endif
     
-    let healthStore = HKHealthStore()
     
-    guard HKHealthStore.isHealthDataAvailable() else {
-        completion()
-        return
-    }
-    
-    let sleepType = HKObjectType.categoryType(forIdentifier: .sleepAnalysis)!
-    let typesToRead: Set = [sleepType]
-    
-    healthStore.requestAuthorization(toShare: [], read: typesToRead) { success, error in
-        DispatchQueue.main.async {
-            completion()
+    func requestNotificationPermission(completion: @escaping () -> Void) {
+        UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .badge, .sound]) { _, _ in
+            DispatchQueue.main.async {
+                completion()
+            }
         }
     }
 }
 
 
+struct OnboardingNavigationButton5<Destination: View>: View {
+    var label: String
+    var destination: Destination
+    var waitForPermission: Bool = false
+    var customAction: ((@escaping () -> Void) -> Void)? = nil
+    
+    @State private var navigate = false
+    
+    var body: some View {
+        VStack {
+            Button(action: {
+                if let action = customAction {
+                    // Passa la closure per attivare navigazione manuale
+                    action {
+                        navigate = true
+                    }
+                } else {
+                    navigate = true
+                }
+            }) {
+                Text(label)
+                    .font(.krungthep(.regular, relativeTo: .title2))
+                    .foregroundColor(.black)
+                    .frame(maxWidth: .infinity)
+                    .padding()
+                    .background(Color.white)
+                    .foregroundColor(.white)
+            }
+            .padding(.horizontal)
+            
+            NavigationLink(
+                destination: destination,
+                isActive: $navigate
+            ) {
+                EmptyView()
+            }
+            .hidden()
+        }
+    }
+}
 #Preview {
     OnboardingPage6()
 }

@@ -11,7 +11,7 @@ struct OnboardingPage2: View {
             VStack(spacing: 0) {
                 
                 VStack(spacing: 0) {
-                    ProgressBarOnboarding(progress: 1.0 / 6.0)
+                    ProgressBarOnboarding(progress: 1.0 / 7.0)
                         .padding(.top, 10)
                     
                     Spacer()
