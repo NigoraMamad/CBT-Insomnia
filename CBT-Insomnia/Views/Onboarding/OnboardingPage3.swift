@@ -32,7 +32,7 @@ struct OnboardingPage3: View {
                             .padding(.top, 30)
                             .padding(.horizontal, 20)
                     }
-                    .padding(.bottom, 40) // spazio extra per non coprire contenuto
+                    .padding(.bottom, 40) 
                 }
 
                 OnboardingNavigationButton(

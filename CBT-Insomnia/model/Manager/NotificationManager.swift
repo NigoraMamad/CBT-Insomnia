@@ -3,8 +3,7 @@
 //  CBT-Insomnia
 //
 //  Created by Nigorakhon Mamadalieva on 05/06/25.
-//
-
+/*
 import Foundation
 import UserNotifications
 
@@ -67,8 +66,7 @@ class NotificationManager {
         center.add(request)
     }
 }
-
-
+*/
 //NotificationManager.shared.schedule(for: newSchedule) -> When saving or updating a schedule:
 //NotificationManager.shared.cancel(for: scheduleToDelete) -> When deleting a schedule:
  
