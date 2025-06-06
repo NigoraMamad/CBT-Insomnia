@@ -8,5 +8,5 @@
 import SwiftUI
 
 
-// bedTime = averEfficiency for the week >= minEfficiencyGoal ? wakeuptime - duration sleep :
+//  = averEfficiency for the week >= minEfficiencyGoal ? wakeuptime - duration sleep :
 
