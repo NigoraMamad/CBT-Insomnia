@@ -8,19 +8,27 @@
 import SwiftUI
 
 struct ContentView: View {
-    
     @State var manager = HealthManager()
+    @AppStorage("userName") private var name: String = ""
     
-    let fixedBedTime: String = "02:00"
-    let fixedWakeTime: String = "07:00"
+    // From default or fallback
+    var wakeTime: String {
+        guard let wake = UserDefaultsService.shared.getWakeUpTime() else { return "07:00" }
+        let hour = wake.hour ?? 7
+        let minute = wake.minute ?? 0
+        return String(format: "%02d:%02d", hour, minute)
+    }
+    
+    var bedTime: String {
+        guard let bed = getBedTimeFromDefaults() else { return "01:00" }
+        let hour = bed.hour ?? 1
+        let minute = bed.minute ?? 0
+        return String(format: "%02d:%02d", hour, minute)
+    }
+    
     let day: String = "Monday"
     let nightEfficiency: Int = 80
     let nightTotalSleep: Int = 4
-    let bedTime: String = "02:20"
-    let wakeTime: String = "07:10"
-    
-    @AppStorage("userName") private var name: String = ""
-    
     
     @State private var isBadgingBedViewShown = false
     @State private var isBadgingWakeViewShown = false
@@ -45,8 +53,8 @@ struct ContentView: View {
                     
                     RobotView()
                     BadgeSleepCard(
-                        fixedBedTime: fixedBedTime,
-                        fixedWakeTime: fixedWakeTime,
+                        fixedBedTime: bedTime,
+                        fixedWakeTime: wakeTime,
                         onBedTap: {
                             isBadgingBedViewShown = true
                         },
@@ -107,4 +115,33 @@ struct ContentView: View {
 
 #Preview {
     ContentView()
+}
+
+
+func getBedTimeFromDefaults() -> DateComponents? {
+    guard
+        let wakeUpTime = UserDefaultsService.shared.getWakeUpTime(),
+        let sleepDuration = UserDefaultsService.shared.getSleepDuration()
+    else {
+        return nil
+    }
+    
+    let wakeHour = wakeUpTime.hour ?? 7
+    let wakeMinute = wakeUpTime.minute ?? 0
+    let durationHour = sleepDuration.dateComponents.hour ?? 6
+    let durationMinute = sleepDuration.dateComponents.minute ?? 0
+    
+    var calendar = Calendar.current
+    calendar.timeZone = .current
+    
+    var wakeComponents = calendar.dateComponents([.year, .month, .day], from: Date())
+    wakeComponents.hour = wakeHour
+    wakeComponents.minute = wakeMinute
+    
+    guard let wakeDate = calendar.date(from: wakeComponents) else { return nil }
+    
+    let totalMinutes = -(durationHour * 60 + durationMinute)
+    let bedDate = calendar.date(byAdding: .minute, value: totalMinutes, to: wakeDate)!
+    
+    return calendar.dateComponents([.hour, .minute], from: bedDate)
 }
