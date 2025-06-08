@@ -8,8 +8,6 @@
 import Foundation
 
 enum Period: String, CaseIterable {
-    case day = "DAY"
-    case week = "WEEK"
-    case month = "MONTH"
-    case year = "YEAR"
+    case day = "Day"
+    case week = "Week"
 } // -> Period

@@ -146,12 +146,12 @@ class HealthManager: ObservableObject {
             var sleepBlocks: [(start: Date, end: Date, asleepDuration: TimeInterval)] = []
             
             // NO IN BED PARAMETER
-            for (date, dailySamples) in groupedByDay {
+            for (_, dailySamples) in groupedByDay {
                 var currentStart: Date?
                 var currentEnd: Date?
                 var currentAsleep: TimeInterval = 0
                 
-                for (index, sample) in dailySamples.enumerated() {
+                for (_, sample) in dailySamples.enumerated() {
                     
                     let stage = sample.value
                     let isAsleep = [

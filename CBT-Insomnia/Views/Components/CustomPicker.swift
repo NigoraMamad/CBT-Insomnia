@@ -26,16 +26,15 @@ struct CustomPicker: View {
                     } // -> withAnimation
                 } label: {
                     Text(opt.rawValue)
-                        .font(.system(size: 17.5))
-                        .foregroundStyle(selection == opt ? .accent : .black)
-                        .frame(maxWidth: .infinity, minHeight: 20)
+                        .foregroundStyle(selection == opt ? .black : .white)
+                        .frame(maxWidth: .infinity, minHeight: 15, maxHeight: 20)
                         .padding(.vertical, 4)
                 } // -> Button
                 .background(
                     ZStack {
                         if selection == opt {
                             RoundedRectangle(cornerRadius: 10)
-                                .fill(.black)
+                                .fill(.white)
                                 .matchedGeometryEffect(id: "background", in: animation)
                         } // -> if
                     } // -> ZStack
@@ -43,9 +42,10 @@ struct CustomPicker: View {
             } // -> ForEach
             
         } // -> HStack
-        .padding(4)
-        .background(.accent)
-        .clipShape(RoundedRectangle(cornerRadius: 10))
+        .background(.tertiary)
+        .clipShape(
+            RoundedRectangle(cornerRadius: 10)
+        )
         
     } // -> body
     

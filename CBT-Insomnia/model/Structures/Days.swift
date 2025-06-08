@@ -15,4 +15,15 @@ enum Days: String, CaseIterable {
     case fri = "FRI"
     case sat = "SAT"
     case sun = "SUN"
+    
+    var shortLabel: String {
+        switch self {
+            case .mon: return "M"
+            case .tue, .thu: return "T"
+            case .wed: return "W"
+            case .fri: return "F"
+            case .sat, .sun: return "S"
+        } // -> switch
+    } // -> shortLabel
+    
 } // -> Period
