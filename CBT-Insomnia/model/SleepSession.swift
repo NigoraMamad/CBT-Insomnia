@@ -11,9 +11,9 @@ import Foundation
 @Model
 class SleepSession {
     var id: UUID
-    var day: Date
-    var wakeUpTime: Date
-    var timeInBed: TimeInterval
+    var day: Date // date for every night
+    var badgeWakeUpTime: Date // time from badge-out
+    var badgeBedTime: TimeInterval // time from badge-in
     var sleepDuration: TimeInterval
     var sleepEfficiency: Double
 
@@ -23,18 +23,18 @@ class SleepSession {
         id: UUID = UUID(),
         day: Date,
         bedTime: Date,
-        wakeUpTime: Date,
-        timeInBed: TimeInterval,
+        badgeWakeUpTime: Date,
+        badgeBedTime: TimeInterval,
         sleepDuration: TimeInterval
 //        schedule: SleepSchedule? = nil
     ) {
 //        let timeInBed = wakeUpTime.timeIntervalSince(bedTime)
-        let efficiency = timeInBed > 0 ? (sleepDuration / timeInBed) * 100 : 0
+        let efficiency = badgeBedTime > 0 ? (sleepDuration / badgeBedTime) * 100 : 0
 
         self.id = id
         self.day = day
-        self.wakeUpTime = wakeUpTime
-        self.timeInBed = timeInBed
+        self.badgeWakeUpTime = badgeWakeUpTime
+        self.badgeBedTime = badgeBedTime
         self.sleepDuration = sleepDuration
         self.sleepEfficiency = efficiency
 //        self.schedule = schedule

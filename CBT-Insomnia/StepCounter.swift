@@ -48,6 +48,7 @@ class StepCounter: ObservableObject {
         pedometer.stopUpdates()
         isTracking = false
         isStoppedTracking = true
+        //save hour
     }
 
     func reset() {
