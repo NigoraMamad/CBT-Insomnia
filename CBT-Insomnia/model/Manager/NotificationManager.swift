@@ -82,13 +82,17 @@ class NotificationManager {
     static let shared = NotificationManager()
     private let center = UNUserNotificationCenter.current()
     
+    
     private init() {}
+    
+    
     func scheduleDailyNotifications() {
-        
         center.removeAllPendingNotificationRequests()
-        
+
         scheduleNotification(for: .bedTime)
         scheduleNotification(for: .wakeUpTime)
+        
+        scheduleRandomNotification()
     }
     
     private func scheduleNotification(for type: NotificationType) {
@@ -129,7 +133,51 @@ class NotificationManager {
             }
         }
     }
+    
+    
+    func scheduleRandomNotification() {
+        let messages = [
+            "⏰ Stay up until your bedtime — your sleep rhythm will thank you!",
+            "😴 Go to bed only when you’re truly sleepy — not just bored.",
+            "🛏️ Use your bed just for sleep — not scrolling!",
+            "🚫 Skip the nap — save that tiredness for tonight!",
+            "✨ Consistency is magic — same routine, better sleep!"
+        ]
+        
+        guard let message = messages.randomElement() else { return }
+
+        let randomTime = randomTimeBetween12And19()
+
+        let content = UNMutableNotificationContent()
+        content.title = "Sleep Tip 💤"
+        content.body = message
+        content.sound = .default
+
+        let trigger = UNCalendarNotificationTrigger(dateMatching: randomTime, repeats: true)
+
+        let request = UNNotificationRequest(
+            identifier: UUID().uuidString,
+            content: content,
+            trigger: trigger
+        )
+
+        UNUserNotificationCenter.current().add(request) { error in
+            if let error = error {
+                print("Random notification error \(error.localizedDescription)")
+            }
+        }
+    }
+    
+    func randomTimeBetween12And19() -> DateComponents {
+        let hour = Int.random(in: 12...18)
+        let minute = Int.random(in: 0..<60)
+        return DateComponents(hour: hour, minute: minute)
+    }
+    
 }
+
+
+
 
 enum NotificationType {
     case bedTime
