@@ -6,63 +6,79 @@
 //
 
 import SwiftUI
+import SwiftData
 
 struct StatisticsView: View {
     
+    @Environment(\.dismiss) var dismiss
+    
     @EnvironmentObject var manager: HealthManager
+    
+    @Environment(\.modelContext) private var context
+    
+    @State private var selectedPeriod: Period = .day
+    
+    let bedTime: DateComponents
+    let wakeTime: DateComponents
     
     var body: some View {
         
-        ZStack {
+        ZStack(alignment: .top) {
             
-            VStack(alignment: .center) {
+            VStack {
                 
-                ScrollView {
-                    
-                    // MARK: DIALOG BUBBLE
-                    Dialogue(
-                        mainPlaceholder:"GOOD MORNING, DIMA!",
-                        placeholder: "THIS IS YOUR LAST NIGHT REPORT.\nIT’S LOOKING GOOD!"
-                    ) // -> Dialogue
-                        .padding(.top, 10)
-                    
-                    // MARK: AVATAR
-                    Image(.avatar)
-                        .resizable()
-                        .scaledToFit()
-                        .frame(width: 200)
-                        .padding(.bottom, 50)
-                    
-                    // MARK: STEPS TEXT
-                    HStack {
-                        Text("TAP")
-                            .foregroundStyle(.white)
-                        Text("SORTIE")
-                            .foregroundStyle(.accent)
-                        Text("TO FOLLOW MORE STEPS")
-                            .foregroundStyle(.white)
-                    } // -> HStack
-                    .font(.system(size: 20))
-                    .padding(.bottom, 20)
-                    
-                    // MARK: SLEEP SUMMARY
-                    SleepSummary()
-                        .environmentObject(manager)
-                    
-                } // -> ScrollView
-                .scrollIndicators(.hidden)
+                // MARK: PICKER
+                CustomPicker(selection: $selectedPeriod, options: Period.allCases)
+                   .padding(.horizontal, 50)
+                    .padding(.top, 10)
+                    .padding(.bottom, 30)
+                
+                switch selectedPeriod {
+                    case .day: DaySummary()
+                    case .week: WeekSummary()
+                } // switch selectedPeriod
+                
+                Spacer()
                 
             } // -> VStack
             .padding(.horizontal)
             
         } // -> ZStack
         // MARK: BG COLOR
-        .background(Color.black.edgesIgnoringSafeArea(.all))
+        .onAppear {
+            manager.fetchSleep(
+                modelContext: context,
+                badgeIn: bedTime,
+                badgeOut: wakeTime
+            ) // -> manager
+        } // -> task
+        .preferredColorScheme(.dark)
+        .font(.krungthep(.regular, relativeTo: .callout))
+        .navigationBarBackButtonHidden(true)
+        .toolbar {
+            ToolbarItem(placement: .navigationBarLeading) {
+                Button {
+                    dismiss()
+                } label: {
+                    Image(systemName: "chevron.left")
+                        .foregroundStyle(.white)
+                } // -> Button
+            } // -> ToolbarItem
+            ToolbarItem(placement: .principal) {
+                Text("STATISTICS")
+                    .font(.krungthep(.regular, relativeTo: .callout))
+            }
+        } // -> toolbar
         
     } // -> body
     
 } // -> HomeView
 
 #Preview {
-    StatisticsView()
+    @Previewable @State var manager = HealthManager()
+    StatisticsView(
+        bedTime: DateComponents(hour: 0, minute: 30),
+        wakeTime: DateComponents(hour: 10, minute: 30)
+    ) // -> StatisticsView
+        .environmentObject(manager)
 } // -> Preview

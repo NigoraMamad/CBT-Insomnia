@@ -16,7 +16,6 @@ struct CBT_InsomniaApp: App {
             NavigationStack {
                 if onboardingCompleted {
                     ContentView()
-                        .preferredColorScheme(.dark)
 //                        .onAppear {
 //                            NotificationManager.shared.requestAuthorization()
 //                        }
@@ -25,6 +24,8 @@ struct CBT_InsomniaApp: App {
                     OnboardingPage1()
                 }
             }
+            .preferredColorScheme(.dark)
+            .modelContainer(for: SleepSession.self)
         }
     }
 }

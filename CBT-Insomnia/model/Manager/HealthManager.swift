@@ -7,6 +7,7 @@
 
 import Foundation
 import HealthKit
+import SwiftData
 
 class HealthManager: ObservableObject {
     
@@ -49,26 +50,73 @@ class HealthManager: ObservableObject {
     
     
     
-    func fetchSleep() {
-        
-        //if !self.authorization { return }
-        
-        let sleepType = HKObjectType.categoryType(forIdentifier: .sleepAnalysis)!
-        
+    func fetchSleep(
+        modelContext: ModelContext,
+        badgeIn: DateComponents,
+        badgeOut: DateComponents
+    ) {
+        // Current day
         let calendar = Calendar.current
         let now = Date()
         
+        // Calculate current week
         let weekday = calendar.component(.weekday, from: now)
+        print(weekday)
+        let daysSinceMonday = (weekday + 4) % 7 // MODIFY LATER TO 5
+        print(daysSinceMonday)
+        let startOfWeek = calendar.date(byAdding: .day, value: -daysSinceMonday-1, to: calendar.startOfDay(for: now))!
+        print(startOfWeek)
         
-        // Calculate how many days have passed since Monday
-        let daysSinceMonday = (weekday + 5) % 7
-        let startOfWeek = calendar.date(byAdding: .day, value: -daysSinceMonday, to: calendar.startOfDay(for: now))!
+        // Get all dates from Monday to Today
+        let datesToCheck = (1...daysSinceMonday+1).compactMap {
+            calendar.date(byAdding: .day, value: $0, to: startOfWeek)
+        } // -> datesToCheck
+        print(datesToCheck)
         
-        // Week start on Monday at 6:00 PM??? Talk with team and modify later???
-        let startDate = calendar.date(bySettingHour: 18, minute: 0, second: 0, of: startOfWeek)!
+        // Fetch existing SleepSessions
+        let fetchDescriptor = FetchDescriptor<SleepSession>(
+            predicate: #Predicate { session in
+                session.day >= startOfWeek && session.day <= now
+            } // -> predicate
+        ) // -> fetchDescriptor
         
-        // Define today at 6:00 PM as the end
-        let endDate = calendar.date(bySettingHour: 10, minute: 0, second: 0, of: now)!
+        // Calculate missingDates
+        var missingDates: [Date] = []
+        
+        do {
+            let existingSessions = try modelContext.fetch(fetchDescriptor)
+            let existingDates = Set(existingSessions.map {
+                calendar.startOfDay(for: $0.day)
+            }) // -> existingDates
+
+            // Compute missing dates
+            missingDates = datesToCheck.filter { !existingDates.contains($0) }
+
+            guard !missingDates.isEmpty else {
+                print("All sleep sessions for this week already exist.")
+                return
+            }
+            
+            print("existingSessions: \(existingSessions)")
+
+        } catch {
+            print("Failed to fetch existing sessions: \(error)")
+            return
+        } // -> do-catch
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        // Fetch all HealthKit sleep data of the missing dates
+        let sleepType = HKObjectType.categoryType(forIdentifier: .sleepAnalysis)!
+        let startDate = calendar.date(bySettingHour: 18, minute: 0, second: 0, of: startOfWeek)! // Week start on Monday at 6:00 PM??? Talk with team and modify later???
+        let endDate = calendar.date(bySettingHour: 10, minute: 0, second: 0, of: now)! // Define today at 6:00 PM as the end
         
         let predicate = HKQuery.predicateForSamples(withStart: startDate, end: endDate, options: .strictStartDate)
         
@@ -76,34 +124,69 @@ class HealthManager: ObservableObject {
             guard let samples = samples as? [HKCategorySample] else {
                 print("error fetching sleep analysis data: \(String(describing: error))")
                 return
-            } // -> guard
+            } // -> samples
             
+            let asleepSamples = samples.filter {
+                $0.value == HKCategoryValueSleepAnalysis.asleepUnspecified.rawValue ||
+                $0.value == HKCategoryValueSleepAnalysis.asleepCore.rawValue ||
+                $0.value == HKCategoryValueSleepAnalysis.asleepDeep.rawValue ||
+                $0.value == HKCategoryValueSleepAnalysis.asleepREM.rawValue
+            }
+            let grouped = Dictionary(grouping: asleepSamples) { sample in
+                calendar.startOfDay(for: sample.startDate)
+            } // -> grouped
+
             DispatchQueue.main.async {
-                self.sleepItems = samples.compactMap { sample in
-                    var stage: SleepStage {
-                        switch sample.value {
-                            case HKCategoryValueSleepAnalysis.awake.rawValue: .awake
-                            case HKCategoryValueSleepAnalysis.asleepREM.rawValue: .rem
-                            case HKCategoryValueSleepAnalysis.asleepCore.rawValue: .core
-                            case HKCategoryValueSleepAnalysis.asleepDeep.rawValue: .deep
-                            case HKCategoryValueSleepAnalysis.asleepUnspecified.rawValue: .asleep
-                            default: .unknown
-                        } // -> switch
-                    } // -> sleepStage
-                    let sleepItem = SleepItem(sleepStage: stage, startDate: sample.startDate, endDate: sample.endDate)
-                    print(sleepItem)
-                    print("Start: \(sleepItem.startDate.formatted(date: .abbreviated, time: .shortened))")
-                    print("End: \(sleepItem.endDate.formatted(date: .abbreviated, time: .shortened))")
-                    print()
-                    return sleepItem
-                } // -> sleepItems
+                
+                for date in missingDates {
+                    guard let segments = grouped[date] else {
+                        print("No HealthKit sleep data for \(date). Skipping.")
+                        print()
+                        continue
+                    } // -> segments
+
+                    let sleepDuration = segments.reduce(0.0) {
+                        $0 + $1.endDate.timeIntervalSince($1.startDate)
+                    } // -> sleepDuration
+                    
+                    var componentsBadgeIn = Calendar.current.dateComponents([.year, .month, .day], from: date)
+                    componentsBadgeIn.hour = badgeIn.hour
+                    componentsBadgeIn.minute = badgeIn.minute
+                    componentsBadgeIn.second = badgeIn.second
+                    
+                    var componentsBadgeOut = Calendar.current.dateComponents([.year, .month, .day], from: date)
+                    componentsBadgeOut.hour = badgeOut.hour
+                    componentsBadgeOut.minute = badgeOut.minute
+                    componentsBadgeOut.second = badgeOut.second
+
+                    let newSession = SleepSession(
+                        day: date,
+                        badgeWakeUpTime: Calendar.current.date(from: componentsBadgeOut)!,
+                        badgeBedTime: Calendar.current.date(from: componentsBadgeOut)!.timeIntervalSince(Calendar.current.date(from: componentsBadgeIn)!),
+                        sleepDuration: sleepDuration
+                    ) // -> session
+                    
+                    print(newSession)
+                    
+                    modelContext.insert(newSession)
+                    
+                    do {
+                        try modelContext.save()
+                    } catch {
+                        print("Failed to save: \(error)")
+                    } // -> do-catch
+                    
+                } // -> for missingDates
+
+                print("Inserted missing sleep sessions.")
+                
             } // -> DispatchQueue
             
         } // -> let
+        
         healthStore.execute(query)
             
     } // -> fetchSleep
-    
     
     
     func calculateSleepEfficiency() {
@@ -146,12 +229,12 @@ class HealthManager: ObservableObject {
             var sleepBlocks: [(start: Date, end: Date, asleepDuration: TimeInterval)] = []
             
             // NO IN BED PARAMETER
-            for (date, dailySamples) in groupedByDay {
+            for (_, dailySamples) in groupedByDay {
                 var currentStart: Date?
                 var currentEnd: Date?
                 var currentAsleep: TimeInterval = 0
                 
-                for (index, sample) in dailySamples.enumerated() {
+                for (_, sample) in dailySamples.enumerated() {
                     
                     let stage = sample.value
                     let isAsleep = [
@@ -215,17 +298,9 @@ class HealthManager: ObservableObject {
     
     
     
-    func dateFor(day: Days) -> Date? {
-        let calendar = Calendar.current
-        let today = Date()
-        
-        guard let index = Days.allCases.firstIndex(of: day) else { return nil }
-        
-        let todayWeekday = calendar.component(.weekday, from: today)
-        let daysSinceMonday = (todayWeekday + 5) % 7
-        let startOfWeek = calendar.date(byAdding: .day, value: -daysSinceMonday, to: calendar.startOfDay(for: today))!
-
-        return calendar.date(byAdding: .day, value: index, to: startOfWeek)
+    func dateFor(date: Date) -> Days  {
+        let componentDate = Calendar.current.dateComponents([.weekday], from: date)
+        return Days.allCases.first(where: { $0.weekday == componentDate.weekday }) ?? .mon
     } // -> dateFor
     
 } // -> HealthManager

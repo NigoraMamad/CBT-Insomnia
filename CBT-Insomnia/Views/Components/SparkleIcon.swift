@@ -17,9 +17,9 @@ struct SparkleIcon: View {
                 .scaledToFit()
                 .foregroundColor(.accent)
                 .padding(geo.size.width/4)
-                .shadow(color: Color.springGreen.opacity(0.8), radius: 10, x: 0, y: 0)
-                .shadow(color: Color.springGreen.opacity(0.6), radius: 30, x: 0, y: 0)
-                .shadow(color: Color.springGreen.opacity(0.2), radius: 50, x: 0, y: 0)
+                .shadow(color: Color.accent.opacity(0.8), radius: 10, x: 0, y: 0)
+                .shadow(color: Color.accent.opacity(0.6), radius: 30, x: 0, y: 0)
+                .shadow(color: Color.accent.opacity(0.2), radius: 50, x: 0, y: 0)
                 .background(
                     Circle()
                         .fill(.accentShineeBg)
