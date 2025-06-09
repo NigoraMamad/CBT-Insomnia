@@ -8,6 +8,8 @@
 import SwiftUI
 
 struct StepsView: View {
+    
+    @Environment(\.modelContext) private var modelContext
    
     @ObservedObject var stepCounter: StepCounter
     @State private var isWaitingForRealSteps = false
@@ -63,7 +65,7 @@ struct StepsView: View {
         .font(.dsDigital(.regular, relativeTo: .title))
         .foregroundColor(.white)
         .fullScreenCover(isPresented: $isMainViewShown) {
-            ContentView()
+            ContentView(context: modelContext)
         }
     }
 }

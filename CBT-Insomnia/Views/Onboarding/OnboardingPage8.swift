@@ -8,6 +8,9 @@
 import SwiftUI
 
 struct OnboardingPage8: View {
+    @Environment(\.modelContext) private var modelContext
+
+    
     @AppStorage("onboardingCompleted") var onboardingCompleted = false
     @State private var navigate = false
 
@@ -46,7 +49,7 @@ struct OnboardingPage8: View {
                 .padding(.horizontal)
 
                 NavigationLink(
-                    destination: ContentView()
+                    destination: ContentView(context: modelContext)
                         .navigationBarBackButtonHidden(true),
                     isActive: $navigate
                 ) {
