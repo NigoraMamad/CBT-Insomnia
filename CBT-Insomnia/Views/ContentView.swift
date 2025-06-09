@@ -6,10 +6,18 @@
 //
 
 import SwiftUI
+import SwiftData
 
 struct ContentView: View {
     @State var manager = HealthManager()
     @AppStorage("userName") private var name: String = ""
+    
+    @Environment(\.modelContext) private var modelContext
+    @StateObject private var adjustmentVM: SleepAdjustmentViewModel
+    
+    init(context: ModelContext) {
+        _adjustmentVM = StateObject(wrappedValue: SleepAdjustmentViewModel(context: context))
+    }
     
     // From default or fallback
     var wakeTime: String {
@@ -71,6 +79,7 @@ struct ContentView: View {
                     Spacer()
                 }
                 
+                
             }
             .fullScreenCover(isPresented: $isBadgingBedViewShown) {
                 BadgingBedView()
@@ -80,7 +89,17 @@ struct ContentView: View {
             }
             .ignoresSafeArea()
         }
+        
+        .onAppear {
+            adjustmentVM.checkIfShouldShowWeeklySummary()
+        }
+        .sheet(isPresented: $adjustmentVM.showEfficiencySheet) {
+            WeeklyEfficiencySheet(viewModel: adjustmentVM)
+                .presentationDetents([.medium])
+        }
+        
     }
+    
     
     func getMainPHForCurrentTime() -> MainPH {
         let hour = Calendar.current.component(.hour, from: Date())
@@ -112,10 +131,6 @@ struct ContentView: View {
     }
 }
 
-
-#Preview {
-    ContentView()
-}
 
 
 func getBedTimeFromDefaults() -> DateComponents? {

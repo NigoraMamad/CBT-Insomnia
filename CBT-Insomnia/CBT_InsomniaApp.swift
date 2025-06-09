@@ -6,25 +6,23 @@
 //
 
 import SwiftUI
+import SwiftData
 
 @main
 struct CBT_InsomniaApp: App {
     @AppStorage("onboardingCompleted") var onboardingCompleted = false
-    
+
     var body: some Scene {
         WindowGroup {
             NavigationStack {
                 if onboardingCompleted {
-                    ContentView()
+                    ContentViewWrapper()
                         .preferredColorScheme(.dark)
-//                        .onAppear {
-//                            NotificationManager.shared.requestAuthorization()
-//                        }
-                    
                 } else {
                     OnboardingPage1()
                 }
             }
+            .modelContainer(for: [SleepSession.self])
         }
     }
 }
