@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import SwiftData
 
 @main
 struct CBT_InsomniaApp: App {
@@ -17,6 +18,7 @@ struct CBT_InsomniaApp: App {
                 if onboardingCompleted {
                     ContentView()
                         .preferredColorScheme(.dark)
+                        .environmentObject(SleepDataService.shared)
 //                        .onAppear {
 //                            NotificationManager.shared.requestAuthorization()
 //                        }
@@ -26,5 +28,6 @@ struct CBT_InsomniaApp: App {
                 }
             }
         }
+        .modelContainer(for: SleepSession.self)
     }
 }
