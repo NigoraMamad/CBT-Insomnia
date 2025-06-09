@@ -8,11 +8,7 @@
 import SwiftUI
 
 struct LastNightCard: View {
-    let day: String
-    let nightEfficiency: Int
-    let nighTotalSleep: Int
-    let bedTime: String
-    let wakeTime: String
+    let session: SleepSession
     
     var body: some View {
         VStack(alignment: .leading) {
@@ -26,10 +22,10 @@ struct LastNightCard: View {
                     .foregroundStyle(.accent)
                     .padding(.bottom, 4)
             }
-        
+            
             VStack {
                 HStack {
-                    Text(day)
+                    Text(session.formattedNightDate)
                         .font(.krungthep(.regular, relativeTo: .body))
                     Spacer()
                     Image(systemName: "chevron.right")
@@ -39,19 +35,27 @@ struct LastNightCard: View {
                 Spacer()
                 
                 VStack {
-                    Text(nightEfficiency.formatted(.percent))
-                        .font(.dsDigital(.bold, size: 96))
-                        .font(.largeTitle)
-                    Text("You slept \(nighTotalSleep) hours")
-                        .font(.krungthep(.regular, relativeTo: .body))
+                    if session.isComplete {
+                        Text(Int(session.sleepEfficiency).formatted(.percent))
+                            .font(.dsDigital(.bold, size: 96))
+                        Text("You slept \(Int(session.timeInBed / 3600)) hours")
+                            .font(.krungthep(.regular, relativeTo: .body))
+                    } else {
+                        Text("In Progress")
+                            .font(.krungthep(.regular, size: 48))
+                            .foregroundColor(.orange)
+                        Text("Sleep session not completed")
+                            .font(.krungthep(.regular, relativeTo: .body))
+                    }
                 }
                 
                 Spacer()
                 
                 HStack {
-                    Label(bedTime, systemImage: "moon.zzz.fill")
+                    Label(session.formattedBadgeInTime, systemImage: "moon.zzz.fill")
                     Spacer()
-                    Label(wakeTime, systemImage: "sun.max.fill")
+                    Label(session.formattedBadgeOutTime, systemImage: "sun.max.fill")
+                        .foregroundColor(session.isComplete ? .primary : .secondary)
                 }
                 .font(.krungthep(.regular, relativeTo: .callout))
                 .padding()
@@ -67,10 +71,21 @@ struct LastNightCard: View {
     }
 }
 
+
 #Preview {
+    let now = Date()
+    let earlier = Calendar.current.date(byAdding: .hour, value: -6, to: now)!
+    let session = SleepSession(
+        nightDate: Calendar.current.date(byAdding: .day, value: -1, to: now)!,
+        badgeInTime: earlier,
+        badgeOutTime: now,
+        sleepDuration: 5 * 3600
+    )
+    
     ZStack {
         Color.black
-        LastNightCard(day: "Monday", nightEfficiency: 75, nighTotalSleep: 4, bedTime: "02.30", wakeTime: "07.00")
+        LastNightCard(session: session)
     }
     .ignoresSafeArea()
 }
+

@@ -5,8 +5,8 @@
 //  Created by Nigorakhon Mamadalieva on 21/05/25.
 //
 
-import SwiftData
 import Foundation
+import SwiftData
 
 @Model
 class SleepSession {
@@ -25,9 +25,17 @@ class SleepSession {
         sleepDuration: TimeInterval
     ) {
         self.id = id
-        self.day = day
-        self.badgeWakeUpTime = badgeWakeUpTime
-        self.badgeBedTime = badgeBedTime
+        self.nightDate = nightDate
+        self.badgeInTime = badgeInTime
+        self.badgeOutTime = badgeOutTime
+        
+        // Only calculate timeInBed if badgeOutTime exists
+        if let badgeOutTime = badgeOutTime {
+            self.timeInBed = badgeOutTime.timeIntervalSince(badgeInTime)
+        } else {
+            self.timeInBed = 0
+        }
+        
         self.sleepDuration = sleepDuration
         self.sleepEfficiency = badgeBedTime > 0 ? (sleepDuration / badgeBedTime) * 100 : 0
     }

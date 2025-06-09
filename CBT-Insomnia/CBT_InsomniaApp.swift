@@ -18,11 +18,17 @@ struct CBT_InsomniaApp: App {
                 if onboardingCompleted {
                     ContentViewWrapper()
                         .preferredColorScheme(.dark)
+                        .environmentObject(SleepDataService.shared)
+//                        .onAppear {
+//                            NotificationManager.shared.requestAuthorization()
+//                        }
+                    
                 } else {
                     OnboardingPage1()
                 }
             }
             .modelContainer(for: [SleepSession.self])
         }
+        .modelContainer(for: SleepSession.self)
     }
 }

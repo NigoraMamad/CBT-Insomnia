@@ -16,6 +16,9 @@ struct TrackingBedView: View {
     @State private var showGoodnight = false
     @State private var isMainViewShown = false
     
+    @EnvironmentObject private var sleepDataService: SleepDataService
+    @Environment(\.modelContext) private var modelContext
+    
     var body: some View {
         ZStack {
             Color.black
@@ -90,6 +93,9 @@ struct TrackingBedView: View {
             // Add a small delay for better UX
             DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
                 showGoodnight = true
+                
+                // Save badge-in time
+                SleepDataService.shared.startSleepSession(context: modelContext)
                 
                 // Tell the watch to stop tracking
                 WCSession.default.sendMessage(["command": "stopTracking"], replyHandler: nil, errorHandler: { error in

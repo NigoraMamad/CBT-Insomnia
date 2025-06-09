@@ -4,8 +4,9 @@
 //
 //  Created by Nigorakhon Mamadalieva on 27/05/25.
 //
-import Foundation
+import SwiftUI
 import CoreMotion
+import SwiftData
 
 class StepCounter: ObservableObject {
     private var pedometer = CMPedometer()
@@ -15,6 +16,9 @@ class StepCounter: ObservableObject {
     @Published var isTracking = false
     @Published var isStoppedTracking = false
     @Published var showGoalReachedAlert = false
+    
+    @EnvironmentObject private var sleepDataService: SleepDataService
+    @Environment(\.modelContext) private var modelContext
 
     func startTracking() {
         guard CMPedometer.isStepCountingAvailable() else {
@@ -48,7 +52,9 @@ class StepCounter: ObservableObject {
         pedometer.stopUpdates()
         isTracking = false
         isStoppedTracking = true
-        //save hour
+        
+        // Save badge-out time
+        SleepDataService.shared.completeSleepSession(context: modelContext)
     }
 
     func reset() {
