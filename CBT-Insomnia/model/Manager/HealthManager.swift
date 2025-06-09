@@ -162,7 +162,9 @@ class HealthManager: ObservableObject {
                     let newSession = SleepSession(
                         day: date,
                         badgeWakeUpTime: Calendar.current.date(from: componentsBadgeOut)!,
-                        badgeBedTime: Calendar.current.date(from: componentsBadgeOut)!.timeIntervalSince(Calendar.current.date(from: componentsBadgeIn)!),
+//                        badgeBedTime: Calendar.current.date(from: componentsBadgeOut)!.timeIntervalSince(Calendar.current.date(from: componentsBadgeIn)!),
+                        badgeBedTime: Calendar.current.date(from: componentsBadgeIn)!,
+
                         sleepDuration: sleepDuration
                     ) // -> session
                     

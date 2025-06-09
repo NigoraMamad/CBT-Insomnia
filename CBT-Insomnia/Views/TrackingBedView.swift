@@ -7,6 +7,7 @@
 
 import SwiftUI
 import WatchConnectivity
+import SwiftData
 
 struct TrackingBedView: View {
     
@@ -17,7 +18,6 @@ struct TrackingBedView: View {
     @State private var isMainViewShown = false
     
     @EnvironmentObject private var sleepDataService: SleepDataService
-    @Environment(\.modelContext) private var modelContext
     
     var body: some View {
         ZStack {

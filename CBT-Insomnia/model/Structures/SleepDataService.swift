@@ -11,15 +11,15 @@ import SwiftData
 class SleepDataService: ObservableObject {
     static let shared = SleepDataService()
     
-    func startSleepSession(context: ModelContext, badgeInTime: Date = Date()) {
-        let nightDate = getNightDateForBedTime(badgeInTime)
-        if let existingSession = getSleepSession(for: nightDate, context: context) {
-            existingSession.badgeInTime = badgeInTime
+    func startSleepSession(context: ModelContext, badgeBedTime: Date = Date()) {
+        let day = getNightDateForBedTime(badgeBedTime)
+        if let existingSession = getSleepSession(for: day, context: context) {
+            existingSession.badgeBedTime = badgeBedTime
             // Don't modify badgeOutTime here - leave it as nil until wake up
         } else {
             let session = SleepSession(
-                nightDate: nightDate,
-                badgeInTime: badgeInTime
+              day: day,
+              badgeBedTime: badgeBedTime, sleepDuration: 8.0 // this line must be changed
                 // Don't set badgeOutTime - let it remain nil
             )
             context.insert(session)
@@ -27,21 +27,21 @@ class SleepDataService: ObservableObject {
         saveContext(context)
     }
     
-    func completeSleepSession(context: ModelContext, badgeOutTime: Date = Date()) {
-        let nightDate = getNightDateForWakeTime(badgeOutTime)
-        if let session = getSleepSession(for: nightDate, context: context) {
-            session.badgeOutTime = badgeOutTime
-            session.timeInBed = badgeOutTime.timeIntervalSince(session.badgeInTime)
+    func completeSleepSession(context: ModelContext, badgeWakeUpTime: Date = Date()) {
+        let day = getNightDateForWakeTime(badgeWakeUpTime)
+        if let session = getSleepSession(for: day, context: context) {
+            session.badgeWakeUpTime = badgeWakeUpTime
+            session.timeInBed = badgeWakeUpTime.timeIntervalSince(session.badgeBedTime)
             saveContext(context)
         }
     }
     
-    func getSleepSession(for nightDate: Date, context: ModelContext) -> SleepSession? {
+    func getSleepSession(for day: Date, context: ModelContext) -> SleepSession? {
         let calendar = Calendar.current
-        let startOfDay = calendar.startOfDay(for: nightDate)
+        let startOfDay = calendar.startOfDay(for: day)
         let endOfDay = calendar.date(byAdding: .day, value: 1, to: startOfDay)!
         let predicate = #Predicate<SleepSession> {
-            $0.nightDate >= startOfDay && $0.nightDate < endOfDay
+            $0.day >= startOfDay && $0.day < endOfDay
         }
         let descriptor = FetchDescriptor<SleepSession>(predicate: predicate)
         return try? context.fetch(descriptor).first
@@ -50,7 +50,7 @@ class SleepDataService: ObservableObject {
     // Updated to accept context parameter
     func getRecentSleepSessions(context: ModelContext, limit: Int = 7) -> [SleepSession] {
         var descriptor = FetchDescriptor<SleepSession>(
-            sortBy: [SortDescriptor(\.nightDate, order: .reverse)]
+            sortBy: [SortDescriptor(\.day, order: .reverse)]
         )
         descriptor.fetchLimit = limit
         return (try? context.fetch(descriptor)) ?? []
@@ -59,12 +59,12 @@ class SleepDataService: ObservableObject {
     // Get only completed sleep sessions for statistics - also updated to accept context
     func getCompletedSleepSessions(context: ModelContext, limit: Int = 7) -> [SleepSession] {
         let predicate = #Predicate<SleepSession> { session in
-            session.badgeOutTime != nil
+            session.badgeWakeUpTime != nil
         }
         
         var descriptor = FetchDescriptor<SleepSession>(
             predicate: predicate,
-            sortBy: [SortDescriptor(\.nightDate, order: .reverse)]
+            sortBy: [SortDescriptor(\.day, order: .reverse)]
         )
         descriptor.fetchLimit = limit
         return (try? context.fetch(descriptor)) ?? []

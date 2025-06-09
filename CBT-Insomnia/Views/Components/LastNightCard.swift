@@ -71,21 +71,21 @@ struct LastNightCard: View {
     }
 }
 
-
-#Preview {
-    let now = Date()
-    let earlier = Calendar.current.date(byAdding: .hour, value: -6, to: now)!
-    let session = SleepSession(
-        nightDate: Calendar.current.date(byAdding: .day, value: -1, to: now)!,
-        badgeInTime: earlier,
-        badgeOutTime: now,
-        sleepDuration: 5 * 3600
-    )
-    
-    ZStack {
-        Color.black
-        LastNightCard(session: session)
-    }
-    .ignoresSafeArea()
-}
+//
+//#Preview {
+//    let now = Date()
+//    let earlier = Calendar.current.date(byAdding: .hour, value: -6, to: now)!
+//    let session = SleepSession(
+//        nightDate: Calendar.current.date(byAdding: .day, value: -1, to: now)!,
+//        badgeInTime: earlier,
+//        badgeOutTime: now,
+//        sleepDuration: 5 * 3600
+//    )
+//    
+//    ZStack {
+//        Color.black
+//        LastNightCard(session: session)
+//    }
+//    .ignoresSafeArea()
+//}
 
