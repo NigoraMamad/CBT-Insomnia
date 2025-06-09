@@ -89,6 +89,7 @@ enum SleepDuration: String, CaseIterable, Codable {
 import Foundation
 
 class UserDefaultsService {
+    
     static let shared = UserDefaultsService()
     
     private let defaults = UserDefaults.standard
@@ -167,6 +168,8 @@ class UserDefaultsService {
         return nil
     }
 }
+
+
 extension UserDefaultsService {
     
     func getLastPromptDate() -> Date? {

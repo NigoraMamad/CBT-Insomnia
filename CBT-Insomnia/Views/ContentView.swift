@@ -133,6 +133,10 @@ struct ContentView: View {
 }
 
 
+#Preview {
+    ContentView()
+}
+
 func getBedTimeFromDefaults() -> DateComponents? {
     guard
         let wakeUpTime = UserDefaultsService.shared.getWakeUpTime(),
@@ -161,6 +165,8 @@ func getBedTimeFromDefaults() -> DateComponents? {
 
     let totalMinutes = -(totalComponents.hour ?? 0) * 60 - (totalComponents.minute ?? 0)
     let bedDate = calendar.date(byAdding: .minute, value: totalMinutes, to: wakeDate)!
+    
+    let bedTimeComponents = calendar.dateComponents([.hour, .minute], from: bedDate)
 
     return calendar.dateComponents([.hour, .minute], from: bedDate)
 }
