@@ -106,7 +106,7 @@ class NotificationManager {
 
         switch type {
         case .bedTime:
-            components = UserDefaultsService.shared.getBedTime()
+            components = UserDefaultsService.shared.getBedTimeOffset()
             title = "Bedtime Reminder"
             body = "It's time to sleep!"
             identifier = "bedtimeNotification"

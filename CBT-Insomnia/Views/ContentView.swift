@@ -137,9 +137,6 @@ struct ContentView: View {
 }
 
 
-#Preview {
-    ContentView()
-}
 
 func getBedTimeFromDefaults() -> DateComponents? {
     guard
