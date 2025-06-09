@@ -92,6 +92,7 @@ class UserDefaultsService {
     private let defaults = UserDefaults.standard
     
     private enum Keys {
+        static let lastEfficiencyPromptDate = "last_efficiency_prompt_date"
         static let name = "setting_name"
         static let sleepDuration = "setting_sleepDuration"
         static let wakeUpTime = "setting_wakeUpTime"
@@ -132,3 +133,63 @@ class UserDefaultsService {
         return nil
     }
 }
+
+extension UserDefaultsService {
+    
+    func getLastPromptDate() -> Date? {
+            defaults.object(forKey: Keys.lastEfficiencyPromptDate) as? Date
+        }
+
+        func setLastPromptDate(_ date: Date) {
+            defaults.set(date, forKey: Keys.lastEfficiencyPromptDate)
+        }
+
+        func shouldShowEfficiencyPrompt() -> Bool {
+            let calendar = Calendar.current
+            guard let lastPrompt = getLastPromptDate(),
+                  let lastWeekStart = calendar.dateInterval(of: .weekOfYear, for: lastPrompt)?.start,
+                  let currentWeekStart = calendar.dateInterval(of: .weekOfYear, for: Date())?.start
+            else {
+                return true
+            }
+
+            return currentWeekStart > lastWeekStart
+        }
+    
+    
+    func adjustWakeTime(by minutes: Int) {
+        guard var wake = getWakeUpTime() else { return }
+        let calendar = Calendar.current
+        let date = calendar.date(from: wake) ?? Date()
+        let newDate = calendar.date(byAdding: .minute, value: minutes, to: date)!
+        let updated = calendar.dateComponents([.hour, .minute], from: newDate)
+        saveWakeUpTime(updated)
+    }
+
+    func adjustBedTime(by minutes: Int) {
+        guard let wake = getWakeUpTime(),
+              let duration = getSleepDuration()
+        else { return }
+
+        let wakeHour = wake.hour ?? 7
+        let wakeMinute = wake.minute ?? 0
+        let wakeDate = Calendar.current.date(from: DateComponents(hour: wakeHour, minute: wakeMinute)) ?? Date()
+
+        let durationTime = duration.dateComponents
+        let totalMinutes = (durationTime.hour ?? 0) * 60 + (durationTime.minute ?? 0) + minutes
+
+        let updatedComponents = Calendar.current.dateComponents([.hour, .minute], from: wakeDate.addingTimeInterval(-Double(totalMinutes * 60)))
+
+        saveSleepDuration(durationFromMinutes(totalMinutes))
+    }
+
+    private func durationFromMinutes(_ minutes: Int) -> SleepDuration {
+        let hour = minutes / 60
+        let minute = minutes % 60
+
+        return SleepDuration.allCases.first(where: {
+            $0.dateComponents.hour == hour && $0.dateComponents.minute == minute
+        }) ?? .eight // fallback
+    }
+}
+
