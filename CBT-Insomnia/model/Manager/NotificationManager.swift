@@ -92,6 +92,9 @@ class NotificationManager {
         scheduleNotification(for: .bedTime)
         scheduleNotification(for: .wakeUpTime)
         
+        // random notifications
+        scheduleRandomNotificationAtTime(at: 17, minute: 20)
+        
         scheduleRandomNotification()
     }
     
@@ -173,6 +176,38 @@ class NotificationManager {
         let minute = Int.random(in: 0..<60)
         return DateComponents(hour: hour, minute: minute)
     }
+    
+    func scheduleRandomNotificationAtTime(at hour: Int, minute: Int) {
+        
+        let messagesHours = [
+            "⏰ Stay up until your bedtime — your sleep rhythm will thank you!",
+            "😴 Go to bed only when you’re truly sleepy — not just bored.",
+            "🛏️ Use your bed just for sleep — not scrolling!",
+            "🚫 Skip the nap — save that tiredness for tonight!",
+            "✨ Consistency is magic — same routine, better sleep!"
+        ]
+        
+        guard let message = messagesHours.randomElement() else { return }
+
+        var components = DateComponents()
+        components.hour = hour
+        components.minute = minute
+
+        let content = UNMutableNotificationContent()
+        content.title = "Sleep Tip 💤"
+        content.body = message
+        content.sound = .default
+
+        let trigger = UNCalendarNotificationTrigger(dateMatching: components, repeats: true)
+        let request = UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: trigger)
+
+        center.add(request) { error in
+            if let error = error {
+                print("Random notification error \(error.localizedDescription)")
+            }
+        }
+    }
+    
     
 }
 
