@@ -26,18 +26,36 @@ class SleepAdjustmentViewModel: ObservableObject {
     init(context: ModelContext) {
             self.service = SleepSessionService(context: context)
         }
+    
+    func add15Minutes(to option: SleepAdjustmentOption) {
+        let calendar = Calendar.current
+        let offset = DateComponents(minute: 15)
 
-    func add15Minutes(to target: TimeTarget) {
-        switch target {
-        case .bed:
-            UserDefaultsService.shared.adjustBedTime(by: 15)
+        switch option {
         case .wake:
-            UserDefaultsService.shared.adjustWakeTime(by: 15)
+            let existing = UserDefaultsService.shared.getWakeUpOffset() ?? DateComponents(hour: 0, minute: 0)
+            let base = calendar.date(from: existing) ?? Date(timeIntervalSince1970: 0)
+            let new = calendar.date(byAdding: offset, to: base)!
+            let newOffset = calendar.dateComponents([.hour, .minute], from: new)
+            UserDefaultsService.shared.saveWakeUpOffset(newOffset)
+
+        case .bed:
+            let existing = UserDefaultsService.shared.getBedTimeOffset() ?? DateComponents(hour: 0, minute: 0)
+            let base = calendar.date(from: existing) ?? Date(timeIntervalSince1970: 0)
+            let negativeOffset = DateComponents(minute: -15)
+            let new = calendar.date(byAdding: negativeOffset, to: base)!
+            let newOffset = calendar.dateComponents([.hour, .minute], from: new)
+            UserDefaultsService.shared.saveBedTimeOffset(newOffset)
+
         case .keep:
             break
         }
-        showAdjustmentOptions = false
+
+        UserDefaultsService.shared.setLastPromptDate(Date())
     }
+
+
+
     
     func evaluateEfficiencyAndTriggerUI() {
         let avg = service.getCurrentWeekAverageEfficiency()
@@ -51,8 +69,33 @@ class SleepAdjustmentViewModel: ObservableObject {
         }
     }
     
+//    func checkIfShouldShowWeeklySummary() {
+//        // Only run once at start of week
+//        guard UserDefaultsService.shared.shouldShowEfficiencyPrompt() else { return }
+//
+//        let sessions = service.getLastWeekSessions()
+//        guard !sessions.isEmpty else { return }
+//
+//        let total = sessions.reduce(0.0) { $0 + $1.sleepEfficiency }
+//        let average = total / Double(sessions.count)
+//
+//        efficiencyLastWeek = average
+//        eligibleForBonus = average >= 90
+//
+//        showEfficiencySheet = true
+//        UserDefaultsService.shared.setLastPromptDate(Date()) // lock for the week
+//    }
+    
+    
+    //to test
     func checkIfShouldShowWeeklySummary() {
-        // Only run once at start of week
+        #if DEBUG
+        showEfficiencySheet = true
+        efficiencyLastWeek = 92
+        eligibleForBonus = true
+        return
+        #endif
+
         guard UserDefaultsService.shared.shouldShowEfficiencyPrompt() else { return }
 
         let sessions = service.getLastWeekSessions()
@@ -63,12 +106,12 @@ class SleepAdjustmentViewModel: ObservableObject {
 
         efficiencyLastWeek = average
         eligibleForBonus = average >= 90
-
         showEfficiencySheet = true
-        UserDefaultsService.shared.setLastPromptDate(Date()) // lock for the week
+        UserDefaultsService.shared.setLastPromptDate(Date())
     }
+
 }
 
-enum TimeTarget {
+enum SleepAdjustmentOption {
     case bed, wake, keep
 }

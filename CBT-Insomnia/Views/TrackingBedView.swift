@@ -9,6 +9,9 @@ import SwiftUI
 import WatchConnectivity
 
 struct TrackingBedView: View {
+    
+    @Environment(\.modelContext) private var modelContext
+
     @StateObject var receiver = WatchReceiver()
     @State private var showGoodnight = false
     @State private var isMainViewShown = false
@@ -78,7 +81,7 @@ struct TrackingBedView: View {
             checkForGoodnight()
         }
         .fullScreenCover(isPresented: $isMainViewShown) {
-            ContentView() // or whatever your main view is called
+            ContentView(context: modelContext) // or whatever your main view is called
         }
     }
     

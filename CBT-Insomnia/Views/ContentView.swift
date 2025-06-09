@@ -9,6 +9,7 @@ import SwiftUI
 import SwiftData
 
 struct ContentView: View {
+    
     @State var manager = HealthManager()
     @AppStorage("userName") private var name: String = ""
     
@@ -132,7 +133,6 @@ struct ContentView: View {
 }
 
 
-
 func getBedTimeFromDefaults() -> DateComponents? {
     guard
         let wakeUpTime = UserDefaultsService.shared.getWakeUpTime(),
@@ -140,23 +140,28 @@ func getBedTimeFromDefaults() -> DateComponents? {
     else {
         return nil
     }
-    
+
+    let duration = sleepDuration.dateComponents
+    let offset = UserDefaultsService.shared.getBedTimeOffset() ?? DateComponents()
+
+    let totalDuration = Calendar.current.date(byAdding: offset, to: Calendar.current.date(from: duration)!)!
+    let totalComponents = Calendar.current.dateComponents([.hour, .minute], from: totalDuration)
+
     let wakeHour = wakeUpTime.hour ?? 7
     let wakeMinute = wakeUpTime.minute ?? 0
-    let durationHour = sleepDuration.dateComponents.hour ?? 6
-    let durationMinute = sleepDuration.dateComponents.minute ?? 0
-    
+
     var calendar = Calendar.current
     calendar.timeZone = .current
-    
+
     var wakeComponents = calendar.dateComponents([.year, .month, .day], from: Date())
     wakeComponents.hour = wakeHour
     wakeComponents.minute = wakeMinute
-    
+
     guard let wakeDate = calendar.date(from: wakeComponents) else { return nil }
-    
-    let totalMinutes = -(durationHour * 60 + durationMinute)
+
+    let totalMinutes = -(totalComponents.hour ?? 0) * 60 - (totalComponents.minute ?? 0)
     let bedDate = calendar.date(byAdding: .minute, value: totalMinutes, to: wakeDate)!
-    
+
     return calendar.dateComponents([.hour, .minute], from: bedDate)
 }
+
