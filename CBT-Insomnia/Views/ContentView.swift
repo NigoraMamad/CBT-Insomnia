@@ -73,7 +73,11 @@ struct ContentView: View {
                     )
                     .padding()
                     
-                    NavigationLink(destination: StatisticsView().environmentObject(manager)) {
+                    NavigationLink( destination: StatisticsView(
+                        bedTime: getBedTimeFromDefaults() ?? DateComponents(hour: 1, minute: 0),
+                        wakeTime: UserDefaultsService.shared.getWakeUpTime() ?? DateComponents(hour: 7, minute: 0)
+                    ).environmentObject(manager)
+                    ) {
                         LastNightCard(day: day, nightEfficiency: nightEfficiency, nighTotalSleep: nightTotalSleep, bedTime: bedTime, wakeTime: wakeTime)
                     } // -> NavigationLink
                     
