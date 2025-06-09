@@ -87,6 +87,7 @@ enum SleepDuration: String, CaseIterable, Codable {
 }
 
 class UserDefaultsService {
+    
     static let shared = UserDefaultsService()
     
     private let defaults = UserDefaults.standard
@@ -113,6 +114,12 @@ class UserDefaultsService {
         }
     }
     
+    func saveBedTime(_ components: DateComponents) {
+        let data = try? JSONEncoder().encode(components)
+        UserDefaults.standard.set(data, forKey: "bedTime")
+    }
+    
+    
     // MARK: - Get Methods
     func getName() -> String? {
         defaults.string(forKey: Keys.name)
@@ -132,7 +139,17 @@ class UserDefaultsService {
         }
         return nil
     }
+    
+    public func getBedTime() -> DateComponents? {
+        guard let data = UserDefaults.standard.data(forKey: "bedTime"),
+              let components = try? JSONDecoder().decode(DateComponents.self, from: data) else {
+            return nil
+        }
+        return components
+    }
+    
 }
+
 
 extension UserDefaultsService {
     

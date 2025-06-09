@@ -72,3 +72,67 @@
 ////NotificationManager.shared.schedule(for: newSchedule) -> When saving or updating a schedule:
 ////NotificationManager.shared.cancel(for: scheduleToDelete) -> When deleting a schedule:
 // 
+
+
+import Foundation
+import UserNotifications
+
+class NotificationManager {
+    
+    static let shared = NotificationManager()
+    private let center = UNUserNotificationCenter.current()
+    
+    private init() {}
+    func scheduleDailyNotifications() {
+        
+        center.removeAllPendingNotificationRequests()
+        
+        scheduleNotification(for: .bedTime)
+        scheduleNotification(for: .wakeUpTime)
+    }
+    
+    private func scheduleNotification(for type: NotificationType) {
+        var components: DateComponents?
+        var title = ""
+        var body = ""
+        var identifier = ""
+
+        switch type {
+        case .bedTime:
+            components = UserDefaultsService.shared.getBedTime()
+            title = "Bedtime Reminder"
+            body = "It's time to sleep!"
+            identifier = "bedtimeNotification"
+        case .wakeUpTime:
+            components = UserDefaultsService.shared.getWakeUpTime()
+            title = "Wake Up!"
+            body = "It's time to wake up"
+            identifier = "wakeUpNotification"
+        }
+        
+        guard let time = components else {
+            print("⚠️ No time saved for \(type)")
+            return
+        }
+
+        let content = UNMutableNotificationContent()
+        content.title = title
+        content.body = body
+        content.sound = .default
+
+        let trigger = UNCalendarNotificationTrigger(dateMatching: time, repeats: true)
+        let request = UNNotificationRequest(identifier: identifier, content: content, trigger: trigger)
+        
+        center.add(request) { error in
+            if let error = error {
+                print("Error in notification's planning \(type): \(error)")
+            }
+        }
+    }
+}
+
+enum NotificationType {
+    case bedTime
+    case wakeUpTime
+}
+
