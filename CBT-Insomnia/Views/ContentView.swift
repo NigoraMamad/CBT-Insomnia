@@ -151,7 +151,8 @@ struct ContentView: View {
         }
         .sheet(isPresented: $adjustmentVM.showEfficiencySheet) {
             WeeklyEfficiencySheet(viewModel: adjustmentVM)
-                .presentationDetents([.medium])
+//                .presentationDetents([.medium])
+                .presentationDetents([.large])
         }
         
     }
