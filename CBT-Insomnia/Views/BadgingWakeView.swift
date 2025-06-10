@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct BadgingWakeView: View {
-    
+    @Environment(\.modelContext) private var modelContext
     @Environment(\.dismiss) var dismiss
     
     @StateObject private var stepCounter = StepCounter()
@@ -25,7 +25,7 @@ struct BadgingWakeView: View {
                     RobotView()
                     
                     BadgeSleepButton(label: "Start tracking", isActive: true) {
-                        stepCounter.startTracking()
+                        stepCounter.startTracking(context: modelContext)
                         isStepCounterShown = true
                     }
                     .font(.krungthep(.regular, relativeTo: .callout))

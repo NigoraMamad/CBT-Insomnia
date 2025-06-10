@@ -87,15 +87,15 @@ class NotificationManager {
     
     
     func scheduleDailyNotifications() {
-        center.removeAllPendingNotificationRequests()
+//        center.removeAllPendingNotificationRequests()
 
-        scheduleNotification(for: .bedTime)
-        scheduleNotification(for: .wakeUpTime)
+//        scheduleNotification(for: .bedTime)
+//        scheduleNotification(for: .wakeUpTime)
         
         // random notifications
-        scheduleRandomNotificationAtTime(at: 17, minute: 20)
+        scheduleRandomNotificationAtTime(at: 15, minute: 34)
         
-        scheduleRandomNotification()
+//        scheduleRandomNotification()
     }
     
     private func scheduleNotification(for type: NotificationType) {

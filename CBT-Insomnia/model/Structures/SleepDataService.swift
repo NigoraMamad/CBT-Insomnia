@@ -28,11 +28,20 @@ class SleepDataService: ObservableObject {
     }
     
     func completeSleepSession(context: ModelContext, badgeWakeUpTime: Date = Date()) {
+        print("Attempting to complete sleep session. Badge-out time: \(badgeWakeUpTime)") // <-- ADD THIS LINE
         let day = getNightDateForWakeTime(badgeWakeUpTime)
+        print("Calculated day for wake time: \(day)") // <-- ADD THIS LINE
+    
         if let session = getSleepSession(for: day, context: context) {
+            print("Found session to complete: \(session.id) for day \(session.day)") // <-- ADD THIS LINE
             session.badgeWakeUpTime = badgeWakeUpTime
             session.timeInBed = badgeWakeUpTime.timeIntervalSince(session.badgeBedTime)
-            saveContext(context)
+            print("Session badgeWakeUpTime set to: \(String(describing: session.badgeWakeUpTime))") // <-- ADD THIS LINE
+            print("Session timeInBed set to: \(session.timeInBed)") // <-- ADD THIS LINE
+            saveContext(context) // This already has a print for failure
+            print("Sleep session completed and save attempted for \(day)")
+        } else {
+            print("Failed to find sleep session to complete for \(day)")
         }
     }
     
