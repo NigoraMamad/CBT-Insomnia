@@ -70,33 +70,8 @@ class SleepAdjustmentViewModel: ObservableObject {
         }
     }
     
-//    func checkIfShouldShowWeeklySummary() {
-//        // Only run once at start of week
-//        guard UserDefaultsService.shared.shouldShowEfficiencyPrompt() else { return }
-//
-//        let sessions = service.getLastWeekSessions()
-//        guard !sessions.isEmpty else { return }
-//
-//        let total = sessions.reduce(0.0) { $0 + $1.sleepEfficiency }
-//        let average = total / Double(sessions.count)
-//
-//        efficiencyLastWeek = average
-//        eligibleForBonus = average >= 90
-//
-//        showEfficiencySheet = true
-//        UserDefaultsService.shared.setLastPromptDate(Date()) // lock for the week
-//    }
-    
-    
-    //to test
     func checkIfShouldShowWeeklySummary() {
-        #if DEBUG
-        showEfficiencySheet = true
-        efficiencyLastWeek = 90
-        eligibleForBonus = true
-        return
-        #endif
-
+        // Only run once at start of week
         guard UserDefaultsService.shared.shouldShowEfficiencyPrompt() else { return }
 
         let sessions = service.getLastWeekSessions()
@@ -107,9 +82,34 @@ class SleepAdjustmentViewModel: ObservableObject {
 
         efficiencyLastWeek = average
         eligibleForBonus = average >= 90
+
         showEfficiencySheet = true
-        UserDefaultsService.shared.setLastPromptDate(Date())
+        UserDefaultsService.shared.setLastPromptDate(Date()) // lock for the week
     }
+    
+    
+    //to test
+//    func checkIfShouldShowWeeklySummary() {
+//        #if DEBUG
+//        showEfficiencySheet = true
+//        efficiencyLastWeek = 90
+//        eligibleForBonus = true
+//        return
+//        #endif
+//
+//        guard UserDefaultsService.shared.shouldShowEfficiencyPrompt() else { return }
+//
+//        let sessions = service.getLastWeekSessions()
+//        guard !sessions.isEmpty else { return }
+//
+//        let total = sessions.reduce(0.0) { $0 + $1.sleepEfficiency }
+//        let average = total / Double(sessions.count)
+//
+//        efficiencyLastWeek = average
+//        eligibleForBonus = average >= 90
+//        showEfficiencySheet = true
+//        UserDefaultsService.shared.setLastPromptDate(Date())
+//    }
 
 }
 
