@@ -1,63 +1,65 @@
 import SwiftUI
 
-import SwiftUI
-
 struct OnboardingPage3: View {
     
     @AppStorage("userName") private var name: String = ""
-    
+
     var body: some View {
-        ZStack {
-            Color.black.ignoresSafeArea()
-            
-            VStack(spacing: 0) {
+        GeometryReader { geo in
+            ZStack(alignment: .top) {
+                Color.black.ignoresSafeArea()
+
                 VStack(spacing: 0) {
                     ProgressBarOnboarding(progress: 2.0 / 7.0)
                         .padding(.top, 10)
-                    
+
                     Spacer().frame(height: 50)
-                    
+
                     Text("WHAT'S YOUR NAME")
                         .font(.krungthep(.regular, relativeTo: .body))
                         .foregroundColor(.white)
-                    
+
                     Spacer().frame(height: 10)
-                    
+
                     Text("THIS HELPS US TO PERSONALIZE YOUR EXPERIENCE")
                         .font(.krungthep(.regular, relativeTo: .caption))
                         .foregroundColor(Color.gray)
-                    
+
                     Spacer().frame(height: 30)
-                    
+
                     RobotView()
-                    
+
                     RetroDigitTextField(text: $name)
                         .padding(.top, 30)
                         .padding(.horizontal, 20)
+
+                    Spacer()
+                        .frame(height: 80)
+                }
+
+                VStack {
+                    Spacer()
+                    OnboardingNavigationButton(
+                        label: "NEXT",
+                        destination: OnboardingPage4(),
+                        canProceed: { !name.trimmingCharacters(in: .whitespaces).isEmpty }
+                    )
+                    .frame(height: 44)
+                    .font(.krungthep(.regular, relativeTo: .callout))
+                    .padding(.horizontal, 30)
+                    .padding(.bottom, 30)
                 }
                 
-                Spacer()
-                
-                OnboardingNavigationButton(
-                    label: "NEXT",
-                    destination: OnboardingPage4(),
-                    canProceed: { !name.trimmingCharacters(in: .whitespaces).isEmpty }
-                )
-                .padding(.bottom, 30)
-                .padding(.horizontal)
-                .ignoresSafeArea(.keyboard, edges: .bottom)
             }
-            .padding()
         }
     }
 }
-
 
 struct RetroDigitTextField: View {
     
     @Binding var text: String
     @FocusState private var isFocused: Bool
-    
+
     var body: some View {
         ZStack(alignment: .center) {
             if text.isEmpty && !isFocused {
@@ -65,7 +67,7 @@ struct RetroDigitTextField: View {
                     .font(.krungthep(.regular, relativeTo: .title))
                     .foregroundColor(.white)
             }
-            
+
             TextField("", text: $text)
                 .focused($isFocused)
                 .font(.krungthep(.regular, relativeTo: .title))
@@ -84,8 +86,6 @@ struct RetroDigitTextField: View {
         }
     }
 }
-
-
 
 #Preview {
     OnboardingPage3()
