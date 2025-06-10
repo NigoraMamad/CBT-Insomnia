@@ -13,18 +13,16 @@ struct WeekSummary: View {
     @EnvironmentObject var manager: HealthManager
     
     @Environment(\.modelContext) private var context
-    @Query(
-        filter: SleepSession.currentWeek(),
-        sort: \SleepSession.day
-    ) var sessions: [SleepSession]
-    @Query(
-        filter: SleepSession.previousWeek(),
-        sort: \SleepSession.day
-    ) var pastSessions: [SleepSession]
     
-    @State private var selectedPeriod: Period = .day
+    @State private var selectedWeekStart: Date = {
+        var calendar = Calendar.current
+        let now = Date()
+        calendar.firstWeekday = 2 // 1 = Sunday, 2 = Monday, 3 = Tuesday, 4 = Wednesday
+        return calendar.date(from: calendar.dateComponents([.yearForWeekOfYear, .weekOfYear], from: Date()))!
+    }() // -> selectedWeekStart
     
-    var efficiency = 0.0
+    @State private var weeklySessions: [SleepSession] = []
+    @State private var pastSessions: [SleepSession] = []
     
     var body: some View {
         
@@ -36,15 +34,19 @@ struct WeekSummary: View {
                 HStack {
                     Spacer()
                     Button {
-                        //
+                        selectedWeekStart = Calendar.current.date(byAdding: .day, value: -7, to: selectedWeekStart)!
+                        fetchWeekSleepSessions(weekStart: selectedWeekStart)
+                        fetchPastWeekSleepSessions(weekStart: selectedWeekStart)
                     } label: {
                         Image(systemName: "chevron.backward")
                     } // -> Button
                     Spacer()
-                    Text(currentWeekLabel())
+                    Text(currentWeekLabel(date: selectedWeekStart))
                     Spacer()
                     Button {
-                        //
+                        selectedWeekStart = Calendar.current.date(byAdding: .day, value: 7, to: selectedWeekStart)!
+                        fetchWeekSleepSessions(weekStart: selectedWeekStart)
+                        fetchPastWeekSleepSessions(weekStart: selectedWeekStart)
                     } label: {
                         Image(systemName: "chevron.forward")
                     } // -> Button
@@ -66,7 +68,7 @@ struct WeekSummary: View {
                         // MARK: SLEEP EFF SUMMARY
                         HStack(alignment: .bottom, spacing: 15) {
                             
-                            let currEfficiency = averageEfficiency(sessions: sessions)
+                            let currEfficiency = averageEfficiency(sessions: weeklySessions)
                             
                             Text("\(String(format: "%.2f", currEfficiency))%")
                                 .foregroundStyle(.white)
@@ -95,7 +97,7 @@ struct WeekSummary: View {
                         
                         if !pastSessions.isEmpty {
                             let pastSleepComponent = averageSleepHours(sessions: pastSessions)
-                            Text("Compared to \(String(describing: pastSleepComponent.hour))h\(String(describing: pastSleepComponent.minute)) from last week")
+                            Text("Compared to \(String(describing: pastSleepComponent.hour!))h\(String(describing: pastSleepComponent.minute!)) from last week")
                                 .foregroundStyle(.gray)
                         } // -> if
                         
@@ -114,13 +116,13 @@ struct WeekSummary: View {
                     
                     let days = Days.allCases
                     
-                    ForEach(sessions.sorted { $0.day < $1.day }, id: \.self) { session in
+                    ForEach(days, id: \.self) { day in
                         
-                        let dayLabel = manager.dateFor(date: session.day)
+                        let session = manager.dayFor(day: day, sessions: weeklySessions)
                         
                         HStack {
                             
-                            Text(dayLabel.shortLabel)
+                            Text(day.shortLabel)
                                 .foregroundStyle(.white)
                                 .font(.krungthep(.regular, relativeTo: .title2))
                                 .frame(width: 30, alignment: .leading)
@@ -129,22 +131,24 @@ struct WeekSummary: View {
                                 let fullWidth = geo.size.width
                                 ZStack(alignment: .leading) {
                                     RoundedRectangle(cornerRadius: 20)
-                                        .fill(.secondary)
-                                    RoundedRectangle(cornerRadius: 20)
-                                        .fill(.accent)
-                                        .frame(width: session.sleepEfficiency != 0.0 ? max(10, session.sleepEfficiency*fullWidth/100) : 0.0)
-                                        .shadow(color: .accent.opacity(0.8), radius: 10, x: 0, y: 0)
+                                        .fill(.tertiary)
+                                    if let sleepEfficiency = session?.sleepEfficiency {
+                                        RoundedRectangle(cornerRadius: 20)
+                                            .fill(.accent)
+                                            .frame(width: sleepEfficiency != 0.0 ? max(10, sleepEfficiency*fullWidth/100) : 0.0)
+                                            .shadow(color: .accent.opacity(0.8), radius: 10, x: 0, y: 0)
+                                    } // -> if-let
                                 } // -> ZStack
                             } // -> GeometryReader
                             .frame(height: 30)
                             
-                            Text("\(String(format: "%.0f", session.sleepEfficiency))%")
+                            Text("\(String(format: "%.0f", session?.sleepEfficiency ?? 0.0))%")
                                 .foregroundStyle(.white)
                                 .frame(width: 45, alignment: .trailing)
                             
                         } // -> HStack
                         
-                        if dayLabel != days[days.count-1] {
+                        if day != days[days.count-1] {
                             Divider()
                                 .frame(minHeight: 1)
                                 .background(.gray.opacity(0.3))
@@ -162,8 +166,61 @@ struct WeekSummary: View {
         // MARK: BG COLOR
         .preferredColorScheme(.dark)
         .navigationTitle("STATISTICS")
+        .onAppear {
+            fetchWeekSleepSessions(weekStart: selectedWeekStart)
+            fetchPastWeekSleepSessions(weekStart: selectedWeekStart)
+        }
         
     } // -> body
+    
+    func fetchWeekSleepSessions(weekStart: Date) {
+        let calendar = Calendar.current
+        guard let weekEnd = calendar.date(byAdding: .day, value: 7, to: weekStart) else { return }
+        guard let pastWeekEnd = calendar.date(byAdding: .day, value: 14, to: weekStart) else { return }
+        
+        // Current week
+        let predicate = #Predicate<SleepSession> {
+            $0.day >= weekStart && $0.day < weekEnd
+        } // -> predicate
+
+        let descriptor = FetchDescriptor<SleepSession>(
+            predicate: predicate,
+            sortBy: [SortDescriptor(\.day)]
+        ) // -> descriptor
+        
+        do {
+            weeklySessions = try context.fetch(descriptor)
+        } catch {
+            print("Failed to fetch weekly sessions: \(error)")
+        } // -> do-catch
+        
+    } // -> fetchWeekSleepSessions
+    
+    func fetchPastWeekSleepSessions(weekStart: Date) {
+        let calendar = Calendar.current
+        guard let pastWeekStart = calendar.date(byAdding: .day, value: 7, to: weekStart) else { return }
+        guard let pastWeekEnd = calendar.date(byAdding: .day, value: 14, to: weekStart) else { return }
+        
+        // Past week
+        let predicate = #Predicate<SleepSession> {
+            $0.day >= pastWeekStart && $0.day < pastWeekEnd
+        } // -> predicate
+
+        let descriptor = FetchDescriptor<SleepSession>(
+            predicate: predicate,
+            sortBy: [SortDescriptor(\.day)]
+        ) // -> descriptor
+
+        do {
+            pastSessions = try context.fetch(descriptor)
+            for session in pastSessions {
+                print(session.day)
+            }
+        } catch {
+            print("Failed to fetch weekly sessions: \(error)")
+        } // -> do-catch
+        
+    } // -> fetchWeekSleepSessions
     
     func averageEfficiency(sessions: [SleepSession]) -> Float {
         let totalCount = sessions.count
@@ -187,23 +244,19 @@ struct WeekSummary: View {
         return DateComponents(hour: averageHours, minute: averageMinutes)
     } // -> averageSleepHours
     
-    func currentWeekLabel() -> String {
+    func currentWeekLabel(date: Date) -> String {
         let calendar = Calendar.current
-        let now = Date()
         
-        let weekday = calendar.component(.weekday, from: now)
-        let daysSinceTuesday = (weekday + 4) % 7 // Tuesday = 0
-        let startOfWeek = calendar.date(byAdding: .day, value: -daysSinceTuesday, to: calendar.startOfDay(for: now))!
-        let endOfWeek = calendar.date(byAdding: .day, value: 6, to: startOfWeek)!
+        let endOfWeek = calendar.date(byAdding: .day, value: 6, to: date)!
 
         let formatter = DateFormatter()
         formatter.dateFormat = "MMM d"
 
-        let startString = formatter.string(from: startOfWeek)
+        let startString = formatter.string(from: date)
         let endString = formatter.string(from: endOfWeek)
 
-        return "Week 1: \(startString) - \(endString)"
-    }
+        return "\(startString) - \(endString)"
+    } // -> currentWeekLabel
     
 } // -> SleepSummary
 

@@ -27,8 +27,8 @@ struct CBT_InsomniaApp: App {
                     OnboardingPage1()
                 }
             }
-            .modelContainer(for: [SleepSession.self])
+            .modelContainer(for: SleepSession.self)
         }
-        .modelContainer(for: SleepSession.self)
+//        .modelContainer(for: SleepSession.self)
     }
 }
