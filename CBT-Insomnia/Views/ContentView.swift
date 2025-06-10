@@ -136,11 +136,6 @@ struct ContentView: View {
     }
 }
 
-
-#Preview {
-    ContentView()
-}
-
 func getBedTimeFromDefaults() -> DateComponents? {
     guard
         let wakeUpTime = UserDefaultsService.shared.getWakeUpTime(),
