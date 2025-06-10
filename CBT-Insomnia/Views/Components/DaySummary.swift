@@ -16,6 +16,8 @@ struct DaySummary: View {
     
     @State private var currSession: [SleepSession] = []
     
+    private let defaults = UserDefaultsService()
+    
     var body: some View {
         
         VStack {
@@ -46,8 +48,8 @@ struct DaySummary: View {
             .padding(.bottom, 20)
             
              // MARK: PERCENT
-            if let session = currSession.first {
-                Text("\(String(format: "%.0f", session.sleepEfficiency))%")
+            if let sleepEfficiency = currSession.first?.sleepEfficiency {
+                Text("\(String(format: "%.0f", sleepEfficiency))%")
                     .font(.dsDigital(.bold, size: 143))
                     .foregroundStyle(.accent)
                     .shadow(color: .accent.opacity(0.6), radius: 10, x: 0, y: 0)
@@ -58,8 +60,16 @@ struct DaySummary: View {
                     .padding(.bottom, 40)
                 
                 // MARK: HOURS SLEPT VS GOAL SLEEP HOURS
-                Text("Today you slept 6:20 out of 8 hours")
-                    .foregroundStyle(.white)
+                if let session = currSession.first {
+                    let sleepComponent = sleepDurationComponent(session: session)
+                    let sleepHour = sleepComponent.hour ?? 7
+                    let sleepMin = sleepComponent.minute ?? 0
+                    let defaultSleep = defaults.getSleepDuration() ?? SleepDuration.seven
+                    let defSleepHour = defaultSleep.dateComponents.hour ?? 7
+                    let defSleepMin = defaultSleep.dateComponents.minute ?? 0
+                    Text("Today you slept \(sleepHour):\(sleepMin < 10 ? "0\(sleepMin)" : "\(sleepMin)") out of \(defSleepHour):\(defSleepMin < 10 ? "0\(defSleepMin)" : "\(defSleepMin)")")
+                        .foregroundStyle(.white)
+                } // -> if
                 
                 // MARK: PROGRESS BARR
                 GeometryReader { geo in
@@ -69,7 +79,7 @@ struct DaySummary: View {
                             .fill(.tertiary)
                         RoundedRectangle(cornerRadius: 10)
                             .fill(.white)
-                            .frame(width: 75 != 0.0 ? max(20, 0*fullWidth/100) : 0)
+                            .frame(width: sleepEfficiency != 0.0 ? max(20, sleepEfficiency*fullWidth/100) : 0)
                     } // -> ZStack
                 } // -> GeometryReader
                 .frame(height: 20)
@@ -137,6 +147,12 @@ struct DaySummary: View {
         }
     } // -> fetchSleepSessions
 
+    func sleepDurationComponent(session: SleepSession) -> DateComponents {
+        let averageSeconds = session.sleepDuration
+        let averageHours = Int(averageSeconds) / 3600
+        let averageMinutes = (Int(averageSeconds) % 3600) / 60
+        return DateComponents(hour: averageHours, minute: averageMinutes)
+    } // -> averageSleepHours
     
 } // -> DayAnalysis
 

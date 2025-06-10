@@ -139,6 +139,7 @@ class UserDefaultsService {
     
     func getSleepDuration() -> SleepDuration? {
         if let raw = defaults.string(forKey: Keys.sleepDuration) {
+            print(raw)
             return SleepDuration(rawValue: raw)
         }
         return nil

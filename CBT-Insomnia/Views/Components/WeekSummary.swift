@@ -16,7 +16,6 @@ struct WeekSummary: View {
     
     @State private var selectedWeekStart: Date = {
         var calendar = Calendar.current
-        let now = Date()
         calendar.firstWeekday = 2 // 1 = Sunday, 2 = Monday, 3 = Tuesday, 4 = Wednesday
         return calendar.date(from: calendar.dateComponents([.yearForWeekOfYear, .weekOfYear], from: Date()))!
     }() // -> selectedWeekStart
@@ -36,7 +35,7 @@ struct WeekSummary: View {
                     Button {
                         selectedWeekStart = Calendar.current.date(byAdding: .day, value: -7, to: selectedWeekStart)!
                         fetchWeekSleepSessions(weekStart: selectedWeekStart)
-                        fetchPastWeekSleepSessions(weekStart: selectedWeekStart)
+                        fetchPastWeekSleepSessions(pastWeekEnd: selectedWeekStart)
                     } label: {
                         Image(systemName: "chevron.backward")
                     } // -> Button
@@ -44,9 +43,11 @@ struct WeekSummary: View {
                     Text(currentWeekLabel(date: selectedWeekStart))
                     Spacer()
                     Button {
-                        selectedWeekStart = Calendar.current.date(byAdding: .day, value: 7, to: selectedWeekStart)!
-                        fetchWeekSleepSessions(weekStart: selectedWeekStart)
-                        fetchPastWeekSleepSessions(weekStart: selectedWeekStart)
+                        if selectedWeekStart < startWeekDate() {
+                            selectedWeekStart = Calendar.current.date(byAdding: .day, value: 7, to: selectedWeekStart)!
+                            fetchWeekSleepSessions(weekStart: selectedWeekStart)
+                            fetchPastWeekSleepSessions(pastWeekEnd: selectedWeekStart)
+                        }
                     } label: {
                         Image(systemName: "chevron.forward")
                     } // -> Button
@@ -97,7 +98,7 @@ struct WeekSummary: View {
                         
                         if !pastSessions.isEmpty {
                             let pastSleepComponent = averageSleepHours(sessions: pastSessions)
-                            Text("Compared to \(String(describing: pastSleepComponent.hour!))h\(String(describing: pastSleepComponent.minute!)) from last week")
+                            Text("Compared to \(pastSleepComponent.hour ?? 7)h\(pastSleepComponent.minute ?? 0 < 10 ? "0" : "")\(pastSleepComponent.minute ?? 0) from last week")
                                 .foregroundStyle(.gray)
                         } // -> if
                         
@@ -168,7 +169,7 @@ struct WeekSummary: View {
         .navigationTitle("STATISTICS")
         .onAppear {
             fetchWeekSleepSessions(weekStart: selectedWeekStart)
-            fetchPastWeekSleepSessions(weekStart: selectedWeekStart)
+            fetchPastWeekSleepSessions(pastWeekEnd: selectedWeekStart)
         }
         
     } // -> body
@@ -176,7 +177,6 @@ struct WeekSummary: View {
     func fetchWeekSleepSessions(weekStart: Date) {
         let calendar = Calendar.current
         guard let weekEnd = calendar.date(byAdding: .day, value: 7, to: weekStart) else { return }
-        guard let pastWeekEnd = calendar.date(byAdding: .day, value: 14, to: weekStart) else { return }
         
         // Current week
         let predicate = #Predicate<SleepSession> {
@@ -196,10 +196,11 @@ struct WeekSummary: View {
         
     } // -> fetchWeekSleepSessions
     
-    func fetchPastWeekSleepSessions(weekStart: Date) {
+    func fetchPastWeekSleepSessions(pastWeekEnd: Date) {
         let calendar = Calendar.current
-        guard let pastWeekStart = calendar.date(byAdding: .day, value: 7, to: weekStart) else { return }
-        guard let pastWeekEnd = calendar.date(byAdding: .day, value: 14, to: weekStart) else { return }
+        guard let pastWeekStart = calendar.date(byAdding: .day, value: -7, to: pastWeekEnd) else { return }
+        print(pastWeekStart)
+        print(pastWeekEnd)
         
         // Past week
         let predicate = #Predicate<SleepSession> {
@@ -257,6 +258,12 @@ struct WeekSummary: View {
 
         return "\(startString) - \(endString)"
     } // -> currentWeekLabel
+    
+    func startWeekDate() -> Date {
+        var calendar = Calendar.current
+        calendar.firstWeekday = 2 // 1 = Sunday, 2 = Monday, 3 = Tuesday, 4 = Wednesday
+        return calendar.date(from: calendar.dateComponents([.yearForWeekOfYear, .weekOfYear], from: Date()))!
+    } // -> startWeekDate
     
 } // -> SleepSummary
 
