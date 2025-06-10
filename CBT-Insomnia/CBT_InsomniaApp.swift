@@ -10,7 +10,9 @@ import SwiftData
 
 @main
 struct CBT_InsomniaApp: App {
+    
     @AppStorage("onboardingCompleted") var onboardingCompleted = false
+    @StateObject var sleepDataService = SleepDataService()
 
     var body: some Scene {
         WindowGroup {
@@ -19,6 +21,7 @@ struct CBT_InsomniaApp: App {
                     ContentViewWrapper()
                         .preferredColorScheme(.dark)
                         .environmentObject(SleepDataService.shared)
+                      
 //                        .onAppear {
 //                            NotificationManager.shared.requestAuthorization()
 //                        }

@@ -26,13 +26,15 @@ struct OnboardingPage3: View {
                             .font(.krungthep(.regular, relativeTo: .caption))
                             .foregroundColor(Color.gray)
                         
+                        Spacer().frame(height: 30)
+                        
                         RobotView()
                         
                         RetroDigitTextField(text: $name)
                             .padding(.top, 30)
                             .padding(.horizontal, 20)
                     }
-                    .padding(.bottom, 40) 
+                    .padding(.bottom, 40)
                 }
 
                 OnboardingNavigationButton(
@@ -42,6 +44,7 @@ struct OnboardingPage3: View {
                 )
                 .padding(.bottom, 30)
                 .padding(.horizontal)
+                .ignoresSafeArea(.keyboard, edges: .bottom)
             }
             .padding()
         }
@@ -50,33 +53,36 @@ struct OnboardingPage3: View {
 
 
 struct RetroDigitTextField: View {
+    
     @Binding var text: String
+    @FocusState private var isFocused: Bool
     
     var body: some View {
-        ZStack(alignment: .center) {
-            if text.isEmpty {
-                Text("INSERT YOUR NAME")
-                    .font(.krungthep(.regular, relativeTo: .title))
-                    .foregroundColor(.white)
-            }
-            
-            TextField("", text: $text)
-                .font(.krungthep(.regular, relativeTo: .title))
-                .foregroundColor(.white)
-                .frame(height: 40)
-                .padding(.horizontal, 12)
-                .frame(maxWidth: .infinity)
-                .multilineTextAlignment(.center)
-                .keyboardType(.default)
-                .textInputAutocapitalization(.never)
-                .disableAutocorrection(true)
-                .background(
-                    RoundedRectangle(cornerRadius: 0)
-                        .stroke(.white)
-                )
-        }
-    }
-}
+          ZStack(alignment: .center) {
+              if text.isEmpty && !isFocused {
+                  Text("INSERT YOUR NAME")
+                      .font(.krungthep(.regular, relativeTo: .title))
+                      .foregroundColor(.white)
+              }
+
+              TextField("", text: $text)
+                  .focused($isFocused)
+                  .font(.krungthep(.regular, relativeTo: .title))
+                  .foregroundColor(.white)
+                  .frame(height: 40)
+                  .padding(.horizontal, 12)
+                  .frame(maxWidth: .infinity)
+                  .multilineTextAlignment(.center)
+                  .keyboardType(.default)
+                  .textInputAutocapitalization(.never)
+                  .disableAutocorrection(true)
+                  .background(
+                      RoundedRectangle(cornerRadius: 0)
+                          .stroke(.white)
+                  )
+          }
+      }
+  }
 
 
 

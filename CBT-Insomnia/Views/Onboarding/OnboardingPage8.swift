@@ -8,8 +8,9 @@
 import SwiftUI
 
 struct OnboardingPage8: View {
+    
     @Environment(\.modelContext) private var modelContext
-
+    @StateObject var sleepDataService = SleepDataService()
     
     @AppStorage("onboardingCompleted") var onboardingCompleted = false
     @State private var navigate = false
@@ -50,6 +51,7 @@ struct OnboardingPage8: View {
 
                 NavigationLink(
                     destination: ContentView(context: modelContext)
+                        .environmentObject(sleepDataService)
                         .navigationBarBackButtonHidden(true),
                     isActive: $navigate
                 ) {

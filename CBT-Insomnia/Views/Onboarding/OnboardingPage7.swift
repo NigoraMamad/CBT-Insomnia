@@ -20,19 +20,15 @@ struct OnboardingPage7: View {
                     
                     Spacer().frame(height: 50)
                     
-                    Text("ALLOW THE CONNECTION TO")
+                    Text("ALLOW ME TO CHECK")
                         .font(.krungthep(.regular, relativeTo: .body))
                         .foregroundColor(.white)
                     
-                    Text("HEALTH IN ORDER TO LET ME GATHER")
+                    Text("YOUR SLEEP, EVERYTHING")
                         .font(.krungthep(.regular, relativeTo: .body))
                         .foregroundColor(.white)
                     
-                    Text("DATA ABOUT YOUR SLEEP!")
-                        .font(.krungthep(.regular, relativeTo: .body))
-                        .foregroundColor(.white)
-                    
-                    Text("IT IS CRUCIAL!")
+                    Text("WILL BE AUTOMATIC!")
                         .font(.krungthep(.regular, relativeTo: .body))
                         .foregroundColor(.white)
                     
