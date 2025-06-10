@@ -26,13 +26,15 @@ struct OnboardingPage3: View {
                             .font(.krungthep(.regular, relativeTo: .caption))
                             .foregroundColor(Color.gray)
                         
+                        Spacer().frame(height: 30)
+                        
                         RobotView()
                         
                         RetroDigitTextField(text: $name)
                             .padding(.top, 30)
                             .padding(.horizontal, 20)
                     }
-                    .padding(.bottom, 40) 
+                    .padding(.bottom, 40)
                 }
 
                 OnboardingNavigationButton(
@@ -42,6 +44,7 @@ struct OnboardingPage3: View {
                 )
                 .padding(.bottom, 30)
                 .padding(.horizontal)
+                .ignoresSafeArea(.keyboard, edges: .bottom)
             }
             .padding()
         }
