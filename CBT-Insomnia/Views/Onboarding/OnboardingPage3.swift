@@ -53,33 +53,36 @@ struct OnboardingPage3: View {
 
 
 struct RetroDigitTextField: View {
+    
     @Binding var text: String
+    @FocusState private var isFocused: Bool
     
     var body: some View {
-        ZStack(alignment: .center) {
-            if text.isEmpty {
-                Text("INSERT YOUR NAME")
-                    .font(.krungthep(.regular, relativeTo: .title))
-                    .foregroundColor(.white)
-            }
-            
-            TextField("", text: $text)
-                .font(.krungthep(.regular, relativeTo: .title))
-                .foregroundColor(.white)
-                .frame(height: 40)
-                .padding(.horizontal, 12)
-                .frame(maxWidth: .infinity)
-                .multilineTextAlignment(.center)
-                .keyboardType(.default)
-                .textInputAutocapitalization(.never)
-                .disableAutocorrection(true)
-                .background(
-                    RoundedRectangle(cornerRadius: 0)
-                        .stroke(.white)
-                )
-        }
-    }
-}
+          ZStack(alignment: .center) {
+              if text.isEmpty && !isFocused {
+                  Text("INSERT YOUR NAME")
+                      .font(.krungthep(.regular, relativeTo: .title))
+                      .foregroundColor(.white)
+              }
+
+              TextField("", text: $text)
+                  .focused($isFocused)
+                  .font(.krungthep(.regular, relativeTo: .title))
+                  .foregroundColor(.white)
+                  .frame(height: 40)
+                  .padding(.horizontal, 12)
+                  .frame(maxWidth: .infinity)
+                  .multilineTextAlignment(.center)
+                  .keyboardType(.default)
+                  .textInputAutocapitalization(.never)
+                  .disableAutocorrection(true)
+                  .background(
+                      RoundedRectangle(cornerRadius: 0)
+                          .stroke(.white)
+                  )
+          }
+      }
+  }
 
 
 

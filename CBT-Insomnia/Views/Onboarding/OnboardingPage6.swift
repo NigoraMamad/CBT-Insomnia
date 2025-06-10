@@ -24,11 +24,11 @@ struct OnboardingPage6: View {
                         .font(.krungthep(.regular, relativeTo: .body))
                         .foregroundColor(.white)
                     
-                    Text("TO MAKE THE TERAPY AS")
+                    Text("TO GUIDE YOU THROUGH YOUR")
                         .font(.krungthep(.regular, relativeTo: .body))
                         .foregroundColor(.white)
                     
-                    Text("EFFICIENT")
+                    Text("SLEEP JOURNEY")
                         .font(.krungthep(.regular, relativeTo: .body))
                         .foregroundColor(.white)
                     
