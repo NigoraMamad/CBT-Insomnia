@@ -15,6 +15,7 @@ struct ContentView: View {
     @EnvironmentObject private var sleepDataService: SleepDataService
     @Environment(\.modelContext) private var modelContext
     @StateObject private var adjustmentVM: SleepAdjustmentViewModel
+    @State private var isInfoPresented = false
     
     init(context: ModelContext) {
         _adjustmentVM = StateObject(wrappedValue: SleepAdjustmentViewModel(context: context))
@@ -145,7 +146,19 @@ struct ContentView: View {
             }
             .ignoresSafeArea()
         }
-        
+        .toolbar {
+                        ToolbarItem(placement: .navigationBarTrailing) {
+                            Button(action: {
+                                isInfoPresented = true
+                            }) {
+                                Image(systemName: "info.circle")
+                                    .foregroundColor(.white)
+                            }
+                        }
+                    }
+                .sheet(isPresented: $isInfoPresented) {
+                    InfoPage()
+                }
         .onAppear {
             adjustmentVM.checkIfShouldShowWeeklySummary()
         }
