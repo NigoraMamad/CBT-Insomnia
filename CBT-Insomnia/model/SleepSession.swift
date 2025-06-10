@@ -77,7 +77,7 @@ class SleepSession {
     }
 
     var isComplete: Bool {
-        return true // Since badgeWakeUpTime is now non-optional
+        return badgeWakeUpTime != nil // Changed from 'return true'
     }
 
     var formattedBadgeInTime: String {
