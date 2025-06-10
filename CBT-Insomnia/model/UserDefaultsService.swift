@@ -207,19 +207,21 @@ extension UserDefaultsService {
         else { return }
 
         let calendar = Calendar.current
+
+        // 1. Get the current wake-up time as Date
         let wakeHour = wake.hour ?? 7
         let wakeMinute = wake.minute ?? 0
-
         let wakeDate = calendar.date(from: DateComponents(hour: wakeHour, minute: wakeMinute)) ?? Date()
-        let newWakeDate = calendar.date(byAdding: .minute, value: minutes, to: wakeDate)!
 
+        // 2. Add minutes to wake-up time
+        let newWakeDate = calendar.date(byAdding: .minute, value: minutes, to: wakeDate)!
         let newWakeComponents = calendar.dateComponents([.hour, .minute], from: newWakeDate)
         saveWakeUpTime(newWakeComponents)
 
-        // ✅ Update sleep duration
-        let durationMinutes = (duration.dateComponents.hour ?? 0) * 60 + (duration.dateComponents.minute ?? 0)
-        let updatedDuration = durationFromMinutes(durationMinutes + minutes)
-        saveSleepDuration(updatedDuration)
+        // 3. Increase sleep duration accordingly
+        let currentMinutes = (duration.dateComponents.hour ?? 0) * 60 + (duration.dateComponents.minute ?? 0)
+        let newDuration = durationFromMinutes(currentMinutes + minutes)
+        saveSleepDuration(newDuration)
     }
     
 
