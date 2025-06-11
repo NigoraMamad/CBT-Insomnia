@@ -93,7 +93,7 @@ class NotificationManager {
         scheduleNotification(for: .wakeUpTime)
         
         // random notifications
-        scheduleRandomNotificationAtTime(at: 15,  minute: 28)
+        scheduleRandomNotificationAtTime(at: 14,  minute: 00)
         scheduleRandomNotificationAtTime(at: 18,  minute: 00)
         // printPendingNotifications()
         //        scheduleRandomNotification()
@@ -245,6 +245,30 @@ class NotificationManager {
             print("📋 Notifiche pianificate:")
             for request in requests {
                 print("→ \(request.identifier)")
+            }
+        }
+    }
+    
+    func scheduleTestNotification(
+        at components: DateComponents,
+        title: String,
+        body: String,
+        identifier: String
+    ) {
+        let content = UNMutableNotificationContent()
+        content.title = title
+        content.body = body
+        content.sound = .default
+
+        let trigger = UNCalendarNotificationTrigger(dateMatching: components, repeats: false)
+
+        let request = UNNotificationRequest(identifier: identifier, content: content, trigger: trigger)
+
+        center.add(request) { error in
+            if let error = error {
+                print("❌ Test notification error: \(error.localizedDescription)")
+            } else {
+                print("✅ Test notification scheduled at \(components.hour ?? -1):\(components.minute ?? -1)")
             }
         }
     }
