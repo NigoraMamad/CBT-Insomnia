@@ -147,24 +147,24 @@ struct ContentView: View {
             .ignoresSafeArea()
         }
         .toolbar {
-                        ToolbarItem(placement: .navigationBarTrailing) {
-                            Button(action: {
-                                isInfoPresented = true
-                            }) {
-                                Image(systemName: "info.circle")
-                                    .foregroundColor(.white)
-                            }
-                        }
-                    }
-                .sheet(isPresented: $isInfoPresented) {
-                    InfoPage()
+            ToolbarItem(placement: .navigationBarTrailing) {
+                Button(action: {
+                    isInfoPresented = true
+                }) {
+                    Image(systemName: "info.circle")
+                        .foregroundColor(.white)
                 }
+            }
+        }
+        .sheet(isPresented: $isInfoPresented) {
+            InfoPage()
+        }
         .onAppear {
             adjustmentVM.checkIfShouldShowWeeklySummary()
         }
         .sheet(isPresented: $adjustmentVM.showEfficiencySheet) {
             WeeklyEfficiencySheet(viewModel: adjustmentVM)
-//                .presentationDetents([.medium])
+            //                .presentationDetents([.medium])
                 .presentationDetents([.height(650)])
         }
         
