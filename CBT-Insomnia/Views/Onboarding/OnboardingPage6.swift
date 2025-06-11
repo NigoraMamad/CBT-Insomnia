@@ -46,7 +46,7 @@ struct OnboardingPage6: View {
                     destination: OnboardingPage7(),
                     customAction: { completion in
                         NotificationManager.shared.requestPermissionAndSchedule { //permission
-                            NotificationManager.shared.testImmediateNotification()//test notification
+                            //NotificationManager.shared.testImmediateNotification()//test notification
                             completion() //next page
                         }
                     }

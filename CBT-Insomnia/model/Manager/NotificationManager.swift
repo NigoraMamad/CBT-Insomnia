@@ -71,7 +71,7 @@
 //
 ////NotificationManager.shared.schedule(for: newSchedule) -> When saving or updating a schedule:
 ////NotificationManager.shared.cancel(for: scheduleToDelete) -> When deleting a schedule:
-// 
+//
 
 
 import Foundation
@@ -87,14 +87,15 @@ class NotificationManager {
     
     
     func scheduleDailyNotifications() {
-        //        center.removeAllPendingNotificationRequests()
+        //   center.removeAllPendingNotificationRequests()
         
-        //        scheduleNotification(for: .bedTime)
-        //        scheduleNotification(for: .wakeUpTime)
+        scheduleNotification(for: .bedTime)
+        scheduleNotification(for: .wakeUpTime)
         
         // random notifications
-        scheduleRandomNotificationAtTime(at: 14, minute: 45)
-        
+        scheduleRandomNotificationAtTime(at: 15,  minute: 28)
+        scheduleRandomNotificationAtTime(at: 18,  minute: 00)
+        // printPendingNotifications()
         //        scheduleRandomNotification()
     }
     
@@ -226,15 +227,24 @@ class NotificationManager {
         content.title = "Notification test"
         content.body = "✅if u can read, notifications work"
         content.sound = .default
-
+        
         let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 10, repeats: false)
-
+        
         let request = UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: trigger)
         center.add(request) { error in
             if let error = error {
                 print("notification error: \(error.localizedDescription)")
             } else {
                 print("✅ Immediate Notification planned")
+            }
+        }
+    }
+    
+    func printPendingNotifications() {
+        center.getPendingNotificationRequests { requests in
+            print("📋 Notifiche pianificate:")
+            for request in requests {
+                print("→ \(request.identifier)")
             }
         }
     }
