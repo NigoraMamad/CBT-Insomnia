@@ -30,19 +30,23 @@ struct TrackingBedView: View {
                 
                 Image(systemName: "bed.double.fill")
                     .foregroundStyle(.accent)
-                    .neon(glowRadius: 1)
                     .font(.system(size: 65))
                     .padding(.bottom, 20)
                 
                 VStack(spacing: 20) {
                     if !receiver.isTracking && !showGoodnight {
                         // Initial state - waiting for tracking to start
-                        Text("Go to bed and badge-in your night")
+                        Text("Go to bed and start your sleep session")
                             .multilineTextAlignment(.center)
                             .padding(.horizontal, 40)
+                        
+                        Text("Open the app on your watch to start tracking.")
+                            .font(.krungthep(.regular, relativeTo: .headline))
+                            .padding(.horizontal)
+                            .foregroundStyle(.secondary)
                     } else if receiver.isTracking && !showGoodnight {
                         // Tracking state - show progress and feedback
-                        Text("Tracking")
+                        Text("Tracking...")
                         
                         ProgressView()
                             .progressViewStyle(CircularProgressViewStyle(tint: .accent))
@@ -50,14 +54,14 @@ struct TrackingBedView: View {
                         
                         if receiver.isWristFlat && receiver.isWristStill {
                             Text("You are in bed!")
-                                .foregroundColor(.green)
-                                .font(.system(size: 18, weight: .medium))
+                                .foregroundColor(.accent)
+                                .font(.krungthep(.regular, relativeTo: .headline))
                         }
                     } else if showGoodnight {
                         // Goodnight state
-                        Text("Okay goodnight!")
+                        Text("Goodnight!")
                             .multilineTextAlignment(.center)
-                            .font(.system(size: 24, weight: .medium))
+                            .font(.krungthep(.regular, relativeTo: .title))
                     }
                 }
                 .frame(height: 200) // Fixed height to prevent layout jumping

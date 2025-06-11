@@ -27,7 +27,7 @@ struct StepsView: View {
                     Image(systemName: "figure.walk")
                         .resizable()
                         .frame(width: 50, height: 80)
-                        .neon(glowRadius: 1)
+                        .foregroundStyle(.accent)
                         .padding(.bottom, 20)
                     
                     Group {
@@ -63,7 +63,7 @@ struct StepsView: View {
             }
            
         }
-        .font(.dsDigital(.regular, relativeTo: .title))
+        .font(.krungthep(.regular, relativeTo: .title))
         .foregroundColor(.white)
         .fullScreenCover(isPresented: $isMainViewShown) {
             ContentView(context: modelContext)

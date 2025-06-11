@@ -123,20 +123,19 @@ class UserDefaultsService {
     func saveWakeUpTime(_ components: DateComponents) {
         if let data = try? JSONEncoder().encode(components) {
             defaults.set(data, forKey: Keys.wakeUpTime)
+            NotificationManager.shared.scheduleDailyNotifications()
         }
     }
     
     func saveBedTimeOffset(_ components: DateComponents) {
         if let data = try? JSONEncoder().encode(components) {
             defaults.set(data, forKey: Keys.bedTimeOffset)
-            NotificationManager.shared.scheduleDailyNotifications()
         }
     }
     
     func saveWakeUpOffset(_ components: DateComponents) {
         if let data = try? JSONEncoder().encode(components) {
             defaults.set(data, forKey: Keys.wakeUpTime)
-            NotificationManager.shared.scheduleDailyNotifications()
         }
     }
     

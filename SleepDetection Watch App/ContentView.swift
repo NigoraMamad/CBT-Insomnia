@@ -12,9 +12,6 @@ struct ContentView: View {
 
     var body: some View {
         VStack(spacing: 20) {
-            Text("⌚ Apple Watch")
-                .font(.headline)
-
             Button(action: {
                 if motion.isTracking {
                     motion.stopMonitoring()
@@ -22,13 +19,16 @@ struct ContentView: View {
                     motion.startMonitoring()
                 }
             }) {
-                Text(motion.isTracking ? "🟢 Tracking…" : "Start Tracking")
-                    .padding()
-                    .background(motion.isTracking ? Color.green : Color.blue)
-                    .foregroundColor(.white)
-                    .cornerRadius(10)
+                Text(motion.isTracking ? "Tracking..." : "Start Tracking")
+                    .font(.custom("Krungthep", size: 20))
+                    .multilineTextAlignment(.center)
+                    .frame(width: 150, height: 150)
+                    .background(motion.isTracking ? Color.gray : .accent)
+                    .foregroundColor(.black)
+                    .clipShape(Circle())
             }
+            .buttonStyle(.plain)
         }
-        .padding()
     }
 }
+

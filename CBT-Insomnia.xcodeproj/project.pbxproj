@@ -49,6 +49,13 @@
 			);
 			target = 17B3BA612DDE1C8200EC39C0 /* CBT-Insomnia */;
 		};
+		A5D5E5AD2DF9C7BD00269948 /* Exceptions for "CBT-Insomnia" folder in "SleepDetection Watch App" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				fonts/Krungthep.ttf,
+			);
+			target = 17B3BEF42DE7418D00EC39C0 /* SleepDetection Watch App */;
+		};
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -56,6 +63,7 @@
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
 				17B3BA7E2DDE1FBC00EC39C0 /* Exceptions for "CBT-Insomnia" folder in "CBT-Insomnia" target */,
+				A5D5E5AD2DF9C7BD00269948 /* Exceptions for "CBT-Insomnia" folder in "SleepDetection Watch App" target */,
 			);
 			path = "CBT-Insomnia";
 			sourceTree = "<group>";
@@ -440,7 +448,9 @@
 				DEVELOPMENT_TEAM = XYS8YPRVR5;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "SleepDetection-Watch-App-Info.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = Sortie;
+				INFOPLIST_KEY_LSApplicationCategoryType = Krungthep.ttf;
 				INFOPLIST_KEY_NSMotionUsageDescription = "This app uses motion data to track steps.";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
 				INFOPLIST_KEY_WKCompanionAppBundleIdentifier = "com.nigorakhon.CBT-Insomnia";
@@ -471,7 +481,9 @@
 				DEVELOPMENT_TEAM = XYS8YPRVR5;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "SleepDetection-Watch-App-Info.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = Sortie;
+				INFOPLIST_KEY_LSApplicationCategoryType = Krungthep.ttf;
 				INFOPLIST_KEY_NSMotionUsageDescription = "This app uses motion data to track steps.";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
 				INFOPLIST_KEY_WKCompanionAppBundleIdentifier = "com.nigorakhon.CBT-Insomnia";
