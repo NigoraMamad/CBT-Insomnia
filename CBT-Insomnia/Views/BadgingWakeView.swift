@@ -25,7 +25,7 @@ struct BadgingWakeView: View {
                     RobotView()
                     
                     BadgeSleepButton(label: "Start tracking", isActive: true) {
-                        stepCounter.startTracking(context: modelContext)
+                        stepCounter.startTracking()
                         isStepCounterShown = true
                     }
                     .font(.krungthep(.regular, relativeTo: .callout))

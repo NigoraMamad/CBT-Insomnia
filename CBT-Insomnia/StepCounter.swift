@@ -6,7 +6,6 @@
 //
 import SwiftUI
 import CoreMotion
-import SwiftData
 
 class StepCounter: ObservableObject {
     private var pedometer = CMPedometer()
@@ -16,11 +15,8 @@ class StepCounter: ObservableObject {
     @Published var isTracking = false
     @Published var isStoppedTracking = false
     @Published var showGoalReachedAlert = false
-    
-    @EnvironmentObject private var sleepDataService: SleepDataService
-    @Environment(\.modelContext) private var modelContext
 
-    func startTracking(context: ModelContext) {
+    func startTracking() {
         guard CMPedometer.isStepCountingAvailable() else {
             print("Step counting not available")
             return
@@ -28,6 +24,7 @@ class StepCounter: ObservableObject {
         
         stepCount = 0
         isTracking = true
+        isStoppedTracking = false // Reset this flag
         showGoalReachedAlert = false
         startDate = Date()
         
@@ -41,25 +38,28 @@ class StepCounter: ObservableObject {
                 self.stepCount = data.numberOfSteps.intValue
                 
                 if self.stepCount >= 10 {
-                    self.stopTracking(context: context)
+                    self.stopTracking()
                     self.showGoalReachedAlert = true
                 }
             }
         }
     }
 
-    func stopTracking(context: ModelContext) {
+    func stopTracking() {
         pedometer.stopUpdates()
         isTracking = false
         isStoppedTracking = true
         
-        // Save badge-out time
-        SleepDataService.shared.completeSleepSession(context: context)
+        // Note: Sleep session completion is now handled in StepsView
+        print("StepCounter: Tracking stopped, 10 steps reached")
     }
 
     func reset() {
-        stopTracking(context: modelContext)
+        pedometer.stopUpdates()
         stepCount = 0
+        isTracking = false
+        isStoppedTracking = false
         showGoalReachedAlert = false
+        print("StepCounter: Reset called")
     }
 }

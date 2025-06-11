@@ -14,6 +14,7 @@ struct StepsView: View {
     @ObservedObject var stepCounter: StepCounter
     @State private var isWaitingForRealSteps = false
     @State private var isMainViewShown = false
+    @State private var hasCompletedSleepSession = false
 
     var body: some View {
         NavigationStack{
@@ -66,6 +67,14 @@ struct StepsView: View {
         .foregroundColor(.white)
         .fullScreenCover(isPresented: $isMainViewShown) {
             ContentView(context: modelContext)
+        }
+        .onChange(of: stepCounter.isStoppedTracking) { _, newValue in
+            // Save badge-out time when step tracking stops
+            if newValue && !hasCompletedSleepSession {
+                print("StepsView: Step tracking stopped, completing sleep session")
+                SleepDataService.shared.completeSleepSession(context: modelContext)
+                hasCompletedSleepSession = true
+            }
         }
     }
 }
