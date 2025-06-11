@@ -87,15 +87,15 @@ class NotificationManager {
     
     
     func scheduleDailyNotifications() {
-//        center.removeAllPendingNotificationRequests()
-
-//        scheduleNotification(for: .bedTime)
-//        scheduleNotification(for: .wakeUpTime)
+        //        center.removeAllPendingNotificationRequests()
+        
+        //        scheduleNotification(for: .bedTime)
+        //        scheduleNotification(for: .wakeUpTime)
         
         // random notifications
-        scheduleRandomNotificationAtTime(at: 15, minute: 34)
+        scheduleRandomNotificationAtTime(at: 14, minute: 45)
         
-//        scheduleRandomNotification()
+        //        scheduleRandomNotification()
     }
     
     private func scheduleNotification(for type: NotificationType) {
@@ -103,7 +103,7 @@ class NotificationManager {
         var title = ""
         var body = ""
         var identifier = ""
-
+        
         switch type {
         case .bedTime:
             components = UserDefaultsService.shared.getBedTimeOffset()
@@ -121,12 +121,12 @@ class NotificationManager {
             print("⚠️ No time saved for \(type)")
             return
         }
-
+        
         let content = UNMutableNotificationContent()
         content.title = title
         content.body = body
         content.sound = .default
-
+        
         let trigger = UNCalendarNotificationTrigger(dateMatching: time, repeats: true)
         let request = UNNotificationRequest(identifier: identifier, content: content, trigger: trigger)
         
@@ -148,22 +148,22 @@ class NotificationManager {
         ]
         
         guard let message = messages.randomElement() else { return }
-
+        
         let randomTime = randomTimeBetween12And19()
-
+        
         let content = UNMutableNotificationContent()
         content.title = "Sleep Tip 💤"
         content.body = message
         content.sound = .default
-
+        
         let trigger = UNCalendarNotificationTrigger(dateMatching: randomTime, repeats: true)
-
+        
         let request = UNNotificationRequest(
             identifier: UUID().uuidString,
             content: content,
             trigger: trigger
         )
-
+        
         UNUserNotificationCenter.current().add(request) { error in
             if let error = error {
                 print("Random notification error \(error.localizedDescription)")
@@ -188,19 +188,19 @@ class NotificationManager {
         ]
         
         guard let message = messagesHours.randomElement() else { return }
-
+        
         var components = DateComponents()
         components.hour = hour
         components.minute = minute
-
+        
         let content = UNMutableNotificationContent()
         content.title = "Sleep Tip 💤"
         content.body = message
         content.sound = .default
-
+        
         let trigger = UNCalendarNotificationTrigger(dateMatching: components, repeats: true)
         let request = UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: trigger)
-
+        
         center.add(request) { error in
             if let error = error {
                 print("Random notification error \(error.localizedDescription)")
@@ -221,7 +221,23 @@ class NotificationManager {
         }
     }
     
-    
+    func testImmediateNotification() {
+        let content = UNMutableNotificationContent()
+        content.title = "Notification test"
+        content.body = "✅if u can read, notifications work"
+        content.sound = .default
+
+        let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 10, repeats: false)
+
+        let request = UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: trigger)
+        center.add(request) { error in
+            if let error = error {
+                print("notification error: \(error.localizedDescription)")
+            } else {
+                print("✅ Immediate Notification planned")
+            }
+        }
+    }
     
 }
 
