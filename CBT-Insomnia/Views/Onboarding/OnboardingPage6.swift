@@ -45,7 +45,7 @@ struct OnboardingPage6: View {
                     label: "ENABLE NOTIFICATIONS",
                     destination: OnboardingPage7(),
                     customAction: { completion in
-                        requestNotificationPermission {
+                        NotificationManager.shared.requestPermissionAndSchedule {
                             completion()
                         }
                     }

@@ -208,6 +208,20 @@ class NotificationManager {
         }
     }
     
+    func requestPermissionAndSchedule(completion: @escaping () -> Void) {
+        center.requestAuthorization(options: [.alert, .badge, .sound]) { granted, error in
+            DispatchQueue.main.async {
+                if granted {
+                    self.scheduleDailyNotifications()
+                } else {
+                    print("❌ No notification Authorization ")
+                }
+                completion()
+            }
+        }
+    }
+    
+    
     
 }
 
