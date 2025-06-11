@@ -1,10 +1,3 @@
-//
-//  SleepSession.swift
-//  CBT-Insomnia
-//
-//  Created by Nigorakhon Mamadalieva on 21/05/25.
-//
-
 import Foundation
 import SwiftData
 
@@ -31,19 +24,23 @@ class SleepSession {
         self.badgeWakeUpTime = badgeWakeUpTime
         self.sleepDuration = sleepDuration
 
-        let calculatedTimeInBed: TimeInterval
-            let calculatedEfficiency: Double
-
-            if let wake = badgeWakeUpTime {
-                calculatedTimeInBed = wake.timeIntervalSince(badgeBedTime)
-                calculatedEfficiency = calculatedTimeInBed > 0 ? (sleepDuration / calculatedTimeInBed) * 100 : 0
-            } else {
-                calculatedTimeInBed = 0
-                calculatedEfficiency = 0
-            }
+        // Calculate initial values
+        self.timeInBed = 0
+        self.sleepEfficiency = 0
         
-        self.timeInBed = calculatedTimeInBed
-        self.sleepEfficiency = calculatedTimeInBed > 0 ? (sleepDuration / calculatedTimeInBed) * 100 : 0
+        // Update calculated properties if wake time is available
+        updateCalculatedProperties()
+    }
+    
+    // Method to update calculated properties when wake time changes
+    func updateCalculatedProperties() {
+        if let wake = badgeWakeUpTime {
+            self.timeInBed = wake.timeIntervalSince(badgeBedTime)
+            self.sleepEfficiency = timeInBed > 0 ? (sleepDuration / timeInBed) * 100 : 0
+        } else {
+            self.timeInBed = 0
+            self.sleepEfficiency = 0
+        }
     }
 
     static func currentWeek() -> Predicate<SleepSession> {
@@ -77,7 +74,7 @@ class SleepSession {
     }
 
     var isComplete: Bool {
-        return badgeWakeUpTime != nil // Changed from 'return true'
+        return badgeWakeUpTime != nil
     }
 
     var formattedBadgeInTime: String {
@@ -92,6 +89,4 @@ class SleepSession {
         formatter.timeStyle = .short
         return formatter.string(from: wakeTime)
     }
-
 }
-

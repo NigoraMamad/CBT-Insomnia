@@ -84,6 +84,13 @@ enum SleepDuration: String, CaseIterable, Codable {
         case .twentyFour: return DateComponents(hour: 24)
         }
     }
+    
+    var timeInterval: TimeInterval {
+        let components = self.dateComponents
+        let hours = components.hour ?? 0
+        let minutes = components.minute ?? 0
+        return TimeInterval(hours * 3600 + minutes * 60)
+    }
 }
 
 import Foundation
