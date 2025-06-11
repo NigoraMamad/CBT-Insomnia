@@ -10,8 +10,6 @@ import SwiftData
 
 struct WeekSummary: View {
     
-    @EnvironmentObject var manager: HealthManager
-    
     @Environment(\.modelContext) private var context
     
     @State private var selectedWeekStart: Date = {
@@ -54,7 +52,7 @@ struct WeekSummary: View {
                     Spacer()
                 } // -> HStack
                 .foregroundStyle(.white)
-                .padding(.bottom, 20)
+                .padding(.bottom, 27.5)
                 
                 // MARK: SLEEP DATA
                 HStack(alignment: .top) {
@@ -62,9 +60,8 @@ struct WeekSummary: View {
                     VStack(alignment: .leading, spacing: 5) {
                         
                         // MARK: SUB-TITLE
-                        Text("AVG SLEEP EFFICIENCY")
+                        Text("Avg Sleep EFFICIENCY")
                             .foregroundStyle(.white)
-                            .padding(.top, 20)
                         
                         // MARK: SLEEP EFF SUMMARY
                         HStack(alignment: .bottom, spacing: 15) {
@@ -83,22 +80,22 @@ struct WeekSummary: View {
                                 HStack(spacing: 2) {
                                     Image(systemName: diffEfficiency < 0 ? "arrow.down" : "arrow.up")
                                         .resizable()
-                                        .foregroundColor(.accent)
+                                        .foregroundColor(diffEfficiency < 0 ? .redWarning : .accent)
                                         .font(.krungthep(.regular, relativeTo: .title2))
                                         .frame(width: 7.5, height: 12.5)
                                     Text("\(String(format: "%.2f", diffEfficiency))%")
                                         .font(.krungthep(.regular, relativeTo: .title2))
-                                        .foregroundStyle(.accent)
+                                        .foregroundStyle(diffEfficiency < 0 ? .redWarning : .accent)
                                 } // -> HStack
-                                .shadow(color: .accent.opacity(0.8), radius: 10, x: 0, y: 0)
-                                .shadow(color: .accent.opacity(0.4), radius: 30, x: 0, y: 0)
+                                .shadow(color: diffEfficiency < 0 ? .redWarning.opacity(0.8) : .accent.opacity(0.8), radius: 10, x: 0, y: 0)
+                                .shadow(color: diffEfficiency < 0 ? .redWarning.opacity(0.4) : .accent.opacity(0.4), radius: 30, x: 0, y: 0)
                             } // -> if
                             
                         } // -> HStack
                         
                         if !pastSessions.isEmpty {
-                            let pastSleepComponent = averageSleepHours(sessions: pastSessions)
-                            Text("Compared to \(pastSleepComponent.hour ?? 7)h\(pastSleepComponent.minute ?? 0 < 10 ? "0" : "")\(pastSleepComponent.minute ?? 0) from last week")
+                            let (hours,mins) = averageSleepHours(sessions: pastSessions)
+                            Text("Compared to \(hours)h\(mins < 10 ? "0" : "")\(mins) from last week")
                                 .foregroundStyle(.gray)
                         } // -> if
                         
@@ -119,12 +116,12 @@ struct WeekSummary: View {
                     
                     ForEach(days, id: \.self) { day in
                         
-                        let session = manager.dayFor(day: day, sessions: weeklySessions)
+                        let session = dayFor(day: day, sessions: weeklySessions)
                         
                         HStack {
                             
                             Text(day.shortLabel)
-                                .foregroundStyle(.white)
+                                .foregroundStyle(colorForSleep(efficiency: session?.sleepEfficiency))
                                 .font(.krungthep(.regular, relativeTo: .title2))
                                 .frame(width: 30, alignment: .leading)
                             
@@ -132,20 +129,24 @@ struct WeekSummary: View {
                                 let fullWidth = geo.size.width
                                 ZStack(alignment: .leading) {
                                     RoundedRectangle(cornerRadius: 20)
-                                        .fill(.tertiary)
+                                        .fill(.grayNA)
                                     if let sleepEfficiency = session?.sleepEfficiency {
                                         RoundedRectangle(cornerRadius: 20)
-                                            .fill(.accent)
+                                            .fill(colorForSleep(efficiency: sleepEfficiency))
                                             .frame(width: sleepEfficiency != 0.0 ? max(10, sleepEfficiency*fullWidth/100) : 0.0)
-                                            .shadow(color: .accent.opacity(0.8), radius: 10, x: 0, y: 0)
                                     } // -> if-let
                                 } // -> ZStack
                             } // -> GeometryReader
-                            .frame(height: 30)
-                            
-                            Text("\(String(format: "%.0f", session?.sleepEfficiency ?? 0.0))%")
-                                .foregroundStyle(.white)
-                                .frame(width: 45, alignment: .trailing)
+                            .frame(height: 25)
+                            if let sleepEfficiency = session?.sleepEfficiency {
+                                Text("\(String(format: "%.0f", sleepEfficiency))%")
+                                    .foregroundStyle(colorForSleep(efficiency: sleepEfficiency))
+                                    .frame(width: 45, alignment: .trailing)
+                            } else {
+                                Text("--")
+                                    .foregroundStyle(.grayNA)
+                                    .frame(width: 45, alignment: .trailing)
+                            }
                             
                         } // -> HStack
                         
@@ -225,16 +226,17 @@ struct WeekSummary: View {
     
     func averageEfficiency(sessions: [SleepSession]) -> Float {
         let totalCount = sessions.count
+        guard totalCount > 0 else { return 0 }
         var totalSum = 0.0
         for session in sessions {
             totalSum += session.sleepEfficiency
         } // -> for session in sessions
-        guard totalCount > 0 else { return 0 }
         return Float(totalSum/Double(totalCount))
     } // -> averageEfficiency
     
-    func averageSleepHours(sessions: [SleepSession]) -> DateComponents {
+    func averageSleepHours(sessions: [SleepSession]) -> (Int,Int) {
         let totalCount = sessions.count
+        guard totalCount > 0 else { return (0,0) }
         var totalSeconds: TimeInterval = 0
         for session in sessions {
             totalSeconds += session.sleepDuration
@@ -242,8 +244,16 @@ struct WeekSummary: View {
         let averageSeconds = totalSeconds / Double(totalCount)
         let averageHours = Int(averageSeconds) / 3600
         let averageMinutes = (Int(averageSeconds) % 3600) / 60
-        return DateComponents(hour: averageHours, minute: averageMinutes)
+        return (averageHours,averageMinutes)
     } // -> averageSleepHours
+    
+    func dayFor(day: Days, sessions: [SleepSession]) -> SleepSession? {
+        sessions.first { session in
+            let weekday = Calendar.current.component(.weekday, from: session.day)
+            let weekdayEnum = Days.fromCalendarWeekday(calendarWeekday: weekday)
+            return weekdayEnum == day
+        } // -> sessions.first
+    } // -> dayFor
     
     func currentWeekLabel(date: Date) -> String {
         let calendar = Calendar.current
@@ -265,10 +275,21 @@ struct WeekSummary: View {
         return calendar.date(from: calendar.dateComponents([.yearForWeekOfYear, .weekOfYear], from: Date()))!
     } // -> startWeekDate
     
+    func colorForSleep(efficiency: Double?) -> Color {
+        guard let data = efficiency else {
+            return .grayNA
+        } // -> guard let data = efficiency
+        if data >= 80 {
+            return .accent
+        } else if data >= 70 {
+            return .yelloWarning
+        } else {
+            return .redWarning
+        } // -> if data
+    }
+    
 } // -> SleepSummary
 
 #Preview {
-    @Previewable @State var manager = HealthManager()
     WeekSummary()
-        .environmentObject(manager)
 } // -> Preview

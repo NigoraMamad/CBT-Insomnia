@@ -10,11 +10,8 @@ import SwiftData
 
 struct StatisticsView: View {
     
-    @Environment(\.dismiss) var dismiss
-    
-    @EnvironmentObject var manager: HealthManager
-    
     @Environment(\.modelContext) private var context
+    @Environment(\.dismiss) var dismiss
     
     @State private var selectedPeriod: Period = .day
     
@@ -30,8 +27,8 @@ struct StatisticsView: View {
                 // MARK: PICKER
                 CustomPicker(selection: $selectedPeriod, options: Period.allCases)
                    .padding(.horizontal, 50)
-                    .padding(.top, 10)
-                    .padding(.bottom, 30)
+                   .padding(.top, 10)
+                   .padding(.bottom, 30)
                 
                 switch selectedPeriod {
                     case .day: DaySummary()
@@ -44,16 +41,8 @@ struct StatisticsView: View {
             .padding(.horizontal)
             
         } // -> ZStack
-        // MARK: BG COLOR
-        .onAppear {
-            manager.fetchSleep(
-                modelContext: context,
-                badgeIn: bedTime,
-                badgeOut: wakeTime
-            ) // -> manager
-        } // -> task
-        .preferredColorScheme(.dark)
         .font(.krungthep(.regular, relativeTo: .callout))
+        // MARK: HEADER
         .navigationBarBackButtonHidden(true)
         .toolbar {
             ToolbarItem(placement: .navigationBarLeading) {
@@ -67,7 +56,7 @@ struct StatisticsView: View {
             ToolbarItem(placement: .principal) {
                 Text("STATISTICS")
                     .font(.krungthep(.regular, relativeTo: .callout))
-            }
+            } // -> ToolbarItem
         } // -> toolbar
         
     } // -> body
@@ -75,10 +64,8 @@ struct StatisticsView: View {
 } // -> HomeView
 
 #Preview {
-    @Previewable @State var manager = HealthManager()
     StatisticsView(
         bedTime: DateComponents(hour: 0, minute: 30),
         wakeTime: DateComponents(hour: 10, minute: 30)
     ) // -> StatisticsView
-        .environmentObject(manager)
 } // -> Preview

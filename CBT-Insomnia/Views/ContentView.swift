@@ -65,10 +65,14 @@ struct ContentView: View {
                 Color.black
                 VStack {
                     Spacer()
-                    Dialogue(
-                        mainPlaceholder: dialogueText(for: getMainPHForCurrentTime(), name: name),
-                        placeholder: ""
-                    ).padding(.top, 10)
+                    Button {
+                        manager.fetchAllSleep(modelContext: modelContext)
+                    } label: {
+                        Dialogue(
+                            mainPlaceholder: dialogueText(for: getMainPHForCurrentTime(), name: name),
+                            placeholder: ""
+                        ).padding(.top, 10)
+                    }
                     RobotView()
                     BadgeSleepCard(
                         fixedBedTime: bedTime,
@@ -107,28 +111,29 @@ struct ContentView: View {
                     //                    }
                     
                     
-                    if let session = lastNightSession {
-                        NavigationLink(destination: StatisticsView(
-                            bedTime: getBedTimeFromDefaults() ?? DateComponents(hour: 1, minute: 0),
-                            wakeTime: UserDefaultsService.shared.getWakeUpTime() ?? DateComponents(hour: 7, minute: 0)
-                        ).environmentObject(manager)) {
+                    
+                    NavigationLink(destination: StatisticsView(
+                        bedTime: getBedTimeFromDefaults() ?? DateComponents(hour: 1, minute: 0),
+                        wakeTime: UserDefaultsService.shared.getWakeUpTime() ?? DateComponents(hour: 7, minute: 0)
+                    )) {
+                        if let session = lastNightSession {
                             LastNightCard(session: session)
-                        }
-                    } else {
-                        // Show placeholder when no sleep data exists
-                        VStack {
-                            Text("No Sleep Data")
-                                .font(.krungthep(.regular, relativeTo: .title2))
-                                .foregroundColor(.gray)
-                            Text("Badge in tonight to start tracking")
-                                .font(.krungthep(.regular, relativeTo: .body))
-                                .foregroundColor(.gray)
-                        }
-                        .frame(width: 340, height: 240)
-                        .background {
-                            RoundedRectangle(cornerRadius: 20)
-                                .stroke(.gray, lineWidth: 2)
-                                .frame(width: 340, height: 240)
+                        } else {
+                            // Show placeholder when no sleep data exists
+                            VStack {
+                                Text("No Sleep Data")
+                                    .font(.krungthep(.regular, relativeTo: .title2))
+                                    .foregroundColor(.gray)
+                                Text("Badge in tonight to start tracking")
+                                    .font(.krungthep(.regular, relativeTo: .body))
+                                    .foregroundColor(.gray)
+                            }
+                            .frame(width: 340, height: 240)
+                            .background {
+                                RoundedRectangle(cornerRadius: 20)
+                                    .stroke(.gray, lineWidth: 2)
+                                    .frame(width: 340, height: 240)
+                            }
                         }
                     }
                     

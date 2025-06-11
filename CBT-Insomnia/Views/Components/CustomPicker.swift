@@ -42,7 +42,7 @@ struct CustomPicker: View {
             } // -> ForEach
             
         } // -> HStack
-        .background(.tertiary)
+        .background(.grayNA)
         .clipShape(
             RoundedRectangle(cornerRadius: 10)
         )

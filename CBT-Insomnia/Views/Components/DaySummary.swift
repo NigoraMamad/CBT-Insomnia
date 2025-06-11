@@ -27,7 +27,7 @@ struct DaySummary: View {
                 Spacer()
                 Button {
                     selectedDate = Calendar.current.date(byAdding: .day, value: -1, to: selectedDate)!
-                    fetchSleepSessions(for: selectedDate)
+                    fetchSleepSessions(date: selectedDate)
                 } label: {
                     Image(systemName: "chevron.backward")
                 } // -> Button
@@ -37,7 +37,7 @@ struct DaySummary: View {
                 Button {
                     if selectedDate < Calendar.current.startOfDay(for: Date()) {
                         selectedDate = Calendar.current.date(byAdding: .day, value: 1, to: selectedDate)!
-                        fetchSleepSessions(for: selectedDate)
+                        fetchSleepSessions(date: selectedDate)
                     } // -> if selectedDate
                 } label: {
                     Image(systemName: "chevron.forward")
@@ -45,77 +45,93 @@ struct DaySummary: View {
                 Spacer()
             } // -> HStack
             .foregroundStyle(.white)
-            .padding(.bottom, 20)
             
              // MARK: PERCENT
-            if let sleepEfficiency = currSession.first?.sleepEfficiency {
-                Text("\(String(format: "%.0f", sleepEfficiency))%")
-                    .font(.dsDigital(.bold, size: 143))
-                    .foregroundStyle(.accent)
-                    .shadow(color: .accent.opacity(0.6), radius: 10, x: 0, y: 0)
-                    .shadow(color: .accent.opacity(0.4), radius: 30, x: 0, y: 0)
-                    .padding(.top, 10)
-                Text("Efficiency")
-                    .foregroundStyle(.white)
-                    .padding(.bottom, 40)
-                
-                // MARK: HOURS SLEPT VS GOAL SLEEP HOURS
-                if let session = currSession.first {
-                    let sleepComponent = sleepDurationComponent(session: session)
-                    let sleepHour = sleepComponent.hour ?? 7
-                    let sleepMin = sleepComponent.minute ?? 0
-                    let defaultSleep = defaults.getSleepDuration() ?? SleepDuration.seven
-                    let defSleepHour = defaultSleep.dateComponents.hour ?? 7
-                    let defSleepMin = defaultSleep.dateComponents.minute ?? 0
-                    Text("Today you slept \(sleepHour):\(sleepMin < 10 ? "0\(sleepMin)" : "\(sleepMin)") out of \(defSleepHour):\(defSleepMin < 10 ? "0\(defSleepMin)" : "\(defSleepMin)")")
-                        .foregroundStyle(.white)
-                } // -> if
-                
-                // MARK: PROGRESS BARR
-                GeometryReader { geo in
-                    let fullWidth = geo.size.width
-                    ZStack(alignment: .leading) {
-                        RoundedRectangle(cornerRadius: 10)
-                            .fill(.tertiary)
-                        RoundedRectangle(cornerRadius: 10)
-                            .fill(.white)
-                            .frame(width: sleepEfficiency != 0.0 ? max(20, sleepEfficiency*fullWidth/100) : 0)
-                    } // -> ZStack
-                } // -> GeometryReader
-                .frame(height: 20)
-                .padding(.bottom, 30)
-                
-                Divider()
-                    .frame(minHeight: 1)
-                    .background(.white)
-                    .padding(.bottom, 20)
-            } // -> if !currSession.isEmpty
-            
-            // MARK: SLEEP INSIGHTS
-            ForEach(0..<3) { _ in
-                HStack {
-                    Image(systemName: "bed.double.fill")
-                        .resizable()
-                        .scaledToFit()
-                        .frame(minWidth: 30, maxHeight: 20)
-                        
-                    VStack(alignment: .leading) {
-                        Text("SLEEP DURATION")
-                            .foregroundStyle(.accent)
-                        Text("28/40")
-                    }
-                    Spacer()
-                    Text("7:00")
-                }
+            let sleepEfficiency = currSession.first?.sleepEfficiency ?? nil
+            let color = colorForSleep(efficiency: sleepEfficiency)
+            Text("\(sleepEfficiency == nil ? "NA" : String(format: "%.0f", sleepEfficiency!)+"%")")
+                .font(.dsDigital(.bold, size: 143))
+                .foregroundStyle(color)
+                .shadow(color: color.opacity(sleepEfficiency == nil ? 0.0 : 0.6), radius: 10, x: 0, y: 0)
+                .shadow(color: color.opacity(sleepEfficiency == nil ? 0.0 : 0.4), radius: 30, x: 0, y: 0)
+                .padding(.top, 1)
+                .padding(.bottom, -20)
+            Text("Efficiency")
                 .foregroundStyle(.white)
                 .padding(.bottom, 30)
+            
+            // MARK: HOURS SLEPT VS GOAL SLEEP HOURS
+            if let session = currSession.first {
+                let (sleepHour,sleepMin) = sleepDurationComponent(seconds: session.sleepDuration)
+                let (windowSleepHour,windowSleepMin) = sleepDurationComponent(seconds: session.timeInBed)
+                Text("You slept ")
+                    .foregroundStyle(.grayLabel)
+                + Text("\(sleepHour):\(sleepMin < 10 ? "0" : "")\(sleepMin)")
+                    .foregroundStyle(color)
+                + Text(" out of \(windowSleepHour):\(windowSleepMin < 10 ? "0" : "")\(windowSleepMin)")
+                    .foregroundStyle(.grayLabel)
+            } else {
+                Text("No data available for this day")
+                    .foregroundStyle(.grayLabel)
+            } // -> if !currSession.isEmpty
+                
+            // MARK: PROGRESS BARR
+            GeometryReader { geo in
+                let fullWidth = geo.size.width
+                ZStack(alignment: .leading) {
+                    RoundedRectangle(cornerRadius: 10)
+                        .fill(.grayNA)
+                    RoundedRectangle(cornerRadius: 10)
+                        .fill(.white)
+                        .frame(width: sleepEfficiency == nil ? 0 : max(20, sleepEfficiency!*fullWidth/100))
+                } // -> ZStack
+            } // -> GeometryReader
+            .frame(height: 20)
+            .padding(.bottom, 20)
+            
+            Divider()
+                .frame(minHeight: 1)
+                .background(.white)
+                .padding(.bottom, 20)
+            
+            // MARK: SLEEP INSIGHTS
+            ForEach(SleepStages.allCases, id: \.self) { stage in
+                
+                let stageDuration = currSession.first?.duration(stage: stage) ?? nil
+                let sleepDuration = currSession.first?.sleepDuration ?? nil
+                
+                HStack(spacing: 20) {
+                    Image(systemName: stage.icon)
+                        .resizable()
+                        .scaledToFit()
+                        .frame(minWidth: 30, minHeight: 20, maxHeight: 25)
+                        .foregroundStyle(.white)
+                    VStack(alignment: .leading) {
+                        Text(stage.rawValue)
+                            .foregroundStyle(color)
+                        Text((stageDuration != nil && sleepDuration != nil && sleepDuration! > 0) ? "\(String(format: "%.0f", (stageDuration!/sleepDuration!)*100))%" : "--")
+                            .foregroundStyle(.white)
+                    } // -> VStack
+                    Spacer()
+                    if sleepDuration != nil {
+                        let stageHour = Int(stageDuration!) / 3600
+                        let stageMin = (Int(stageDuration!) % 3600) / 60
+                        Text("\(stageHour)H \(stageMin < 10 ? "0" : "")\(stageMin)M")
+                            .foregroundStyle(.white)
+                    } else {
+                        Text("--")
+                            .foregroundStyle(.white)
+                    }
+                } // -> HStack
+                .foregroundStyle(.white)
+                .padding(.bottom, 15)
                   
             } // ForEach
             
         } // -> VStack
         .preferredColorScheme(.dark)
         .onAppear {
-            fetchSleepSessions(for: selectedDate)
+            fetchSleepSessions(date: selectedDate)
         }
         
     } // -> body
@@ -126,7 +142,7 @@ struct DaySummary: View {
         return formatter.string(from: date)
     } // -> currentDayLabel
     
-    func fetchSleepSessions(for date: Date) {
+    func fetchSleepSessions(date: Date) {
         let calendar = Calendar.current
         let startOfDay = calendar.startOfDay(for: date)
         let endOfDay = calendar.date(byAdding: .day, value: 1, to: startOfDay)!
@@ -146,12 +162,24 @@ struct DaySummary: View {
             print("Failed to fetch sessions: \(error)")
         }
     } // -> fetchSleepSessions
+    
+    func colorForSleep(efficiency: Double?) -> Color {
+        guard let data = efficiency else {
+            return .grayNA
+        } // -> guard let data = efficiency
+        if data >= 80 {
+            return .accent
+        } else if data >= 70 {
+            return .yelloWarning
+        } else {
+            return .redWarning
+        } // -> if data
+    }
 
-    func sleepDurationComponent(session: SleepSession) -> DateComponents {
-        let averageSeconds = session.sleepDuration
-        let averageHours = Int(averageSeconds) / 3600
-        let averageMinutes = (Int(averageSeconds) % 3600) / 60
-        return DateComponents(hour: averageHours, minute: averageMinutes)
+    func sleepDurationComponent(seconds: TimeInterval) -> (Int,Int) {
+        let hours = Int(seconds) / 3600
+        let mins = (Int(seconds) % 3600) / 60
+        return (hours, mins)
     } // -> averageSleepHours
     
 } // -> DayAnalysis
