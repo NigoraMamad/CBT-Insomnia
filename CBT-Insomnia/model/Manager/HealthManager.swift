@@ -18,8 +18,6 @@ class HealthManager: ObservableObject {
         requestHealthAuthorization()
     } // -> init
     
-    
-    
     func requestHealthAuthorization() {
         
         guard HKHealthStore.isHealthDataAvailable() else {
@@ -40,9 +38,6 @@ class HealthManager: ObservableObject {
         } // -> healthStore
         
     } // -> requestHealthAuthorization
-    
-    
-    
     
     func fetchSleepData(completion: @escaping ([HKCategorySample]) -> Void) {
         guard let sleepType = HKObjectType.categoryType(forIdentifier: .sleepAnalysis) else {
@@ -72,6 +67,7 @@ class HealthManager: ObservableObject {
     
     
     func fetchAllSleep(modelContext: ModelContext) {
+        if self.authorization == false { return }
         guard let sleepType = HKObjectType.categoryType(forIdentifier: .sleepAnalysis) else { return }
         let predicate = HKQuery.predicateForSamples(withStart: .distantPast, end: Date(), options: [])
         let sortDescriptor = NSSortDescriptor(key: HKSampleSortIdentifierEndDate, ascending: false)
@@ -100,7 +96,9 @@ class HealthManager: ObservableObject {
                         let stage = self.mapToSleepStage(from: sample.value)
                         let duration = sample.endDate.timeIntervalSince(sample.startDate)
                         stageDurations[stage, default: 0] += duration
-                        sleepDuration += duration
+                        if stage != .awake {
+                            sleepDuration += duration
+                        }
                     } // -> for sample in samplesForDay
                     
                     let stageDurationModel = stageDurations.map {
@@ -164,6 +162,8 @@ class HealthManager: ObservableObject {
         badgeIn: DateComponents,
         badgeOut: DateComponents
     ) {
+        if self.authorization == false { return }
+        
         // Current day
         let calendar = Calendar.current
         let now = Date()

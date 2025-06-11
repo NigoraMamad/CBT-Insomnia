@@ -15,9 +15,6 @@ struct StatisticsView: View {
     
     @State private var selectedPeriod: Period = .day
     
-    let bedTime: DateComponents
-    let wakeTime: DateComponents
-    
     var body: some View {
         
         ZStack(alignment: .top) {
@@ -64,8 +61,5 @@ struct StatisticsView: View {
 } // -> HomeView
 
 #Preview {
-    StatisticsView(
-        bedTime: DateComponents(hour: 0, minute: 30),
-        wakeTime: DateComponents(hour: 10, minute: 30)
-    ) // -> StatisticsView
+    StatisticsView()
 } // -> Preview

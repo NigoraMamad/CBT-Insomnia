@@ -200,8 +200,6 @@ struct WeekSummary: View {
     func fetchPastWeekSleepSessions(pastWeekEnd: Date) {
         let calendar = Calendar.current
         guard let pastWeekStart = calendar.date(byAdding: .day, value: -7, to: pastWeekEnd) else { return }
-        print(pastWeekStart)
-        print(pastWeekEnd)
         
         // Past week
         let predicate = #Predicate<SleepSession> {
@@ -215,9 +213,6 @@ struct WeekSummary: View {
 
         do {
             pastSessions = try context.fetch(descriptor)
-            for session in pastSessions {
-                print(session.day)
-            }
         } catch {
             print("Failed to fetch weekly sessions: \(error)")
         } // -> do-catch

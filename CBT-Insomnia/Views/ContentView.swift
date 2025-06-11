@@ -112,10 +112,7 @@ struct ContentView: View {
                     
                     
                     
-                    NavigationLink(destination: StatisticsView(
-                        bedTime: getBedTimeFromDefaults() ?? DateComponents(hour: 1, minute: 0),
-                        wakeTime: UserDefaultsService.shared.getWakeUpTime() ?? DateComponents(hour: 7, minute: 0)
-                    )) {
+                    NavigationLink(destination: StatisticsView()) {
                         if let session = lastNightSession {
                             LastNightCard(session: session)
                         } else {
