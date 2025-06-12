@@ -11,22 +11,14 @@ import SwiftData
 
 class HealthManager: ObservableObject {
     
-    @Published var selectedMode: Period = .day
-    @Published var sleepItems: [SleepItem] = []
-    @Published var sleepEfficiencies: [SleepEfficiency] = []
-
-    
     let healthStore = HKHealthStore()
     private var authorization = false
-    
-    
     
     init () {
         requestHealthAuthorization()
     } // -> init
     
-    
-    
+    // MARK: REQUEST AUTHORIZATION
     func requestHealthAuthorization() {
         
         guard HKHealthStore.isHealthDataAvailable() else {
@@ -48,129 +40,77 @@ class HealthManager: ObservableObject {
         
     } // -> requestHealthAuthorization
     
+    // MARK: MAP SLEEP STAGES
+    func mapToSleepStage(from value: Int) -> SleepStages {
+        switch value {
+            case HKCategoryValueSleepAnalysis.awake.rawValue: return .awake
+            case HKCategoryValueSleepAnalysis.asleepUnspecified.rawValue: return .asleepUnspecified
+            case HKCategoryValueSleepAnalysis.asleepCore.rawValue: return .asleepCore
+            case HKCategoryValueSleepAnalysis.asleepDeep.rawValue: return .asleepDeep
+            case HKCategoryValueSleepAnalysis.asleepREM.rawValue: return .asleepREM
+            default: return .asleepUnspecified
+        } // -> value
+    } // -> mapToSleepStage
     
-    
-    func fetchSleep(
-        modelContext: ModelContext,
-        badgeIn: DateComponents,
-        badgeOut: DateComponents
-    ) {
-        // Current day
-        let calendar = Calendar.current
-        let now = Date()
+    // MARK: TO TEST PREV DATA (ONLY WITH USERS THAT SLEEPS FROM 12 AM)
+    func fetchAllSleep(modelContext: ModelContext) {
+        if self.authorization == false { return }
+        guard let sleepType = HKObjectType.categoryType(forIdentifier: .sleepAnalysis) else { return }
+        let predicate = HKQuery.predicateForSamples(withStart: .distantPast, end: Date(), options: [])
+        let sortDescriptor = NSSortDescriptor(key: HKSampleSortIdentifierEndDate, ascending: false)
         
-        // Calculate current week
-        let weekday = calendar.component(.weekday, from: now)
-        print(weekday)
-        let daysSinceMonday = (weekday + 4) % 7 // MODIFY LATER TO 5
-        print(daysSinceMonday)
-        let startOfWeek = calendar.date(byAdding: .day, value: -daysSinceMonday-1, to: calendar.startOfDay(for: now))!
-        print(startOfWeek)
-        
-        // Get all dates from Monday to Today
-        let datesToCheck = (1...daysSinceMonday+1).compactMap {
-            calendar.date(byAdding: .day, value: $0, to: startOfWeek)
-        } // -> datesToCheck
-        print(datesToCheck)
-        
-        // Fetch existing SleepSessions
-        let fetchDescriptor = FetchDescriptor<SleepSession>(
-            predicate: #Predicate { session in
-                session.day >= startOfWeek && session.day <= now
-            } // -> predicate
-        ) // -> fetchDescriptor
-        
-        // Calculate missingDates
-        var missingDates: [Date] = []
-        
-        do {
-            let existingSessions = try modelContext.fetch(fetchDescriptor)
-            let existingDates = Set(existingSessions.map {
-                calendar.startOfDay(for: $0.day)
-            }) // -> existingDates
-
-            // Compute missing dates
-            missingDates = datesToCheck.filter { !existingDates.contains($0) }
-
-            guard !missingDates.isEmpty else {
-                print("All sleep sessions for this week already exist.")
-                return
-            }
+        let query = HKSampleQuery(sampleType: sleepType, predicate: predicate, limit: HKObjectQueryNoLimit, sortDescriptors: [sortDescriptor]) { query, samples, error in
             
-            print("existingSessions: \(existingSessions)")
-
-        } catch {
-            print("Failed to fetch existing sessions: \(error)")
-            return
-        } // -> do-catch
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        // Fetch all HealthKit sleep data of the missing dates
-        let sleepType = HKObjectType.categoryType(forIdentifier: .sleepAnalysis)!
-        let startDate = calendar.date(bySettingHour: 18, minute: 0, second: 0, of: startOfWeek)! // Week start on Monday at 6:00 PM??? Talk with team and modify later???
-        let endDate = calendar.date(bySettingHour: 10, minute: 0, second: 0, of: now)! // Define today at 6:00 PM as the end
-        
-        let predicate = HKQuery.predicateForSamples(withStart: startDate, end: endDate, options: .strictStartDate)
-        
-        let query = HKSampleQuery(sampleType: sleepType, predicate: predicate, limit: HKObjectQueryNoLimit, sortDescriptors: nil) { (query, samples, error) in
-            guard let samples = samples as? [HKCategorySample] else {
+            guard let samples = samples as? [HKCategorySample], error == nil else {
                 print("error fetching sleep analysis data: \(String(describing: error))")
                 return
             } // -> samples
             
-            let asleepSamples = samples.filter {
-                $0.value == HKCategoryValueSleepAnalysis.asleepUnspecified.rawValue ||
-                $0.value == HKCategoryValueSleepAnalysis.asleepCore.rawValue ||
-                $0.value == HKCategoryValueSleepAnalysis.asleepDeep.rawValue ||
-                $0.value == HKCategoryValueSleepAnalysis.asleepREM.rawValue
-            }
-            let grouped = Dictionary(grouping: asleepSamples) { sample in
+            let calendar = Calendar.current
+            
+            let groupedByDay = Dictionary(grouping: samples) { sample in
                 calendar.startOfDay(for: sample.startDate)
-            } // -> grouped
-
+            } // -> groupDates
+            
             DispatchQueue.main.async {
                 
-                for date in missingDates {
-                    guard let segments = grouped[date] else {
-                        print("No HealthKit sleep data for \(date). Skipping.")
-                        print()
-                        continue
-                    } // -> segments
-
-                    let sleepDuration = segments.reduce(0.0) {
-                        $0 + $1.endDate.timeIntervalSince($1.startDate)
-                    } // -> sleepDuration
+                for (day, samplesForDay) in groupedByDay {
                     
-                    var componentsBadgeIn = Calendar.current.dateComponents([.year, .month, .day], from: date)
-                    componentsBadgeIn.hour = badgeIn.hour
-                    componentsBadgeIn.minute = badgeIn.minute
-                    componentsBadgeIn.second = badgeIn.second
+                    var sleepDuration: TimeInterval = 0
+                    var stageDurations: [SleepStages: TimeInterval] = [:]
                     
-                    var componentsBadgeOut = Calendar.current.dateComponents([.year, .month, .day], from: date)
-                    componentsBadgeOut.hour = badgeOut.hour
-                    componentsBadgeOut.minute = badgeOut.minute
-                    componentsBadgeOut.second = badgeOut.second
-
-                    let newSession = SleepSession(
-                        day: date,
-                        badgeWakeUpTime: Calendar.current.date(from: componentsBadgeOut)!,
-//                        badgeBedTime: Calendar.current.date(from: componentsBadgeOut)!.timeIntervalSince(Calendar.current.date(from: componentsBadgeIn)!),
-                        badgeBedTime: Calendar.current.date(from: componentsBadgeIn)!,
-
-                        sleepDuration: sleepDuration
+                    for sample in samplesForDay {
+                        let duration = sample.endDate.timeIntervalSince(sample.startDate)
+                        guard duration > 0 else { continue }
+                        let stage = self.mapToSleepStage(from: sample.value)
+                        stageDurations[stage, default: 0] += duration
+                        if stage != .awake {
+                            sleepDuration += duration
+                        } // -> if stage != .awake
+                    } // -> for sample in samplesForDay
+                    
+                    let stageDurationModel = stageDurations.map {
+                        SleepStageDuration(stage: $0.key, duration: $0.value)
+                    } // -> stageDurationModel
+                    
+                    let earliest = samplesForDay.map(\.startDate).min()!
+                    let latest = samplesForDay.map(\.endDate).max()!
+                    
+                    let bedtimeOffset = TimeInterval(Int.random(in: 15 * 60 ... 2 * 60 * 60)) // 15 min to 2h before
+                    let wakeupOffset = TimeInterval(Int.random(in: 15 * 60 ... 2 * 60 * 60)) // 15 min to 3h after
+                    
+                    let badgeBedTime = earliest.addingTimeInterval(-bedtimeOffset)
+                    let badgeWakeUpTime = latest.addingTimeInterval(wakeupOffset)
+                    
+                    let session = SleepSession(
+                        day: day,
+                        badgeWakeUpTime: badgeWakeUpTime,
+                        badgeBedTime: badgeBedTime,
+                        sleepDuration: sleepDuration,
+                        stageDurations: stageDurationModel
                     ) // -> session
                     
-                    print(newSession)
-                    
-                    modelContext.insert(newSession)
+                    modelContext.insert(session)
                     
                     do {
                         try modelContext.save()
@@ -178,497 +118,78 @@ class HealthManager: ObservableObject {
                         print("Failed to save: \(error)")
                     } // -> do-catch
                     
-                } // -> for missingDates
-
-                print("Inserted missing sleep sessions.")
+                } // -> for (day, samplesForDay) in groupedByDay
                 
             } // -> DispatchQueue
             
-        } // -> let
+        } // -> query
         
         healthStore.execute(query)
+    } // -> fetchAllSleep
+    
+    // MARK: FETCH CURRENT SLEEP BADGE IN AND OUT
+    func fetchSleep(
+        modelContext: ModelContext,
+        session: SleepSession,
+        badgeIn: Date,
+        badgeOut: Date
+    ) {
+        if self.authorization == false { return }
+        guard let sleepType = HKObjectType.categoryType(forIdentifier: .sleepAnalysis) else { return }
+        let predicate = HKQuery.predicateForSamples(withStart: badgeIn, end: badgeOut, options: [])
+        let sortDescriptor = NSSortDescriptor(key: HKSampleSortIdentifierEndDate, ascending: false)
+        
+        let query = HKSampleQuery(sampleType: sleepType, predicate: predicate, limit: HKObjectQueryNoLimit, sortDescriptors: [sortDescriptor]) { (query, samples, error) in
+                
+                guard let samples = samples as? [HKCategorySample], error == nil else {
+                    print("Error fetching sleep analysis data: \(String(describing: error))")
+                    return
+                } // -> samples
+                
+                DispatchQueue.main.async {
+                    
+                    var sleepDuration: TimeInterval = 0
+                    var stageDurations: [SleepStages: TimeInterval] = [:]
+                    
+                    for sample in samples {
+                        // Skip out-of-bounds samples (just in case)
+                        if sample.endDate <= badgeIn || sample.startDate >= badgeOut {
+                            continue
+                        } // -> if
+                        
+                        // Clip to badge interval
+                        let clippedStart = max(sample.startDate, badgeIn)
+                        let clippedEnd = min(sample.endDate, badgeOut)
+                        let duration = clippedEnd.timeIntervalSince(clippedStart)
+                        guard duration > 0 else { continue }
+                        
+                        let stage = self.mapToSleepStage(from: sample.value)
+                        stageDurations[stage, default: 0] += duration
+                        if stage != .awake {
+                            sleepDuration += duration
+                        } // -> if
+                    } // -> for sample in samplesForDay
+                    
+                    let stageDurationModel = stageDurations.map {
+                        SleepStageDuration(stage: $0.key, duration: $0.value)
+                    } // -> stageDurationModel
+                    
+                    // Update the provided session
+                    session.sleepDuration = sleepDuration
+                    session.stageDurations = stageDurationModel
+                    
+                    do {
+                        try modelContext.save()
+                    } catch {
+                        print("Failed to save updated session: \(error)")
+                    } // -> do-catch
+                    
+                } // -> DispatchQueue
             
+            } // -> query
+            
+            healthStore.execute(query)
+        
     } // -> fetchSleep
     
-    
-    func calculateSleepEfficiency() {
-        
-        //if !self.authorization { return }
-        
-        let sleepType = HKObjectType.categoryType(forIdentifier: .sleepAnalysis)!
-        
-        let calendar = Calendar.current
-        let now = Date()
-        
-        let weekday = calendar.component(.weekday, from: now)
-        
-        // Calculate how many days have passed since Monday
-        let daysSinceMonday = (weekday + 5) % 7
-        let startOfWeek = calendar.date(byAdding: .day, value: -daysSinceMonday, to: calendar.startOfDay(for: now))!
-        
-        // Week start on Monday at 6:00 PM??? Talk with team and modify later???
-        let startDate = calendar.date(bySettingHour: 18, minute: 0, second: 0, of: startOfWeek)!
-        
-        // Define today at 6:00 PM as the end
-        let endDate = calendar.date(bySettingHour: 18, minute: 0, second: 0, of: now)!
-        
-        let predicate = HKQuery.predicateForSamples(withStart: startDate, end: endDate, options: .strictStartDate)
-        
-        let query = HKSampleQuery(sampleType: sleepType, predicate: predicate, limit: HKObjectQueryNoLimit, sortDescriptors: nil) { (query, samples, error) in
-            guard let samples = samples as? [HKCategorySample] else {
-                print("error fetching sleep analysis data: \(String(describing: error))")
-                return
-            } // -> guard
-            
-            // Group by day
-            let groupedByDay = Dictionary(grouping: samples) { sample -> Date in
-                let bedtimeReference = sample.startDate
-                return calendar.startOfDay(for: bedtimeReference)
-            } // -> groupedByDay
-            
-            let maxGap: TimeInterval = 60 * 60  // 1 hour
-            
-            var sleepBlocks: [(start: Date, end: Date, asleepDuration: TimeInterval)] = []
-            
-            // NO IN BED PARAMETER
-            for (_, dailySamples) in groupedByDay {
-                var currentStart: Date?
-                var currentEnd: Date?
-                var currentAsleep: TimeInterval = 0
-                
-                for (_, sample) in dailySamples.enumerated() {
-                    
-                    let stage = sample.value
-                    let isAsleep = [
-                        HKCategoryValueSleepAnalysis.asleepUnspecified.rawValue,
-                        HKCategoryValueSleepAnalysis.asleepCore.rawValue,
-                        HKCategoryValueSleepAnalysis.asleepDeep.rawValue,
-                        HKCategoryValueSleepAnalysis.asleepREM.rawValue
-                    ].contains(stage)
-                    
-                    // Start new sleep block
-                    if currentStart == nil {
-                        currentStart = sample.startDate
-                        currentEnd = sample.endDate
-                        currentAsleep = isAsleep ? sample.endDate.timeIntervalSince(sample.startDate) : 0
-                        continue
-                    } // -> if
-                    
-                    let previousEnd = currentEnd!
-                    let currentGap = sample.startDate.timeIntervalSince(previousEnd)
-                    
-                    if currentGap > maxGap {
-                        // Save current block
-                        sleepBlocks.append((start: currentStart!, end: currentEnd!, asleepDuration: currentAsleep))
-                        // Start new block
-                        currentStart = sample.startDate
-                        currentEnd = sample.endDate
-                        currentAsleep = isAsleep ? sample.endDate.timeIntervalSince(sample.startDate) : 0
-                    } else {
-                        // Continue block
-                        currentEnd = max(currentEnd!, sample.endDate)
-                        if isAsleep {
-                            currentAsleep += sample.endDate.timeIntervalSince(sample.startDate)
-                        }
-                    } // -> if-else
-                    
-                    // Final block
-                    if let start = currentStart, let end = currentEnd {
-                        sleepBlocks.append((start: start, end: end, asleepDuration: currentAsleep))
-                    } // -> if
-                    
-                } // -> for in samples
-                
-            } // -> for in groupedByDay
-            
-            DispatchQueue.main.async {
-                self.sleepEfficiencies = []
-                for block in sleepBlocks {
-                    let summary = SleepEfficiency(
-                        date: calendar.startOfDay(for: block.start),
-                        inBedDuration: block.end.timeIntervalSince(block.start),
-                        asleepDuration: block.asleepDuration
-                    ) // -> summary
-                    self.sleepEfficiencies.append(summary)
-                } // -> for in sleepBlocks
-            } // -> DispatchQueue
-            
-        } // -> let
-        healthStore.execute(query)
-        
-    } // ->  calculateSleepEfficiency
-    
-    
-    
-    func dateFor(date: Date) -> Days  {
-        let componentDate = Calendar.current.dateComponents([.weekday], from: date)
-        return Days.allCases.first(where: { $0.weekday == componentDate.weekday }) ?? .mon
-    } // -> dateFor
-    
 } // -> HealthManager
-
-
-
-struct SleepItem: Identifiable {
-    let id: UUID = UUID()
-    let sleepStage: SleepStage
-    let startDate: Date
-    let endDate: Date
-}
-
-enum SleepStage: String {
-    case awake = "awake"
-    case rem = "REM"
-    case core = "Core"
-    case deep = "Deep"
-    case asleep = "Unspecified"
-    case unknown = "Unknown"
-}
-
-struct SleepEfficiency: Identifiable {
-    let id = UUID()
-    let date: Date
-    let inBedDuration: TimeInterval
-    let asleepDuration: TimeInterval
-    var efficiency: Double {
-        guard inBedDuration > 0 else { return 0 }
-        return (asleepDuration / inBedDuration) * 100
-    } // -> efficiency
-} // -> SleepSummary
-
-
-
-/*
-class HealthManager: ObservableObject {
-    
-    let healthStore = HKHealthStore()
-    private var authorization = false
-    
-    init () {
-        requestHealthAuthorization()
-    } // -> init
-    
-    func requestHealthAuthorization() {
-        // ...
-    } // -> requestHealthAuthorization
-    
-    func fetchSleep() {
-        let sleepType = HKObjectType.categoryType(forIdentifier: .sleepAnalysis)!
-        
-        let calendar = Calendar.current
-        let now = Date()
-        
-        let startOfPreviousNight = calendar.date(bySettingHour: 18, minute: 0, second: 0, of: now.addingTimeInterval(-86400))!
-        let endOfPreviousNight = calendar.date(bySettingHour: 10, minute: 0, second: 0, of: now)!
-        
-        let predicate = HKQuery.predicateForSamples(withStart: startOfPreviousNight, end: endOfPreviousNight, options: .strictStartDate)
-        
-        let query = HKSampleQuery(sampleType: sleepType, predicate: predicate, limit: HKObjectQueryNoLimit, sortDescriptors: nil) { (query, samples, error) in
-            guard let samples = samples as? [HKCategorySample] else {
-                print("error fetching sleep analysis data: \(String(describing: error))")
-                return
-            } // -> guard|
-            print(samples)
-        } // -> let
-        healthStore.execute(query)
-    } // -> fetchTodayCalories
-    
-} // -> HealthManager
-*/
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-/*
- @ -16,39 +16,58 @@ extension Date {
-
- class HealthManager: ObservableObject {
-     
-     // To get and use health data/parameters
-     @Published var activities: [String: Activity] = [:]
-     
-     // Instance for HealthStore
-     let healthStore = HKHealthStore()
-     
-     init () {
-         requestHealthAuthorization()
-         requestAuthorization()
-     } // -> init
-     
-     func requestHealthAuthorization() {
-     
-     
-     func requestAuthorization() {
-         
-         // Check if HealthKit is available on current device
-         guard HKHealthStore.isHealthDataAvailable() else {
-             print("HealthKit is not available on this device.")
-             return
-         } // guard
-         
-         let steps = HKQuantityType(.stepCount)
-         let calories = HKQuantityType(.activeEnergyBurned)
-         let sleepAnalysis = HKObjectType.categoryType(forIdentifier: .sleepAnalysis)!
-         // Get identifier data type from HealthKit
-         guard
-             let steps = HKObjectType.quantityType(forIdentifier: .stepCount),
-             let calories = HKObjectType.quantityType(forIdentifier: .activeEnergyBurned),
-             let sleepAnalysis = HKObjectType.categoryType(forIdentifier: .sleepAnalysis)
-         else {
-             return
-         }
-         
-         // Gather all health types needed
-         let healthTypes: Set<HKObjectType> = [steps, calories, sleepAnalysis]
-         
-         // Request authorization
-         healthStore.requestAuthorization(toShare: [], read: healthTypes) { (success, error) in
-             if success {
-                 // If success -> fetch data
-                 self.fetchTodaySteps()
-                 self.fetchTodayCalories()
-                 self.fetchTodaySleep()
-                 self.fetchTodaySleep { sample in
-                     self.interpretSleepSamples(samples: sample)
-                 }
-                 //self.recordSleep()
-             } else {
-                 // Else -> print error
-                 print("HealthKit authorization failed: \(error?.localizedDescription ?? "No error found")")
-             } // -> if-else
-         } // -> healthStore
-         
-     } // -> requestHealthAuthorization
-     
-     
-     
-     func fetchData() {
-         let steps = HKQuantityType(.stepCount)
-         let predicate = HKQuery.predicateForSamples(withStart: .startOfDay, end: Date())
- @ -66,6 +85,8 @@ class HealthManager: ObservableObject {
-         healthStore.execute(query)
-     } // -> fetchData
-     
-     
-     
-     func fetchTodaySteps() {
-         let steps = HKQuantityType(.stepCount)
-         let predicate = HKQuery.predicateForSamples(withStart: .startOfDay, end: Date())
- @ -83,6 +104,8 @@ class HealthManager: ObservableObject {
-         healthStore.execute(query)
-     } // -> fetchTodaySteps
-     
-     
-     
-     func fetchTodayCalories() {
-         let calories = HKQuantityType(.activeEnergyBurned)
-         let predicate = HKQuery.predicateForSamples(withStart: .startOfDay, end: Date())
- @ -100,25 +123,186 @@ class HealthManager: ObservableObject {
-         healthStore.execute(query)
-     } // -> fetchTodayCalories
-     
-     func fetchTodaySleep() {
-         let sleepType = HKObjectType.categoryType(forIdentifier: .sleepAnalysis)!
-     
-     
-     func fetchTodaySleep(completion: @escaping ([HKCategorySample]) -> Void) {
-         
-         // Get sleep analysis data type from HealthKit
-         guard let sleepType = HKObjectType.categoryType(forIdentifier: .sleepAnalysis) else {
-             completion([])
-             return
-         }
-         
-         //let calendar = Calendar.current
-         //let now = Date()
-         
-         //let startOfPreviousNight = calendar.date(bySettingHour: 12, minute: 0, second: 0, of: now.addingTimeInterval(-86400))!
-         //let endOfPreviousNight = calendar.date(bySettingHour: 12, minute: 0, second: 0, of: now)!
-         
-         //let predicate = HKQuery.predicateForSamples(withStart: startOfPreviousNight, end: endOfPreviousNight, options: .strictStartDate)
-         
-         let startDate = Calendar.current.date(byAdding: .day, value: -7, to: Date())!
-         let predicate = HKQuery.predicateForSamples(withStart: startDate, end: Date(), options: .strictStartDate)
-         
-         let sortDescriptor = NSSortDescriptor(key: HKSampleSortIdentifierEndDate, ascending: true)
-         
-         let query = HKSampleQuery(
-             sampleType: sleepType,
-             predicate: predicate,
-             limit: HKObjectQueryNoLimit,
-             sortDescriptors: [sortDescriptor]
-         ) { (query, samples, error) in
-             guard let samples = samples as? [HKCategorySample] else {
-                 completion([])
-                 print("error fetching sleep analysis data: \(String(describing: error))")
-                 return
-             } // -> guard
-             completion(samples)
-         } // -> let
-         healthStore.execute(query)
-     } // -> fetchTodayCalories
-     
-     
-     
-     
-     
-     func fetchSleepLastNight(
-         preferredSleepStart: DateComponents,
-         preferredWakeUp: DateComponents,
-         completion: @escaping ([HKCategorySample]) -> Void
-     ) {
-         // Get sleep analysis data type from HealthKit
-         guard let sleepType = HKObjectType.categoryType(forIdentifier: .sleepAnalysis) else {
-             completion([])
-             return
-         }
-         
-         let calendar = Calendar.current
-         let now = Date()
-         guard let yesterday = calendar.date(byAdding: .day, value: -1, to: now) else {
-             return
-         }
-         
-         let startOfPreviousNight = calendar.date(bySettingHour: 18, minute: 0, second: 0, of: now.addingTimeInterval(-86400))!
-         let endOfPreviousNight = calendar.date(bySettingHour: 10, minute: 0, second: 0, of: now)!
-         // Calculate the start and end of the previous night
-         var sleepStartComponents = preferredSleepStart
-         sleepStartComponents.day = calendar.component(.day, from: yesterday)
-         sleepStartComponents.month = calendar.component(.month, from: yesterday)
-         sleepStartComponents.year = calendar.component(.year, from: yesterday)
-         
-         let predicate = HKQuery.predicateForSamples(withStart: startOfPreviousNight, end: endOfPreviousNight, options: .strictStartDate)
-         var wakeUpComponents = preferredWakeUp
-         wakeUpComponents.day = calendar.component(.day, from: now)
-         wakeUpComponents.month = calendar.component(.month, from: now)
-         wakeUpComponents.year = calendar.component(.year, from: now)
-         
-         let query = HKSampleQuery(sampleType: sleepType, predicate: predicate, limit: HKObjectQueryNoLimit, sortDescriptors: nil) { (query, samples, error) in
-             guard let samples = samples as? [HKCategorySample] else {
-         guard
-             let sleepStart = calendar.date(from: sleepStartComponents),
-             let wakeUp = calendar.date(from: wakeUpComponents)
-         else {
-             return
-         }
-         
-         let predicate = HKQuery.predicateForSamples(withStart: sleepStart, end: wakeUp, options: .strictStartDate)
-         
-         let sortDescriptor = NSSortDescriptor(key: HKSampleSortIdentifierEndDate, ascending: true)
-         
-         let query = HKSampleQuery(
-             sampleType: sleepType,
-             predicate: predicate,
-             limit: HKObjectQueryNoLimit,
-             sortDescriptors: [sortDescriptor]
-         ) { (query, samples, error) in
-             guard
-                 let samples = samples as? [HKCategorySample],
-                 error == nil
-             else {
-                 completion([])
-                 print("error fetching sleep analysis data: \(String(describing: error))")
-                 return
-             } // -> guard
-             print(samples)
-             completion(samples)
-         } // -> let
-         healthStore.execute(query)
-     } // -> fetchTodayCalories
-     
-     func interpretSleepSamples(samples: [HKCategorySample]) {
-         
-         for sample in samples {
-             
-             // Timeframe
-             let start = sample.startDate
-             let end = sample.endDate
-
-             // Tag the type of sleep stage
-             var sleepStage: String {
-                 switch sample.value {
-                 case HKCategoryValueSleepAnalysis.inBed.rawValue: "In Bed"
-                 case HKCategoryValueSleepAnalysis.asleepUnspecified.rawValue: "Unspecified"
-                 case HKCategoryValueSleepAnalysis.awake.rawValue: "Awake"
-                 case HKCategoryValueSleepAnalysis.asleepREM.rawValue: "REM"
-                 case HKCategoryValueSleepAnalysis.asleepCore.rawValue: "Core"
-                 case HKCategoryValueSleepAnalysis.asleepDeep.rawValue: "Deep"
-                 default: "Unknown"
-                 } // -> switch
-             } // -> sleepStage
-
-             print("Stage: \(sleepStage), from: \(formatDateRange(start: start, end: end))")
-             
-         } // -> for
-         
-     } // -> interpretSleepSamples
-     
-     
-     
-     
-     func recordSleep() {
-         let now = Date()
-         let startBed = Calendar.current.date(byAdding: .hour, value: -8, to: now)
-         let startSleep = Calendar.current.date(byAdding: .minute, value: -470, to: now)
-         let endSleep = Calendar.current.date(byAdding: .minute, value: -5, to: now)
-         
-         let sleepType = HKObjectType.categoryType(forIdentifier: HKCategoryTypeIdentifier.sleepAnalysis)
-         let inBed = HKCategorySample.init(type: sleepType!, value: HKCategoryValueSleepAnalysis.inBed.rawValue, start: startBed!, end: now)
-         let asleep = HKCategorySample.init(type: sleepType!, value: HKCategoryValueSleepAnalysis.asleepUnspecified.rawValue, start: startSleep!, end: endSleep!)
-         healthStore.save([inBed, asleep]) { (success, error) in
-             if success {
-                 print(inBed)
-                 print(asleep)
-                 print("Saved")
-             } else {
-                 print()
-                 print(error)
-                 print()
-             }
-         }
-     }
-     
-     
-     
-     
-     
-     
-     
-     
-     
-     
-     
-     
-     
-     
-     
-
-     
- } // -> HealthManager
-
-
-
- func formatDateRange(start: Date, end: Date) -> String {
-     let dateFormatter = DateFormatter()
-     dateFormatter.locale = Locale.current
-     dateFormatter.dateFormat = "MMM d, yyyy - h:mm a"
-
-     let startString = dateFormatter.string(from: start)
-     let endString = dateFormatter.string(from: end)
-
-     return "\(startString) to \(endString)"
- }
- */

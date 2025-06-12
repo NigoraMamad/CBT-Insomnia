@@ -16,3 +16,9 @@ struct ContentViewWrapper: View {
         ContentView(context: modelContext)
     }
 }
+
+//#Preview {
+//    @Previewable @StateObject var sleepDataService = SleepDataService()
+//    ContentViewWrapper()
+//        .environmentObject(SleepDataService.shared)
+//}

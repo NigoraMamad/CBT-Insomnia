@@ -7,14 +7,14 @@
 
 import Foundation
 
-enum Days: String, CaseIterable {
-    case tue = "TUE"
-    case wed = "WED"
-    case thu = "THU"
-    case fri = "FRI"
-    case sat = "SAT"
-    case sun = "SUN"
-    case mon = "MON"
+enum Days: Int, CaseIterable {
+    case mon = 2
+    case tue = 3
+    case wed = 4
+    case thu = 5
+    case fri = 6
+    case sat = 7
+    case sun = 1
     
     var shortLabel: String {
         switch self {
@@ -26,16 +26,20 @@ enum Days: String, CaseIterable {
         } // -> switch
     } // -> shortLabel
     
-    var weekday: Int {
+    var longLabel: String {
         switch self {
-            case .sun: return 1
-            case .mon: return 2
-            case .tue: return 3
-            case .wed: return 4
-            case .thu: return 5
-            case .fri: return 6
-            case .sat: return 7
+            case .mon: return "MONDAY"
+            case .tue: return "TUESDAY"
+            case .wed: return "WEDNESDAY"
+            case .thu: return "THURSDAY"
+            case .fri: return "FRIDAY"
+            case .sat: return "SATURDAY"
+            case .sun: return "SUNDAY"
         } // -> switch
-    } // -> shortLabel
+    } // -> longLabel
+    
+    static func fromCalendarWeekday(calendarWeekday: Int) -> Days? {
+        return Days(rawValue: calendarWeekday)
+    } // -> fromCalendarWeekday
     
 } // -> Period

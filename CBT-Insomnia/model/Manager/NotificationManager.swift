@@ -87,7 +87,7 @@ class NotificationManager {
     
     
     func scheduleDailyNotifications() {
-        //   center.removeAllPendingNotificationRequests()
+        center.removeAllPendingNotificationRequests()
         
         scheduleNotification(for: .bedTime)
         scheduleNotification(for: .wakeUpTime)
@@ -274,9 +274,6 @@ class NotificationManager {
     }
     
 }
-
-
-
 
 enum NotificationType {
     case bedTime

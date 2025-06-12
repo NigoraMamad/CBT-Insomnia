@@ -66,10 +66,14 @@ struct ContentView: View {
                 Color.black
                 VStack {
                     Spacer()
-                    Dialogue(
-                        mainPlaceholder: dialogueText(for: getMainPHForCurrentTime(), name: name),
-                        placeholder: ""
-                    ).padding(.top, 10)
+                    Button {
+                        manager.fetchAllSleep(modelContext: modelContext)
+                    } label: {
+                        Dialogue(
+                            mainPlaceholder: dialogueText(for: getMainPHForCurrentTime(), name: name),
+                            placeholder: ""
+                        ).padding(.top, 10)
+                    }
                     RobotView()
                     BadgeSleepCard(
                         fixedBedTime: bedTime,
@@ -108,11 +112,9 @@ struct ContentView: View {
                     //                    }
                     
                     
-                    if let session = lastNightSession {
-                        NavigationLink(destination: StatisticsView(
-                            bedTime: getBedTimeFromDefaults() ?? DateComponents(hour: 1, minute: 0),
-                            wakeTime: UserDefaultsService.shared.getWakeUpTime() ?? DateComponents(hour: 7, minute: 0)
-                        ).environmentObject(manager)) {
+                    
+                    NavigationLink(destination: StatisticsView()) {
+                        if let session = lastNightSession {
                             LastNightCard(session: session)
                         }
                     } else {

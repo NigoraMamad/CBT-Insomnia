@@ -19,13 +19,13 @@ struct Dialogue: View {
             if !mainPlaceholder.isEmpty {
                 Text(mainPlaceholder)
                     .foregroundStyle(.black)
-                    .font(.system(size: 20, weight: .bold))
+                    .font(.krungthep(.regular, size: 20))
             } // -> mainPlaceholder
             
             if !placeholder.isEmpty {
                 Text(placeholder)
                     .foregroundStyle(.gray)
-                    .font(.system(size: 15))
+                    .font(.krungthep(.regular, size: 15))
                     .multilineTextAlignment(.center)
             } // -> placeholder
             

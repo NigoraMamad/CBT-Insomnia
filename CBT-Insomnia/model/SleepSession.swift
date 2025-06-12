@@ -10,20 +10,23 @@ class SleepSession {
     var sleepDuration: TimeInterval
     var sleepEfficiency: Double
     var timeInBed: TimeInterval
+    var stageDurations: [SleepStageDuration]
 
     init(
         id: UUID = UUID(),
         day: Date,
         badgeWakeUpTime: Date? = nil,
         badgeBedTime: Date,
-        sleepDuration: TimeInterval
+        sleepDuration: TimeInterval,
+        stageDurations: [SleepStageDuration] = []
     ) {
         self.id = id
         self.day = day
         self.badgeBedTime = badgeBedTime
         self.badgeWakeUpTime = badgeWakeUpTime
         self.sleepDuration = sleepDuration
-
+        self.stageDurations = stageDurations
+      
         // Calculate initial values
         self.timeInBed = 0
         self.sleepEfficiency = 0
@@ -40,30 +43,6 @@ class SleepSession {
         } else {
             self.timeInBed = 0
             self.sleepEfficiency = 0
-        }
-    }
-
-    static func currentWeek() -> Predicate<SleepSession> {
-        let calendar = Calendar.current
-        let now = Date()
-        let weekday = calendar.component(.weekday, from: now)
-        let daysSinceTuesday = (weekday + 4) % 7 // MODIFY LATER TO 5
-        let startOfWeek = calendar.date(byAdding: .day, value: -daysSinceTuesday, to: calendar.startOfDay(for: now))!
-        return #Predicate<SleepSession> { session in
-            session.day >= startOfWeek && session.day <= now
-        }
-    }
-
-    static func previousWeek() -> Predicate<SleepSession> {
-        let calendar = Calendar.current
-        let now = Date()
-        let weekday = calendar.component(.weekday, from: now)
-        let daysSinceTuesday = (weekday + 4) % 7
-        let startOfCurrentWeek = calendar.date(byAdding: .day, value: -daysSinceTuesday, to: calendar.startOfDay(for: now))!
-        let startOfPreviousWeek = calendar.date(byAdding: .day, value: -7, to: startOfCurrentWeek)!
-        let endOfPreviousWeek = calendar.date(byAdding: .second, value: -1, to: startOfCurrentWeek)!
-        return #Predicate<SleepSession> { session in
-            session.day >= startOfPreviousWeek && session.day <= endOfPreviousWeek
         }
     }
 
@@ -89,4 +68,9 @@ class SleepSession {
         formatter.timeStyle = .short
         return formatter.string(from: wakeTime)
     }
+
+    func duration(stage: SleepStages) -> TimeInterval {
+        stageDurations.first { $0.stage == stage.rawValue }?.duration ?? 0
+    } // -> duration
+    
 }

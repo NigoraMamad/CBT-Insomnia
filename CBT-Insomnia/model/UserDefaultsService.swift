@@ -136,6 +136,7 @@ class UserDefaultsService {
     func saveWakeUpOffset(_ components: DateComponents) {
         if let data = try? JSONEncoder().encode(components) {
             defaults.set(data, forKey: Keys.wakeUpTime)
+            
         }
     }
     
@@ -147,6 +148,7 @@ class UserDefaultsService {
     
     func getSleepDuration() -> SleepDuration? {
         if let raw = defaults.string(forKey: Keys.sleepDuration) {
+            print(raw)
             return SleepDuration(rawValue: raw)
         }
         return nil
