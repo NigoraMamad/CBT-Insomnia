@@ -101,6 +101,8 @@ class UserDefaultsService {
     
     private let defaults = UserDefaults.standard
     
+    private let startDateKey = "appStartDate"
+    
     private enum Keys {
         static let lastEfficiencyPromptDate = "last_efficiency_prompt_date"
         static let name = "setting_name"
@@ -109,6 +111,17 @@ class UserDefaultsService {
         static let bedTimeOffset = "bed_time_offset"
        /* static let wakeUpOffset = "wake_up_offset"*/ // ✅ Added key
     }
+    
+    func getAppStartDate() -> Date {
+            if let data = UserDefaults.standard.object(forKey: startDateKey) as? Date {
+                return data
+            } else {
+                let now = Date()
+                UserDefaults.standard.set(now, forKey: startDateKey)
+                return now
+            }
+        }
+    
     
     // MARK: - Save Methods
     
