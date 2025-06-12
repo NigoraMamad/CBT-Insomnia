@@ -12,7 +12,18 @@ struct DaySummary: View {
     
     @Environment(\.modelContext) private var context
     
-    @State private var selectedDate: Date = Calendar.current.startOfDay(for: Date())
+    @State private var selectedDate: Date = {
+        let now = Date()
+        let calendar = Calendar.current
+        let startOfToday = calendar.startOfDay(for: now)
+        let hour = calendar.component(.hour, from: now)
+        // If it's before 6 AM, subtract one day
+        if hour < 6 {
+            return calendar.date(byAdding: .day, value: -1, to: startOfToday)!
+        } else {
+            return startOfToday
+        } // -> if hour < 6
+    }() // -> selectedDate
     
     @State private var currSession: [SleepSession] = []
     
@@ -35,7 +46,7 @@ struct DaySummary: View {
                 Text(currentDayLabel(date: selectedDate))
                 Spacer()
                 Button {
-                    if selectedDate < Calendar.current.startOfDay(for: Date()) {
+                    if selectedDate < fixedCurrentDate() {
                         selectedDate = Calendar.current.date(byAdding: .day, value: 1, to: selectedDate)!
                         fetchSleepSessions(date: selectedDate)
                     } // -> if selectedDate
@@ -50,7 +61,7 @@ struct DaySummary: View {
             let completeSession = currSession.first?.isComplete ?? false
             let sleepEfficiency = currSession.first?.sleepEfficiency ?? nil
             let color = colorForSleep(efficiency: sleepEfficiency, isCompleted: completeSession)
-            Text("\(!completeSession ? "NA" : String(format: "%.0f", sleepEfficiency!)+"%")")
+            Text("\(!completeSession ? "NA" : Int(sleepEfficiency!).formatted(.percent))")
                 .font(.dsDigital(.bold, size: 143))
                 .foregroundStyle(color)
                 .shadow(color: color.opacity(!completeSession ? 0.0 : 0.6), radius: 10, x: 0, y: 0)
@@ -186,6 +197,19 @@ struct DaySummary: View {
         let mins = (Int(seconds) % 3600) / 60
         return (hours, mins)
     } // -> averageSleepHours
+    
+    func fixedCurrentDate() -> Date {
+        let now = Date()
+        let calendar = Calendar.current
+        let startOfToday = calendar.startOfDay(for: now)
+        let hour = calendar.component(.hour, from: now)
+        // If it's before 6 AM, subtract one day
+        if hour < 6 {
+            return calendar.date(byAdding: .day, value: -1, to: startOfToday)!
+        } else {
+            return startOfToday
+        } // -> if hour < 6
+    } // -> fixedCurrentDate()
     
 } // -> DayAnalysis
 

@@ -62,7 +62,8 @@ class HealthManager: ObservableObject {
     func fetchAllSleep(modelContext: ModelContext) {
         if self.authorization == false { return }
         guard let sleepType = HKObjectType.categoryType(forIdentifier: .sleepAnalysis) else { return }
-        let predicate = HKQuery.predicateForSamples(withStart: .distantPast, end: Date(), options: [])
+        let endDate = Calendar.current.date(byAdding: .day, value: -1, to: Date())!
+        let predicate = HKQuery.predicateForSamples(withStart: .distantPast, end: endDate, options: [])
         let sortDescriptor = NSSortDescriptor(key: HKSampleSortIdentifierEndDate, ascending: false)
         
         let query = HKSampleQuery(sampleType: sleepType, predicate: predicate, limit: HKObjectQueryNoLimit, sortDescriptors: [sortDescriptor]) { query, samples, error in

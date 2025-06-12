@@ -15,7 +15,17 @@ struct WeekSummary: View {
     @State private var selectedWeekStart: Date = {
         var calendar = Calendar.current
         calendar.firstWeekday = 2 // 1 = Sunday, 2 = Monday, 3 = Tuesday, 4 = Wednesday
-        return calendar.date(from: calendar.dateComponents([.yearForWeekOfYear, .weekOfYear], from: Date()))!
+        let now = Date()
+        let startOfToday = calendar.startOfDay(for: now)
+        let hour = calendar.component(.hour, from: now)
+        // If it's before 6 AM, subtract one day
+        var fixedDate = Date()
+        if hour < 6 {
+            fixedDate = calendar.date(byAdding: .day, value: -1, to: startOfToday)!
+        } else {
+            fixedDate = startOfToday
+        } // -> if hour < 6
+        return calendar.date(from: calendar.dateComponents([.yearForWeekOfYear, .weekOfYear], from: fixedDate))!
     }() // -> selectedWeekStart
     
     @State private var weeklySessions: [SleepSession] = []
@@ -141,7 +151,7 @@ struct WeekSummary: View {
                             } // -> GeometryReader
                             .frame(height: 25)
                             if completed {
-                                Text("\(String(format: "%.0f", sleepEfficiency))%")
+                                Text("\(Int(sleepEfficiency).formatted(.percent))")
                                     .foregroundStyle(completed ? colorForSleep(efficiency: sleepEfficiency) : .grayNA)
                                     .frame(width: 45, alignment: .trailing)
                             } else {
@@ -271,7 +281,17 @@ struct WeekSummary: View {
     func startWeekDate() -> Date {
         var calendar = Calendar.current
         calendar.firstWeekday = 2 // 1 = Sunday, 2 = Monday, 3 = Tuesday, 4 = Wednesday
-        return calendar.date(from: calendar.dateComponents([.yearForWeekOfYear, .weekOfYear], from: Date()))!
+        let now = Date()
+        let startOfToday = calendar.startOfDay(for: now)
+        let hour = calendar.component(.hour, from: now)
+        // If it's before 6 AM, subtract one day
+        var fixedDate = Date()
+        if hour < 6 {
+            fixedDate = calendar.date(byAdding: .day, value: -1, to: startOfToday)!
+        } else {
+            fixedDate = startOfToday
+        } // -> if hour < 6
+        return calendar.date(from: calendar.dateComponents([.yearForWeekOfYear, .weekOfYear], from: fixedDate))!
     } // -> startWeekDate
     
     func colorForSleep(efficiency: Double?) -> Color {
@@ -285,7 +305,7 @@ struct WeekSummary: View {
         } else {
             return .redWarning
         } // -> if data
-    }
+    } // -> colorForSleep
     
 } // -> SleepSummary
 
