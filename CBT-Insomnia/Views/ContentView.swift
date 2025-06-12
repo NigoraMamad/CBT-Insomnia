@@ -16,6 +16,7 @@ struct ContentView: View {
     @Environment(\.modelContext) private var modelContext
     @StateObject private var adjustmentVM: SleepAdjustmentViewModel
     @State private var isInfoPresented = false
+    @State private var isBadgedIn = false
     
     init(context: ModelContext) {
         _adjustmentVM = StateObject(wrappedValue: SleepAdjustmentViewModel(context: context))
@@ -75,43 +76,12 @@ struct ContentView: View {
                         ).padding(.top, 10)
                     }
                     RobotView()
-                    BadgeSleepCard(
-                        fixedBedTime: bedTime,
-                        fixedWakeTime: wakeTime,
-                        onBedTap: { isBadgingBedViewShown = true },
-                        onWakeTap: { isBadgingWakeViewShown = true }
-                    ).padding()
-                    
-                    //                    NavigationLink( destination: StatisticsView(
-                    //                        bedTime: getBedTimeFromDefaults() ?? DateComponents(hour: 1, minute: 0),
-                    //                        wakeTime: UserDefaultsService.shared.getWakeUpTime() ?? DateComponents(hour: 7, minute: 0)
-                    //                    ).environmentObject(manager)
-                    //                    ) {
-                    //                        LastNightCard(day: day, nightEfficiency: nightEfficiency, nighTotalSleep: nightTotalSleep, bedTime: bedTime, wakeTime: wakeTime)
-                    //                    } // -> NavigationLink
-                    //                    if let session = lastNightSession {
-                    //                        NavigationLink(destination: StatisticsView().environmentObject(manager)) {
-                    //                            LastNightCard(session: session)
-                    //                        }
-                    //                    } else {
-                    //                        // Show placeholder when no sleep data exists
-                    //                        VStack {
-                    //                            Text("No Sleep Data")
-                    //                                .font(.krungthep(.regular, relativeTo: .title2))
-                    //                                .foregroundColor(.gray)
-                    //                            Text("Badge in tonight to start tracking")
-                    //                                .font(.krungthep(.regular, relativeTo: .body))
-                    //                                .foregroundColor(.gray)
-                    //                        }
-                    //                        .frame(width: 340, height: 240)
-                    //                        .background {
-                    //                            RoundedRectangle(cornerRadius: 20)
-                    //                                .stroke(.gray, lineWidth: 2)
-                    //                                .frame(width: 340, height: 240)
-                    //                        }
-                    //                    }
-                    
-                    
+//                    BadgeSleepCard(
+//                        fixedBedTime: bedTime,
+//                        fixedWakeTime: wakeTime,
+//                        onBedTap: { isBadgingBedViewShown = true },
+//                        onWakeTap: { isBadgingWakeViewShown = true }
+//                    ).padding()
                     
                     NavigationLink(destination: StatisticsView()) {
                         if let session = lastNightSession {
@@ -136,11 +106,44 @@ struct ContentView: View {
                         }
                     }
                     
+                    Button {
+                        
+                        if isBadgedIn {
+                            isBadgingWakeViewShown = true
+                            isBadgedIn = false
+                        } else {
+                            isBadgingBedViewShown = true
+                            isBadgedIn = true
+                        }
+                        
+                    } label: {
+                       if isBadgedIn {
+                            Text("End bed session")
+                       } else {
+                           Text("Start bed session")
+                       }
+                    }
+                    .frame(minWidth: 300)
+                    .padding()
+                    .background{
+                        RoundedRectangle(cornerRadius: 10)
+                            .fill(Color.white)
+                           
+                    }
+                    .foregroundColor(.black)
+                    .font(.krungthep(.regular, relativeTo: .title3))
+
+
+                    Text("The session helps Sortie to track your sleep")
+                        .foregroundColor(.gray.opacity(0.7))
+                        .padding()
+                    
                     Spacer()
                 }
                 
                 
             }
+            .font(.krungthep(.regular, relativeTo: .caption))
             .fullScreenCover(isPresented: $isBadgingBedViewShown) {
                 BadgingBedView()
             }

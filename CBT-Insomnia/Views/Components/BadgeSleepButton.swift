@@ -37,7 +37,7 @@ struct BadgeSleepButton: View {
         Color.black
         VStack {
             BadgeSleepButton(label: "I'm going to sleep", isActive: true, action: {})
-            BadgeSleepButton(label: "I'm awake", isActive: false, action: {})
+            BadgeSleepButton(label: "I'm awake", isActive: true, action: {})
         }
     }
     .ignoresSafeArea()
