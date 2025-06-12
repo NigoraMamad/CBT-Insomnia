@@ -74,7 +74,7 @@ struct ContentView: View {
                             mainPlaceholder: dialogueText(for: getMainPHForCurrentTime(), name: name),
                             placeholder: ""
                         )
-                        .padding(.top, 30)
+                        .padding(.top, 60)
                     }
                     RobotView()
                     BadgeSleepCard(
