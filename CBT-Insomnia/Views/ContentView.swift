@@ -116,6 +116,7 @@ struct ContentView: View {
                     NavigationLink(destination: StatisticsView()) {
                         if let session = lastNightSession {
                             LastNightCard(session: session)
+                            
                         } else {
                             // Show placeholder when no sleep data exists
                             VStack {
