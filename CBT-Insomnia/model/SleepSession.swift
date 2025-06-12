@@ -36,7 +36,7 @@ class SleepSession {
     func updateCalculatedProperties() {
         if let wake = badgeWakeUpTime {
             self.timeInBed = wake.timeIntervalSince(badgeBedTime)
-            self.sleepEfficiency = timeInBed > 0 ? (sleepDuration / timeInBed) * 100 : 0
+            self.sleepEfficiency = timeInBed > 0 ? min((sleepDuration / timeInBed) * 100, 100) : 0
         } else {
             self.timeInBed = 0
             self.sleepEfficiency = 0

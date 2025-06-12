@@ -121,7 +121,7 @@ struct ContentView: View {
                             Text("No Sleep Data")
                                 .font(.krungthep(.regular, relativeTo: .title2))
                                 .foregroundColor(.gray)
-                            Text("Badge in tonight to start tracking")
+                            Text("Start session tonight")
                                 .font(.krungthep(.regular, relativeTo: .body))
                                 .foregroundColor(.gray)
                         }
@@ -129,7 +129,7 @@ struct ContentView: View {
                         .background {
                             RoundedRectangle(cornerRadius: 20)
                                 .stroke(.gray, lineWidth: 2)
-                                .frame(width: 340, height: 240)
+                                .frame(width: 334, height: 180)
                         }
                     }
                     
@@ -144,29 +144,30 @@ struct ContentView: View {
             .fullScreenCover(isPresented: $isBadgingWakeViewShown) {
                 BadgingWakeView()
             }
-            .ignoresSafeArea()
-        }
-        .toolbar {
-            ToolbarItem(placement: .navigationBarTrailing) {
-                Button(action: {
-                    isInfoPresented = true
-                }) {
-                    Image(systemName: "info.circle")
-                        .foregroundColor(.white)
+            .toolbar {
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    Button(action: {
+                        isInfoPresented = true
+                    }) {
+                        Image(systemName: "info.circle")
+                            .foregroundColor(.white)
+                    }
                 }
             }
+            .sheet(isPresented: $isInfoPresented) {
+                InfoPage()
+            }
+            .onAppear {
+                adjustmentVM.checkIfShouldShowWeeklySummary()
+            }
+            .sheet(isPresented: $adjustmentVM.showEfficiencySheet) {
+                WeeklyEfficiencySheet(viewModel: adjustmentVM)
+                //                .presentationDetents([.medium])
+                    .presentationDetents([.height(650)])
+            }
+            .ignoresSafeArea()
         }
-        .sheet(isPresented: $isInfoPresented) {
-            InfoPage()
-        }
-        .onAppear {
-            adjustmentVM.checkIfShouldShowWeeklySummary()
-        }
-        .sheet(isPresented: $adjustmentVM.showEfficiencySheet) {
-            WeeklyEfficiencySheet(viewModel: adjustmentVM)
-            //                .presentationDetents([.medium])
-                .presentationDetents([.height(650)])
-        }
+        
         
     }
     
