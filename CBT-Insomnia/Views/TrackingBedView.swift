@@ -19,6 +19,8 @@ struct TrackingBedView: View {
     
     @EnvironmentObject private var sleepDataService: SleepDataService
     
+    @State private var isTestMode = false
+    
     var body: some View {
         ZStack {
             Color.black
@@ -86,6 +88,20 @@ struct TrackingBedView: View {
         .fullScreenCover(isPresented: $isMainViewShown) {
             ContentView(context: modelContext) // or whatever your main view is called
         }
+        
+#if DEBUG
+        // In TrackingBedView body
+        Toggle("🏷️ Test Badge-in", isOn: $isTestMode)
+            .padding()
+            .onChange(of: isTestMode) { on in
+                if on {
+                    receiver.isTracking = true
+                    receiver.isWristFlat = true
+                    receiver.isWristStill = true
+                    checkForGoodnight()
+                }
+            }
+#endif
     }
     
     private func checkForGoodnight() {

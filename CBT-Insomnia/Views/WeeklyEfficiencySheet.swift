@@ -17,60 +17,85 @@ struct WeeklyEfficiencySheet: View {
     var body: some View {
         
         ZStack {
-            Color.black.ignoresSafeArea()
-            VStack(spacing: 24) {
+            Color.black.opacity(0.2).ignoresSafeArea()
+            VStack(spacing: 40) {
                 Text("Last Week's Sleep Efficiency")
-                    .font(.title2)
-                    .fontWeight(.semibold)
-                
-                Text("\(Int(viewModel.efficiencyLastWeek))%")
-                    .font(.system(size: 48, weight: .bold))
-                    .foregroundColor(viewModel.eligibleForBonus ? .green : .gray)
+                    .font(.krungthep(.regular, relativeTo: .title2))
+                    .foregroundColor(.accent)
                 
                 if viewModel.eligibleForBonus {
-                    Text("Great job! You’ve earned a bonus. \nWhere do you want to add 15 minutes?")
+                    Text("Good job! Your sleep efficiency was 80%+ this week. ")
                         .multilineTextAlignment(.center)
-                    
-                    HStack {
-                        Button("Wake-up Time") {
-                            viewModel.add15Minutes(to: .wake)
-                            dismiss()
-                        }
-                        Spacer()
-                        
-                        Button("Bed Time") {
-                            viewModel.add15Minutes(to: .bed)
-                            dismiss()
-                        }
-                    }
-                    
-                    Button("Keep Current Schedule") {
-                        viewModel.add15Minutes(to: .keep)
-                        dismiss()
-                    }
                 } else {
                     Text("Keep going! Aim for ≥ 90% to unlock bonus sleep time.")
                         .multilineTextAlignment(.center)
+                }
+                
+                Text("\(Int(viewModel.efficiencyLastWeek))%")
+                    .font(.dsDigital(.bold, size: 96))
+                    .foregroundColor(viewModel.eligibleForBonus ? .accent : .gray)
+                
+                if viewModel.eligibleForBonus {
+                    Text("As a reward, you can add 15 minutes to your sleep schedule:")
+                        .multilineTextAlignment(.center)
                     
-                    Button("Got it") {
+                    HStack(spacing: 80) {
+                        Button("Morning") {
+                            viewModel.add15Minutes(to: .wake)
+                            dismiss()
+                        }
+                        .buttonStyle(.bordered)
+                        
+                        Button("Night") {
+                            viewModel.add15Minutes(to: .bed)
+                            dismiss()
+                        }
+                        .buttonStyle(.bordered)
+                    }
+                    .padding()
+                    
+                    
+                    Button("KEEP CURRENT SCHEDULE") {
                         viewModel.add15Minutes(to: .keep)
                         dismiss()
                     }
-                    .buttonStyle(.bordered)
+                    .padding()
+                    .background{
+                        RoundedRectangle(cornerRadius: 5)
+                            .fill(Color.white)
+                    }
+                    .foregroundColor(.black)
+                    
+                    
+                } else {
+//                    Text("Keep going! Aim for ≥ 90% to unlock bonus sleep time.")
+//                        .multilineTextAlignment(.center)
+                    
+                    Button("GOT IT") {
+                        viewModel.add15Minutes(to: .keep)
+                        dismiss()
+                    }
+                    .padding()
+                    .background{
+                        RoundedRectangle(cornerRadius: 5)
+                            .fill(Color.white)
+                    }
+                    .foregroundColor(.black)
                 }
             }
             .foregroundColor(.white)
             .padding()
             .frame(maxWidth: .infinity)
-            .presentationDetents([.medium])
+//            .presentationDetents([.medium])
+            .font(.krungthep(.regular, relativeTo: .title3))
         }
     }
 }
 
 #Preview {
     let vm = SleepAdjustmentViewModel(context: ModelContainer.preview.mainContext)
-    vm.efficiencyLastWeek = 93
-    vm.eligibleForBonus = true
+    vm.efficiencyLastWeek = 20
+    vm.eligibleForBonus = false
     vm.showEfficiencySheet = true
 
     return WeeklyEfficiencySheet(viewModel: vm)

@@ -6,7 +6,7 @@ import UserNotifications
 
 struct OnboardingPage6: View {
     @State private var goToNextPage = false
-   
+    
     
     var body: some View {
         ZStack {
@@ -45,8 +45,9 @@ struct OnboardingPage6: View {
                     label: "ENABLE NOTIFICATIONS",
                     destination: OnboardingPage7(),
                     customAction: { completion in
-                        requestNotificationPermission {
-                            completion()
+                        NotificationManager.shared.requestPermissionAndSchedule { //permission
+                            //NotificationManager.shared.testImmediateNotification()//test notification
+                            completion() //next page
                         }
                     }
                 )
@@ -57,13 +58,6 @@ struct OnboardingPage6: View {
     }
     
     
-    func requestNotificationPermission(completion: @escaping () -> Void) {
-        UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .badge, .sound]) { _, _ in
-            DispatchQueue.main.async {
-                completion()
-            }
-        }
-    }
 }
 
 

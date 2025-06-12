@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct BadgingWakeView: View {
-    
+    @Environment(\.modelContext) private var modelContext
     @Environment(\.dismiss) var dismiss
     
     @StateObject private var stepCounter = StepCounter()

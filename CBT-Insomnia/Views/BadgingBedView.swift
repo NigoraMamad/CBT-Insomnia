@@ -10,7 +10,7 @@ import SwiftUI
 struct BadgingBedView: View {
     @State private var isTrackingBedShown: Bool = false
     @Environment(\.dismiss) var dismiss
-    
+
     var body: some View {
         NavigationStack{
             ZStack {
@@ -40,10 +40,11 @@ struct BadgingBedView: View {
             .fullScreenCover(isPresented: $isTrackingBedShown) {
                 TrackingBedView()
             }
+            
+            .ignoresSafeArea()
+            .font(.krungthep(.regular, relativeTo: .title2))
+            .foregroundStyle(.white)
         }
-        .ignoresSafeArea()
-        .font(.krungthep(.regular, relativeTo: .title2))
-        .foregroundStyle(.white)
     }
 }
 

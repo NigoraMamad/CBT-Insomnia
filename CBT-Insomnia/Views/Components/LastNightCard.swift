@@ -55,7 +55,7 @@ struct LastNightCard: View {
                     Label(session.formattedBadgeInTime, systemImage: "moon.zzz.fill")
                     Spacer()
                     Label(session.formattedBadgeOutTime, systemImage: "sun.max.fill")
-                        .foregroundColor(session.isComplete ? .primary : .secondary)
+                        .foregroundColor(session.isComplete ? .black : .secondary)
                 }
                 .font(.krungthep(.regular, relativeTo: .callout))
                 .padding()

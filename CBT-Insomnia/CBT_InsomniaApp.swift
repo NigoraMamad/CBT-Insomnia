@@ -7,9 +7,9 @@
 
 import SwiftUI
 import SwiftData
-
 @main
 struct CBT_InsomniaApp: App {
+    
     @AppStorage("onboardingCompleted") var onboardingCompleted = false
     @StateObject var sleepDataService = SleepDataService()
 
@@ -20,10 +20,13 @@ struct CBT_InsomniaApp: App {
                     ContentViewWrapper()
                         .preferredColorScheme(.dark)
                         .environmentObject(SleepDataService.shared)
-//                        .onAppear {
-//                            NotificationManager.shared.requestAuthorization()
-//                        }
-                    
+                        .onAppear {
+                            UNUserNotificationCenter.current().getNotificationSettings { settings in
+                                if settings.authorizationStatus == .authorized {
+                                    NotificationManager.shared.scheduleDailyNotifications()
+                                }
+                            }
+                        }
                 } else {
                     OnboardingPage1()
                 }

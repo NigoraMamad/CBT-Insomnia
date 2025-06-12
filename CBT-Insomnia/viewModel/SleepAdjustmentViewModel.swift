@@ -29,13 +29,14 @@ class SleepAdjustmentViewModel: ObservableObject {
     
     func add15Minutes(to option: SleepAdjustmentOption) {
         let calendar = Calendar.current
-        let offset = DateComponents(minute: 15)
+//        let offset = DateComponents(minute: 15)
 
         switch option {
         case .wake:
             let existing = UserDefaultsService.shared.getWakeUpOffset() ?? DateComponents(hour: 0, minute: 0)
             let base = calendar.date(from: existing) ?? Date(timeIntervalSince1970: 0)
-            let new = calendar.date(byAdding: offset, to: base)!
+            let positiveOffset = DateComponents(minute: 15)
+            let new = calendar.date(byAdding: positiveOffset, to: base)!
             let newOffset = calendar.dateComponents([.hour, .minute], from: new)
             UserDefaultsService.shared.saveWakeUpOffset(newOffset)
 
@@ -87,11 +88,11 @@ class SleepAdjustmentViewModel: ObservableObject {
     }
     
     
-//    //to test
+    //to test
 //    func checkIfShouldShowWeeklySummary() {
 //        #if DEBUG
 //        showEfficiencySheet = true
-//        efficiencyLastWeek = 92
+//        efficiencyLastWeek = 90
 //        eligibleForBonus = true
 //        return
 //        #endif

@@ -84,6 +84,13 @@ enum SleepDuration: String, CaseIterable, Codable {
         case .twentyFour: return DateComponents(hour: 24)
         }
     }
+    
+    var timeInterval: TimeInterval {
+        let components = self.dateComponents
+        let hours = components.hour ?? 0
+        let minutes = components.minute ?? 0
+        return TimeInterval(hours * 3600 + minutes * 60)
+    }
 }
 
 import Foundation
@@ -100,7 +107,7 @@ class UserDefaultsService {
         static let sleepDuration = "setting_sleepDuration"
         static let wakeUpTime = "setting_wakeUpTime"
         static let bedTimeOffset = "bed_time_offset"
-        static let wakeUpOffset = "wake_up_offset" // ✅ Added key
+       /* static let wakeUpOffset = "wake_up_offset"*/ // ✅ Added key
     }
     
     // MARK: - Save Methods
@@ -116,6 +123,7 @@ class UserDefaultsService {
     func saveWakeUpTime(_ components: DateComponents) {
         if let data = try? JSONEncoder().encode(components) {
             defaults.set(data, forKey: Keys.wakeUpTime)
+            NotificationManager.shared.scheduleDailyNotifications()
         }
     }
     
@@ -127,7 +135,8 @@ class UserDefaultsService {
     
     func saveWakeUpOffset(_ components: DateComponents) {
         if let data = try? JSONEncoder().encode(components) {
-            defaults.set(data, forKey: Keys.wakeUpOffset)
+            defaults.set(data, forKey: Keys.wakeUpTime)
+            
         }
     }
     
@@ -162,7 +171,7 @@ class UserDefaultsService {
     }
 
     func getWakeUpOffset() -> DateComponents? {
-        if let data = defaults.data(forKey: Keys.wakeUpOffset),
+        if let data = defaults.data(forKey: Keys.wakeUpTime),
            let components = try? JSONDecoder().decode(DateComponents.self, from: data) {
             return components
         }
@@ -193,14 +202,38 @@ extension UserDefaultsService {
         return currentWeekStart > lastWeekStart
     }
 
+//    func adjustWakeTime(by minutes: Int) {
+//        guard let wake = getWakeUpTime() else { return }
+//        let calendar = Calendar.current
+//        let date = calendar.date(from: wake) ?? Date()
+//        let newDate = calendar.date(byAdding: .minute, value: minutes, to: date)!
+//        let updated = calendar.dateComponents([.hour, .minute], from: newDate)
+//        saveWakeUpTime(updated)
+//    }
+    
     func adjustWakeTime(by minutes: Int) {
-        guard var wake = getWakeUpTime() else { return }
+        guard let wake = getWakeUpTime(),
+              let duration = getSleepDuration()
+        else { return }
+
         let calendar = Calendar.current
-        let date = calendar.date(from: wake) ?? Date()
-        let newDate = calendar.date(byAdding: .minute, value: minutes, to: date)!
-        let updated = calendar.dateComponents([.hour, .minute], from: newDate)
-        saveWakeUpTime(updated)
+
+        // 1. Get the current wake-up time as Date
+        let wakeHour = wake.hour ?? 7
+        let wakeMinute = wake.minute ?? 0
+        let wakeDate = calendar.date(from: DateComponents(hour: wakeHour, minute: wakeMinute)) ?? Date()
+
+        // 2. Add minutes to wake-up time
+        let newWakeDate = calendar.date(byAdding: .minute, value: minutes, to: wakeDate)!
+        let newWakeComponents = calendar.dateComponents([.hour, .minute], from: newWakeDate)
+        saveWakeUpTime(newWakeComponents)
+
+        // 3. Increase sleep duration accordingly
+        let currentMinutes = (duration.dateComponents.hour ?? 0) * 60 + (duration.dateComponents.minute ?? 0)
+        let newDuration = durationFromMinutes(currentMinutes + minutes)
+        saveSleepDuration(newDuration)
     }
+    
 
     func adjustBedTime(by minutes: Int) {
         guard let wake = getWakeUpTime(),
