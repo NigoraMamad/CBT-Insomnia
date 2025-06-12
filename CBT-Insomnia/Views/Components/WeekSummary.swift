@@ -117,11 +117,13 @@ struct WeekSummary: View {
                     ForEach(days, id: \.self) { day in
                         
                         let session = dayFor(day: day, sessions: weeklySessions)
+                        let sleepEfficiency = session?.sleepEfficiency ?? 0.0
+                        let completed = session?.isComplete ?? false
                         
                         HStack {
                             
                             Text(day.shortLabel)
-                                .foregroundStyle(colorForSleep(efficiency: session?.sleepEfficiency))
+                                .foregroundStyle(completed ? colorForSleep(efficiency: sleepEfficiency) : .grayNA)
                                 .font(.krungthep(.regular, relativeTo: .title2))
                                 .frame(width: 30, alignment: .leading)
                             
@@ -138,9 +140,9 @@ struct WeekSummary: View {
                                 } // -> ZStack
                             } // -> GeometryReader
                             .frame(height: 25)
-                            if let sleepEfficiency = session?.sleepEfficiency {
+                            if completed {
                                 Text("\(String(format: "%.0f", sleepEfficiency))%")
-                                    .foregroundStyle(colorForSleep(efficiency: sleepEfficiency))
+                                    .foregroundStyle(completed ? colorForSleep(efficiency: sleepEfficiency) : .grayNA)
                                     .frame(width: 45, alignment: .trailing)
                             } else {
                                 Text("--")
@@ -220,20 +222,22 @@ struct WeekSummary: View {
     } // -> fetchWeekSleepSessions
     
     func averageEfficiency(sessions: [SleepSession]) -> Float {
-        let totalCount = sessions.count
+        var totalCount = sessions.count
         guard totalCount > 0 else { return 0 }
         var totalSum = 0.0
         for session in sessions {
+            if !session.isComplete { totalCount -= 1; continue }
             totalSum += session.sleepEfficiency
         } // -> for session in sessions
         return Float(totalSum/Double(totalCount))
     } // -> averageEfficiency
     
     func averageSleepHours(sessions: [SleepSession]) -> (Int,Int) {
-        let totalCount = sessions.count
+        var totalCount = sessions.count
         guard totalCount > 0 else { return (0,0) }
         var totalSeconds: TimeInterval = 0
         for session in sessions {
+            if !session.isComplete { totalCount -= 1; continue }
             totalSeconds += session.sleepDuration
         } // -> for session in sessions
         let averageSeconds = totalSeconds / Double(totalCount)

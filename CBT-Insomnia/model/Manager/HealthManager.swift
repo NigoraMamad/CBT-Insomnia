@@ -15,14 +15,15 @@ class HealthManager: ObservableObject {
     private var authorization = false
     
     init () {
-        requestHealthAuthorization()
+        requestHealthAuthorization { _ in }
     } // -> init
     
     // MARK: REQUEST AUTHORIZATION
-    func requestHealthAuthorization() {
+    func requestHealthAuthorization(completion: @escaping (Bool) -> Void) {
         
         guard HKHealthStore.isHealthDataAvailable() else {
             print("HealthKit is not available on this device.")
+            completion(false)
             return
         } // guard
         
@@ -31,11 +32,16 @@ class HealthManager: ObservableObject {
         let healthTypes: Set<HKObjectType> = [sleepAnalysis]
         
         healthStore.requestAuthorization(toShare: [], read: healthTypes) { (success, error) in
-            if success {
-                self.authorization = true
-            } else {
-                print("HealthKit authorization failed: \(error?.localizedDescription ?? "No error found")")
-            } // -> if-else
+            
+            DispatchQueue.main.async {
+                if success {
+                    self.authorization = true
+                    completion(success)
+                } else {
+                    print("HealthKit authorization failed: \(error?.localizedDescription ?? "No error found")")
+                    completion(false)
+                } // -> if-else
+            }
         } // -> healthStore
         
     } // -> requestHealthAuthorization
@@ -131,21 +137,21 @@ class HealthManager: ObservableObject {
     func fetchSleep(
         modelContext: ModelContext,
         session: SleepSession,
-        badgeIn: Date,
         badgeOut: Date
     ) {
         if self.authorization == false { return }
         guard let sleepType = HKObjectType.categoryType(forIdentifier: .sleepAnalysis) else { return }
+        let badgeIn = session.badgeBedTime
         let predicate = HKQuery.predicateForSamples(withStart: badgeIn, end: badgeOut, options: [])
         let sortDescriptor = NSSortDescriptor(key: HKSampleSortIdentifierEndDate, ascending: false)
         
         let query = HKSampleQuery(sampleType: sleepType, predicate: predicate, limit: HKObjectQueryNoLimit, sortDescriptors: [sortDescriptor]) { (query, samples, error) in
-                
+            
                 guard let samples = samples as? [HKCategorySample], error == nil else {
                     print("Error fetching sleep analysis data: \(String(describing: error))")
                     return
                 } // -> samples
-                
+            
                 DispatchQueue.main.async {
                     
                     var sleepDuration: TimeInterval = 0
@@ -175,8 +181,10 @@ class HealthManager: ObservableObject {
                     } // -> stageDurationModel
                     
                     // Update the provided session
+                    session.badgeWakeUpTime = badgeOut
                     session.sleepDuration = sleepDuration
                     session.stageDurations = stageDurationModel
+                    session.updateCalculatedProperties()
                     
                     do {
                         try modelContext.save()

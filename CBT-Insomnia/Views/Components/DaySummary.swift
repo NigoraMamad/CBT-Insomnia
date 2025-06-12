@@ -47,13 +47,14 @@ struct DaySummary: View {
             .foregroundStyle(.white)
             
              // MARK: PERCENT
+            let completeSession = currSession.first?.isComplete ?? false
             let sleepEfficiency = currSession.first?.sleepEfficiency ?? nil
-            let color = colorForSleep(efficiency: sleepEfficiency)
-            Text("\(sleepEfficiency == nil ? "NA" : String(format: "%.0f", sleepEfficiency!)+"%")")
+            let color = colorForSleep(efficiency: sleepEfficiency, isCompleted: completeSession)
+            Text("\(!completeSession ? "NA" : String(format: "%.0f", sleepEfficiency!)+"%")")
                 .font(.dsDigital(.bold, size: 143))
                 .foregroundStyle(color)
-                .shadow(color: color.opacity(sleepEfficiency == nil ? 0.0 : 0.6), radius: 10, x: 0, y: 0)
-                .shadow(color: color.opacity(sleepEfficiency == nil ? 0.0 : 0.4), radius: 30, x: 0, y: 0)
+                .shadow(color: color.opacity(!completeSession ? 0.0 : 0.6), radius: 10, x: 0, y: 0)
+                .shadow(color: color.opacity(!completeSession ? 0.0 : 0.4), radius: 30, x: 0, y: 0)
                 .padding(.top, 1)
                 .padding(.bottom, -20)
             Text("Efficiency")
@@ -62,14 +63,19 @@ struct DaySummary: View {
             
             // MARK: HOURS SLEPT VS GOAL SLEEP HOURS
             if let session = currSession.first {
-                let (sleepHour,sleepMin) = sleepDurationComponent(seconds: session.sleepDuration)
-                let (windowSleepHour,windowSleepMin) = sleepDurationComponent(seconds: session.timeInBed)
-                Text("You slept ")
-                    .foregroundStyle(.grayLabel)
-                + Text("\(sleepHour):\(sleepMin < 10 ? "0" : "")\(sleepMin)")
-                    .foregroundStyle(color)
-                + Text(" out of \(windowSleepHour):\(windowSleepMin < 10 ? "0" : "")\(windowSleepMin)")
-                    .foregroundStyle(.grayLabel)
+                if !completeSession {
+                    Text("Sleep session in progress...")
+                        .foregroundStyle(.grayLabel)
+                } else {
+                    let (sleepHour,sleepMin) = sleepDurationComponent(seconds: session.sleepDuration)
+                    let (windowSleepHour,windowSleepMin) = sleepDurationComponent(seconds: session.timeInBed)
+                    Text("You slept ")
+                        .foregroundStyle(.grayLabel)
+                    + Text("\(sleepHour):\(sleepMin < 10 ? "0" : "")\(sleepMin)")
+                        .foregroundStyle(color)
+                    + Text(" out of \(windowSleepHour):\(windowSleepMin < 10 ? "0" : "")\(windowSleepMin)")
+                        .foregroundStyle(.grayLabel)
+                } // -> if !completeSession
             } else {
                 Text("No data available for this day")
                     .foregroundStyle(.grayLabel)
@@ -83,7 +89,7 @@ struct DaySummary: View {
                         .fill(.grayNA)
                     RoundedRectangle(cornerRadius: 10)
                         .fill(.white)
-                        .frame(width: sleepEfficiency == nil ? 0 : max(20, sleepEfficiency!*fullWidth/100))
+                        .frame(width: sleepEfficiency == nil ? 0 : sleepEfficiency != 0 ? max(20, sleepEfficiency!*fullWidth/100) : 0)
                 } // -> ZStack
             } // -> GeometryReader
             .frame(height: 20)
@@ -113,10 +119,9 @@ struct DaySummary: View {
                             .foregroundStyle(.white)
                     } // -> VStack
                     Spacer()
-                    if sleepDuration != nil {
-                        let stageHour = Int(stageDuration!) / 3600
-                        let stageMin = (Int(stageDuration!) % 3600) / 60
-                        Text("\(stageHour)H \(stageMin < 10 ? "0" : "")\(stageMin)M")
+                    if sleepDuration != nil && completeSession {
+                        let (stageHour,stageMin) = sleepDurationComponent(seconds: stageDuration!)
+                        Text("\(stageHour)H \(stageMin)M")
                             .foregroundStyle(.white)
                     } else {
                         Text("--")
@@ -163,8 +168,8 @@ struct DaySummary: View {
         }
     } // -> fetchSleepSessions
     
-    func colorForSleep(efficiency: Double?) -> Color {
-        guard let data = efficiency else {
+    func colorForSleep(efficiency: Double?, isCompleted: Bool) -> Color {
+        guard let data = efficiency, isCompleted else {
             return .grayNA
         } // -> guard let data = efficiency
         if data >= 80 {

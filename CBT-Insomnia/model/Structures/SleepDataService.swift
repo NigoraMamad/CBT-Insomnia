@@ -12,6 +12,9 @@ class SleepDataService: ObservableObject {
         if let existingSession = getSleepSession(for: day, context: context) {
             print("📝 Updating existing session")
             existingSession.badgeBedTime = badgeBedTime
+            existingSession.badgeWakeUpTime = nil
+            existingSession.stageDurations = []
+            existingSession.sleepDuration = 0
             existingSession.updateCalculatedProperties()
         } else {
             print("➕ Creating new session")
@@ -34,12 +37,17 @@ class SleepDataService: ObservableObject {
     
         if let session = getSleepSession(for: day, context: context) {
             print("✅ Found session to complete: \(session.id) for day \(session.day)")
-            session.badgeWakeUpTime = badgeWakeUpTime
-            session.updateCalculatedProperties() // Update calculated properties
+            let manager = HealthManager()
+            manager.requestHealthAuthorization { success in
+                if success {
+                    manager.fetchSleep(modelContext: context, session: session, badgeOut: badgeWakeUpTime)
+                } else {
+                    print("❌ HealthKit authorization failed. Sleep data not fetched.")
+                } // -> if-else
+            }
             print("⏰ Session badgeWakeUpTime set to: \(String(describing: session.badgeWakeUpTime))")
             print("🕐 Session timeInBed set to: \(session.timeInBed) seconds (\(session.timeInBed/3600) hours)")
             print("📊 Session efficiency: \(session.sleepEfficiency)%")
-            saveContext(context)
             print("💾 Sleep session completed and saved for \(day)")
         } else {
             print("❌ Failed to find sleep session to complete for \(day)")
