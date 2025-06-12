@@ -40,6 +40,18 @@ class HealthManager: ObservableObject {
         
     } // -> requestHealthAuthorization
     
+    // MARK: MAP SLEEP STAGES
+    func mapToSleepStage(from value: Int) -> SleepStages {
+        switch value {
+            case HKCategoryValueSleepAnalysis.awake.rawValue: return .awake
+            case HKCategoryValueSleepAnalysis.asleepUnspecified.rawValue: return .asleepUnspecified
+            case HKCategoryValueSleepAnalysis.asleepCore.rawValue: return .asleepCore
+            case HKCategoryValueSleepAnalysis.asleepDeep.rawValue: return .asleepDeep
+            case HKCategoryValueSleepAnalysis.asleepREM.rawValue: return .asleepREM
+            default: return .asleepUnspecified
+        } // -> value
+    } // -> mapToSleepStage
+    
     // MARK: TO TEST PREV DATA (ONLY WITH USERS THAT SLEEPS FROM 12 AM)
     func fetchAllSleep(modelContext: ModelContext) {
         if self.authorization == false { return }
@@ -85,7 +97,7 @@ class HealthManager: ObservableObject {
                     let latest = samplesForDay.map(\.endDate).max()!
                     
                     let bedtimeOffset = TimeInterval(Int.random(in: 15 * 60 ... 2 * 60 * 60)) // 15 min to 2h before
-                    let wakeupOffset = TimeInterval(Int.random(in: 15 * 60 ... 3 * 60 * 60)) // 15 min to 3h after
+                    let wakeupOffset = TimeInterval(Int.random(in: 15 * 60 ... 2 * 60 * 60)) // 15 min to 3h after
                     
                     let badgeBedTime = earliest.addingTimeInterval(-bedtimeOffset)
                     let badgeWakeUpTime = latest.addingTimeInterval(wakeupOffset)
@@ -114,22 +126,6 @@ class HealthManager: ObservableObject {
         
         healthStore.execute(query)
     } // -> fetchAllSleep
-    
-    
-    
-    // MARK: MAP SLEEP STAGES
-    func mapToSleepStage(from value: Int) -> SleepStages {
-        switch value {
-            case HKCategoryValueSleepAnalysis.awake.rawValue: return .awake
-            case HKCategoryValueSleepAnalysis.asleepUnspecified.rawValue: return .asleepUnspecified
-            case HKCategoryValueSleepAnalysis.asleepCore.rawValue: return .asleepCore
-            case HKCategoryValueSleepAnalysis.asleepDeep.rawValue: return .asleepDeep
-            case HKCategoryValueSleepAnalysis.asleepREM.rawValue: return .asleepREM
-            default: return .asleepUnspecified
-        } // -> value
-    } // -> mapToSleepStage
-    
-    
     
     // MARK: FETCH CURRENT SLEEP BADGE IN AND OUT
     func fetchSleep(
