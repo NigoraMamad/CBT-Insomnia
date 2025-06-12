@@ -116,22 +116,23 @@ struct ContentView: View {
                     NavigationLink(destination: StatisticsView()) {
                         if let session = lastNightSession {
                             LastNightCard(session: session)
-                        }
-                    } else {
-                        // Show placeholder when no sleep data exists
-                        VStack {
-                            Text("No Sleep Data")
-                                .font(.krungthep(.regular, relativeTo: .title2))
-                                .foregroundColor(.gray)
-                            Text("Start session tonight")
-                                .font(.krungthep(.regular, relativeTo: .body))
-                                .foregroundColor(.gray)
-                        }
-                        .frame(width: 340, height: 240)
-                        .background {
-                            RoundedRectangle(cornerRadius: 20)
-                                .stroke(.gray, lineWidth: 2)
-                                .frame(width: 334, height: 180)
+                            
+                        } else {
+                            // Show placeholder when no sleep data exists
+                            VStack {
+                                Text("No Sleep Data")
+                                    .font(.krungthep(.regular, relativeTo: .title2))
+                                    .foregroundColor(.gray)
+                                Text("Start session tonight")
+                                    .font(.krungthep(.regular, relativeTo: .body))
+                                    .foregroundColor(.gray)
+                            }
+                            .frame(width: 340, height: 240)
+                            .background {
+                                RoundedRectangle(cornerRadius: 20)
+                                    .stroke(.gray, lineWidth: 2)
+                                    .frame(width: 334, height: 180)
+                            }
                         }
                     }
                     
