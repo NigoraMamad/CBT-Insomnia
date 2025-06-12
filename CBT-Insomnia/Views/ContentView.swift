@@ -16,7 +16,13 @@ struct ContentView: View {
     @Environment(\.modelContext) private var modelContext
     @StateObject private var adjustmentVM: SleepAdjustmentViewModel
     @State private var isInfoPresented = false
-    @State private var isBadgedIn = false
+    
+    var hasOngoingSession: Bool {
+        if let session = lastNightSession {
+            return session.badgeWakeUpTime == nil
+        }
+        return false
+    }
     
     init(context: ModelContext) {
         _adjustmentVM = StateObject(wrappedValue: SleepAdjustmentViewModel(context: context))
@@ -98,7 +104,7 @@ struct ContentView: View {
                                     .font(.krungthep(.regular, relativeTo: .body))
                                     .foregroundColor(.gray)
                             }
-                            .frame(width: 340, height: 240)
+                            .frame(width: 334, height: 180)
                             .background {
                                 RoundedRectangle(cornerRadius: 20)
                                     .stroke(.gray, lineWidth: 2)
@@ -108,21 +114,17 @@ struct ContentView: View {
                     }.padding()
                     
                     Button {
-                        
-                        if isBadgedIn {
+                        if hasOngoingSession {
                             isBadgingWakeViewShown = true
-                            isBadgedIn = false
                         } else {
                             isBadgingBedViewShown = true
-                            isBadgedIn = true
                         }
-                        
                     } label: {
-                       if isBadgedIn {
+                        if hasOngoingSession {
                             Text("End bed session")
-                       } else {
-                           Text("Start bed session")
-                       }
+                        } else {
+                            Text("Start bed session")
+                        }
                     }
                     .frame(minWidth: 300)
                     .padding()
@@ -174,8 +176,6 @@ struct ContentView: View {
             }
             .ignoresSafeArea()
         }
-        
-        
     }
     
     
