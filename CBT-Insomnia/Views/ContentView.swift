@@ -74,7 +74,7 @@ struct ContentView: View {
                             mainPlaceholder: dialogueText(for: getMainPHForCurrentTime(), name: name),
                             placeholder: ""
                         )
-                        .padding(.top, 60)
+                        .padding(.top, 70)
                     }
                     RobotView()
                     BadgeSleepCard(
@@ -127,7 +127,7 @@ struct ContentView: View {
                     .frame(minWidth: 300)
                     .padding()
                     .background{
-                        RoundedRectangle(cornerRadius: 10)
+                        RoundedRectangle(cornerRadius: 20)
                             .fill(Color.white)
                            
                     }
@@ -192,7 +192,7 @@ struct ContentView: View {
     func dialogueText(for phase: MainPH, name: String) -> String {
         switch phase {
         case .morning: return "GOOD MORNING, \(name.uppercased())!"
-        case .naps: return "DO NOT TAKE NAPS, \(name.uppercased())!"
+        case .naps: return "Hello \(name.uppercased()), try to not take naps during the day!"
         case .evening: return "GOOD EVENING, \(name.uppercased())!"
         case .sleeping: return "ZZZ"
         }
