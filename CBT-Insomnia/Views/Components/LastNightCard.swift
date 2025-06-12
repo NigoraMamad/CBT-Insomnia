@@ -107,8 +107,13 @@ struct LastNightCard: View {
                 } else {
                     // In progress state
                     VStack(spacing: 36) {
+                        HStack {
+                            Spacer()
+                            Image(systemName: "chevron.right")
+                        }
+                        .foregroundStyle(.white)
                         Text("Sleep Session In Progress")
-                            .font(.krungthep(.regular, size: 24))
+                            .font(.krungthep(.regular, size: 20))
                             .foregroundColor(.mediumEfficiency)
                         
                         HStack {
@@ -155,7 +160,7 @@ struct RoundedCorners: Shape {
 #Preview {
     let now = Date()
     let earlier = Calendar.current.date(byAdding: .hour, value: -6, to: now)!
-    let session = SleepSession(day: .now, badgeWakeUpTime: .now, badgeBedTime: earlier, sleepDuration: 3 * 3600)
+    let session = SleepSession(day: .now, badgeBedTime: earlier, sleepDuration: 3 * 3600)
     
     ZStack {
         Color.black

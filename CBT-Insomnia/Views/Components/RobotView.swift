@@ -17,7 +17,7 @@ struct RobotView: View {
          let url = Bundle.main.url(forResource: "robot2", withExtension: "splineswift")!
 
         SplineView(sceneFileURL: url).ignoresSafeArea(.all)
-            .frame(height: 200) 
+            .frame(height: 170) 
     }
 }
 
