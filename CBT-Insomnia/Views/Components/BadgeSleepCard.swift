@@ -34,7 +34,7 @@ struct BadgeSleepCard: View {
                         .foregroundColor(.white)
                     Label(fixedBedTime, systemImage: "bed.double.fill")
                         .alignmentGuide(.top) { d in d[.top] }
-                    Spacer()
+//                    Spacer()
                 }
                 .frame(maxWidth: .infinity, alignment: .center)
                 .padding()
@@ -45,7 +45,7 @@ struct BadgeSleepCard: View {
                         .foregroundColor(.white)
                     Label(fixedWakeTime, systemImage: "figure.walk")
                         .alignmentGuide(.top) { d in d[.top] }
-                    Spacer()
+//                    Spacer()
                 }
                 .frame(maxWidth: .infinity, alignment: .center)
                 .padding()
@@ -68,7 +68,7 @@ struct BadgeSleepCard: View {
         }
         .foregroundStyle(.white)
         .font(.krungthep(.regular, relativeTo: .callout))
-        .frame(width: 340, height: 160)
+//        .frame(width: 340, height: 160)
     }
 }
 

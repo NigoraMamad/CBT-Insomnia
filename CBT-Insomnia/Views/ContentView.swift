@@ -65,7 +65,7 @@ struct ContentView: View {
         NavigationStack {
             ZStack {
                 Color.black
-                VStack {
+                VStack(spacing: 5) {
                     Spacer()
                     Button {
                         manager.fetchAllSleep(modelContext: modelContext)
@@ -73,15 +73,16 @@ struct ContentView: View {
                         Dialogue(
                             mainPlaceholder: dialogueText(for: getMainPHForCurrentTime(), name: name),
                             placeholder: ""
-                        ).padding(.top, 10)
+                        )
+                        .padding(.top, 30)
                     }
                     RobotView()
-//                    BadgeSleepCard(
-//                        fixedBedTime: bedTime,
-//                        fixedWakeTime: wakeTime,
-//                        onBedTap: { isBadgingBedViewShown = true },
-//                        onWakeTap: { isBadgingWakeViewShown = true }
-//                    ).padding()
+                    BadgeSleepCard(
+                        fixedBedTime: bedTime,
+                        fixedWakeTime: wakeTime,
+                        onBedTap: { isBadgingBedViewShown = true },
+                        onWakeTap: { isBadgingWakeViewShown = true }
+                    )
                     
                     NavigationLink(destination: StatisticsView()) {
                         if let session = lastNightSession {
@@ -101,10 +102,10 @@ struct ContentView: View {
                             .background {
                                 RoundedRectangle(cornerRadius: 20)
                                     .stroke(.gray, lineWidth: 2)
-                                    .frame(width: 334, height: 180)
+//                                    .frame(width: 334, height: 180)
                             }
                         }
-                    }
+                    }.padding()
                     
                     Button {
                         
