@@ -44,7 +44,7 @@ Sortie’s methodology is grounded in **behavioral sleep science**, focusing on 
 
 To begin your journey with Sortie:
 
-1. Download the app from the App Store.
+1. Download the app from TestFlight: https://testflight.apple.com/join/aPZK9PzU
 2. Set up your personalized sleep schedule.
 3. Follow Sortie's daily coaching and bedtime prompts.
 4. Complete your WalkToWake challenges in the morning.
