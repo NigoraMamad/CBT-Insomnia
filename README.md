@@ -62,4 +62,9 @@ To begin your journey with Sortie:
 
 ---
 
+## 📸 App Screenshots
+<img src="sortie1.PNG" alt="screenshot" width="30%"> <img src="sortie2.PNG" alt="screenshot" width="30%"> <img src="sortie3.PNG" alt="screenshot" width="30%">
+
+---
+
 > “Cut the sleep. Grow the rest.” – Sortie
