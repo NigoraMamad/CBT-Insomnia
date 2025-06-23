@@ -62,7 +62,6 @@ To begin your journey with Sortie:
 
 ---
 
-## 📸 App Screenshots
 <img src="sortie1.png" alt="screenshot" width="30%"> <img src="sortie2.png" alt="screenshot" width="30%"> <img src="sortie3.png" alt="screenshot" width="30%">
 
 ---
